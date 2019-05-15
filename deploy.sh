@@ -15,7 +15,8 @@ else
     . $SCRIPT_PATH/$PROJECT_ENVIRONMENT/config.sh
 fi
 
-BARE_REPO_SCRIPT_DIR=/tmp/deployer
+TIMESTAMP=$(date +%s)
+BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 
 mkdir -p $BARE_REPO_SCRIPT_DIR
 cat $SCRIPT_PATH/app-config.sh $SCRIPT_PATH/$PROJECT_ENVIRONMENT/config.sh > $BARE_REPO_SCRIPT_DIR/config.sh
@@ -24,7 +25,10 @@ cp $SCRIPT_PATH/$PROJECT_ENVIRONMENT/git-hook-post-receive $BARE_REPO_SCRIPT_DIR
 
 echo "Copying scripts to create bare git repo"
 scp -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/
-ssh -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER 'cd /tmp/deployer && sh ./bare-repo.sh'
+ssh -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
+echo $BARE_REPO_SCRIPT_DIR
+cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
+EOSSH
 
 PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $SCRIPT_PATH/$BUILD.sh
 

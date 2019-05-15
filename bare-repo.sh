@@ -11,7 +11,7 @@ if [ $DEPLOYMENT_SSH_USER = "" ] || [ $SERVICE_NAME = "" ]; then
 	exit
 fi
 
-SCRIPT_DIR=/tmp/deployer
+SCRIPT_DIR=$(dirname $(readlink -f $0))
 BARE_REPO_DIR=/home/$DEPLOYMENT_SSH_USER/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 POST_RECEIVE_HOOK=git-hook-post-receive
 
