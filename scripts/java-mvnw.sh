@@ -10,7 +10,7 @@ fi
 . $SCRIPT_PATH/../app-config.sh
 . $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh
 
-cd $SCRIPT_PATH/../../
+cd $SCRIPT_PATH/../work/repo
 ./mvnw package -Dmaven.test.skip=true
 cd target/
 WARFILE=$(ls *SNAPSHOT.war | head -n1)
@@ -20,11 +20,11 @@ PATH_TO_JAR=$PATH_TO_JAR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE
 echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
 COMMAND='nohup java -jar $PATH_TO_JAR -Dspring.profiles.active=$PROJECT_ENVIRONMENT --server.port=$SERVICE_PORT /tmp 2>> /dev/null >> /dev/null'
 echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
-mkdir -p $SCRIPT_PATH/../repo/deploy
-cp *.war $SCRIPT_PATH/../repo/
-cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $SCRIPT_PATH/../repo/deploy/config.sh
-cp $SCRIPT_PATH/run.sh $SCRIPT_PATH/../repo/deploy/
-cd $SCRIPT_PATH/../repo
+mkdir -p $SCRIPT_PATH/../work/deploy-repo
+cp *.war $SCRIPT_PATH/../work/deploy-repo
+cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $SCRIPT_PATH/../work/deploy-repo/config.sh
+cp $SCRIPT_PATH/run.sh $SCRIPT_PATH/../work/deploy-repo/
+cd $SCRIPT_PATH/../work/deploy-repo
 git init
 git config user.name "deployer"
 git config user.email "techgroup@loanstreet.com.my"
