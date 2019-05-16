@@ -26,7 +26,6 @@ cp $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/git-hook-post-receive $BARE_REPO_SCRIPT_
 echo "Copying scripts to create bare git repo"
 scp -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/
 ssh -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
-echo $BARE_REPO_SCRIPT_DIR
 cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
 
