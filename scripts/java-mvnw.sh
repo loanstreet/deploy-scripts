@@ -20,10 +20,10 @@ PATH_TO_JAR=$PATH_TO_JAR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE
 echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
 COMMAND='nohup java -jar $PATH_TO_JAR -Dspring.profiles.active=$PROJECT_ENVIRONMENT --server.port=$SERVICE_PORT /tmp 2>> /dev/null >> /dev/null'
 echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
-mkdir -p $SCRIPT_PATH/../work/deploy-repo
+mkdir -p $SCRIPT_PATH/../work/deploy-repo/deploy
 cp *.war $SCRIPT_PATH/../work/deploy-repo
-cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $SCRIPT_PATH/../work/deploy-repo/config.sh
-cp $SCRIPT_PATH/run.sh $SCRIPT_PATH/../work/deploy-repo/
+cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $SCRIPT_PATH/../work/deploy-repo/deploy/config.sh
+cp $SCRIPT_PATH/run.sh $SCRIPT_PATH/../work/deploy-repo/deploy
 cd $SCRIPT_PATH/../work/deploy-repo
 git init
 git config user.name "deployer"

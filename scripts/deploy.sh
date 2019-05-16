@@ -30,12 +30,15 @@ echo $BARE_REPO_SCRIPT_DIR
 cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
 
-mkdir -p $SCRIPT_PATH/../work/repo/
-cd $SCRIPT_PATH/../work/repo/
+BUILD_REPO=$SCRIPT_PATH/../work/repo/
+echo "Creating repo to build program at $BUILD_REPO"
+mkdir -p $BUILD_REPO
+cd $BUILD_REPO
 git init
 git remote rm deploy-build
 git remote add deploy-build $GIT_REPO
 git pull deploy-build $GIT_BRANCH
+echo "Checked out $GIT_BRANCH from $GIT_REPO"
 
 PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $SCRIPT_PATH/$BUILD.sh
 
