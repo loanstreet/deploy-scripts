@@ -10,8 +10,8 @@ if [ "$1" = "" ]; then
     exit
 else
     PROJECT_ENVIRONMENT="$1"
-    if [ ! -f $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh ]; then
-        echo "Please initialize deploy/$PROJECT_ENVIRONMENT/config.sh with vars PROJECT_ENVIRONMENT, SERVICE_NAME, GIT_REPO, and GIT_BRANCH"
+    if [ ! -f $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh ] || [ "$BUILD" = "" ]; then
+        echo "Please initialize deploy/$PROJECT_ENVIRONMENT/config.sh with vars BUILD, PROJECT_ENVIRONMENT, SERVICE_NAME, GIT_REPO, and GIT_BRANCH"
         exit
     fi
     . $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh
@@ -35,7 +35,7 @@ BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 mkdir -p $BARE_REPO_SCRIPT_DIR
 cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh > $BARE_REPO_SCRIPT_DIR/config.sh
 cp $SCRIPT_PATH/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
-cp $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/git-hook-post-receive $BARE_REPO_SCRIPT_DIR/
+cp $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD $BARE_REPO_SCRIPT_DIR/
 
 echo "Copying scripts to create bare git repo"
 scp -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/
