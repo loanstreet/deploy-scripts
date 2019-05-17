@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/../app-config.sh
 
@@ -34,7 +36,6 @@ echo "Creating repo to build program at $BUILD_REPO"
 mkdir -p $BUILD_REPO
 cd $BUILD_REPO
 git init
-git remote rm deploy-build
 git remote add deploy-build $GIT_REPO
 git pull deploy-build $GIT_BRANCH
 echo "Checked out $GIT_BRANCH from $GIT_REPO"
@@ -49,7 +50,6 @@ if [ ! -d $SCRIPT_PATH/../work/deploy-repo ]; then
 	exit
 fi
 cd $SCRIPT_PATH/../work/deploy-repo
-git remote rm fincon-dev
 git remote add fincon-dev $REMOTE_GIT_BARE_REPO
 git push fincon-dev master -f
 echo "Deleting deployment work dir $SCRIPT_PATH/../work"

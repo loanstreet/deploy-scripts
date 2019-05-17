@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 mkdir -p $SCRIPT_PATH/deploy-scripts
 cd $SCRIPT_PATH/deploy-scripts

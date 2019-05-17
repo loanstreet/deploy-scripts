@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 if [ "$PROJECT_ENVIRONMENT" = "" ]; then
