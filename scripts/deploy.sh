@@ -17,6 +17,18 @@ else
     . $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh
 fi
 
+WORK_DIR=$SCRIPT_PATH/../work
+BUILD_REPO=$WORK_DIR/repo/
+DEPLOY_REPO=$WORK_DIR/deploy-repo
+
+clean_dirs() {
+	if [ -d $WORK_DIR ]; then
+		echo "Deleting deployment work dir $SCRIPT_PATH/../work"
+		rm -rf $WORK_DIR
+	fi
+}
+
+clean_dirs
 TIMESTAMP=$(date +%s)
 BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 
@@ -52,5 +64,4 @@ fi
 cd $SCRIPT_PATH/../work/deploy-repo
 git remote add fincon-dev $REMOTE_GIT_BARE_REPO
 git push fincon-dev master -f
-echo "Deleting deployment work dir $SCRIPT_PATH/../work"
-rm -rf $SCRIPT_PATH/../work
+clean_dirs
