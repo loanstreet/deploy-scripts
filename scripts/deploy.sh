@@ -29,6 +29,23 @@ clean_dirs() {
 }
 
 clean_dirs
+
+BUILD_REPO=$SCRIPT_PATH/../work/repo/
+echo "Creating repo to build program at $BUILD_REPO"
+mkdir -p $BUILD_REPO
+cd $BUILD_REPO
+git init
+git remote add deploy-build $GIT_REPO
+git pull deploy-build $GIT_BRANCH
+echo "Checked out $GIT_BRANCH from $GIT_REPO"
+
+PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $SCRIPT_PATH/$BUILD.sh
+
+if [ ! -d $SCRIPT_PATH/../work/deploy-repo ]; then
+	echo "No deployment repo created by $BUILD script. exiting"
+	exit
+fi
+
 TIMESTAMP=$(date +%s)
 BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 
@@ -43,24 +60,9 @@ ssh -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
 cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
 
-BUILD_REPO=$SCRIPT_PATH/../work/repo/
-echo "Creating repo to build program at $BUILD_REPO"
-mkdir -p $BUILD_REPO
-cd $BUILD_REPO
-git init
-git remote add deploy-build $GIT_REPO
-git pull deploy-build $GIT_BRANCH
-echo "Checked out $GIT_BRANCH from $GIT_REPO"
-
-PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $SCRIPT_PATH/$BUILD.sh
-
 REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/home/$DEPLOYMENT_SSH_USER/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 echo "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
-if [ ! -d $SCRIPT_PATH/../work/deploy-repo ]; then
-	echo "No deployment repo created by $BUILD script. exiting"
-	exit
-fi
 cd $SCRIPT_PATH/../work/deploy-repo
 git remote add fincon-dev $REMOTE_GIT_BARE_REPO
 git push fincon-dev master -f
