@@ -20,7 +20,7 @@ echo "WARFILE=$WARFILE" > deploy-config.sh
 PATH_TO_JAR='$HOME/sites'
 PATH_TO_JAR=$PATH_TO_JAR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE
 echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
-COMMAND='nohup java -jar $PATH_TO_JAR -Dspring.profiles.active=$PROJECT_ENVIRONMENT --server.port=$SERVICE_PORT /tmp 2>> /dev/null >> /dev/null'
+COMMAND='nohup java -Dspring.profiles.active=$PROJECT_ENVIRONMENT -jar $PATH_TO_JAR --server.port=$SERVICE_PORT /tmp 2>> /dev/null >> /dev/null'
 echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
 mkdir -p $SCRIPT_PATH/../work/deploy-repo/deploy
 cp *.war $SCRIPT_PATH/../work/deploy-repo
