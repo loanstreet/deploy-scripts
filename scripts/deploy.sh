@@ -32,11 +32,9 @@ clean_dirs
 
 BUILD_REPO=$SCRIPT_PATH/../work/repo/
 echo "Creating repo to build program at $BUILD_REPO"
-mkdir -p $BUILD_REPO
+mkdir -p $WORK_DIR
+git clone --single-branch --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO
 cd $BUILD_REPO
-git init
-git remote add deploy-build $GIT_REPO
-git pull deploy-build $GIT_BRANCH
 echo "Checked out $GIT_BRANCH from $GIT_REPO"
 
 PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $SCRIPT_PATH/$BUILD.sh
@@ -64,6 +62,6 @@ REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/home/$DEPLOYM
 echo "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
 cd $SCRIPT_PATH/../work/deploy-repo
-git remote add fincon-dev $REMOTE_GIT_BARE_REPO
-git push fincon-dev master -f
+git remote add deploy $REMOTE_GIT_BARE_REPO
+git push deploy master -f
 clean_dirs
