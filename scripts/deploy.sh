@@ -33,7 +33,7 @@ clean_dirs
 BUILD_REPO=$SCRIPT_PATH/../work/repo/
 echo "Creating repo to build program at $BUILD_REPO"
 mkdir -p $WORK_DIR
-git clone --single-branch --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO
+git clone --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO
 cd $BUILD_REPO
 echo "Checked out $GIT_BRANCH from $GIT_REPO"
 
