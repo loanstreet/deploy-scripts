@@ -35,6 +35,5 @@ git init
 git config user.name "deployer"
 git config user.email "techgroup@loanstreet.com.my"
 git add *.war
-git add deploy/config.sh
-git add deploy/run.sh
+git add deploy/*
 git commit . -m "push for deployment"
