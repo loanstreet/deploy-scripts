@@ -19,9 +19,15 @@ cd $SCRIPT_PATH/../work/deploy-repo/config
 mkdir -p deploy
 cd deploy/
 PID_PATH='$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/$SERVICE_NAME.pid'
-COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --pidfile=$PID_PATH --daemon'
+SOCKET_PATH='unix:///$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/$SERVICE_NAME.sock'
+if [ "$SERVICE_PORT" = "" ]; then
+	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --environment=$PROJECT_ENVIRONMENT --bind=$SOCKET_PATH --pidfile=$PID_PATH --daemon && sleep 4'
+else
+	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --environment=$PROJECT_ENVIRONMENT -p $SERVICE_PORT --pidfile=$PID_PATH --daemon && sleep 4'
+fi
 cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh > config.sh
 echo "PID_PATH=\"$PID_PATH\"" >> config.sh
+echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> config.sh
 echo "START_COMMAND=\"$COMMAND\"" >> config.sh
 cp $SCRIPT_PATH/run.sh ./
 cd $SCRIPT_PATH/../work/deploy-repo
