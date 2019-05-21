@@ -1,7 +1,8 @@
 #!/bin/sh
 
-PROJECT_ENVIRONMENT=default
-SERVICE_NAME=app-name
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/config.sh
+
 GIT_BARE_REPO=$HOME/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 DEPLOY_DIR=$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT
 WORK_TREE=$DEPLOY_DIR/releases/$(date +%s)
@@ -20,4 +21,4 @@ rm $DEPLOY_DIR/current
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
 
 echo "Restarting application"
-cd $DEPLOY_DIR/current && PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh ./deploy/run.sh stop && PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh ./deploy/run.sh start
+cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
