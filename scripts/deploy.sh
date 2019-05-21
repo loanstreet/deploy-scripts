@@ -50,7 +50,15 @@ BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 mkdir -p $BARE_REPO_SCRIPT_DIR
 cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh > $BARE_REPO_SCRIPT_DIR/config.sh
 cp $SCRIPT_PATH/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
-cp $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD $BARE_REPO_SCRIPT_DIR/
+CUSTOM_POST_RECEIVE_HOOK=$SCRIPT_PATH/../$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD
+if [ -f "$CUSTOM_POST_RECEIVE_HOOK" ]; then
+	echo "Copying custom post-receive hook $CUSTOM_POST_RECEIVE_HOOK"
+	cp $CUSTOM_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
+else
+	GENERIC_POST_RECEIVE_HOOK=$SCRIPT_PATH/common-git-hooks/git-hook-post-receive-$BUILD
+	echo "Copying generic post-receive hook $GENERIC_POST_RECEIVE_HOOK"
+	cp $GENERIC_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
+fi
 
 echo "Copying scripts to create bare git repo"
 scp -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/
