@@ -27,17 +27,19 @@ case $1 in
         echo "Starting $SERVICE_NAME ($PROJECT_ENVIRONMENT) ..."
         if [ ! -f $PID_PATH ]; then
 	    sh -c "$START_COMMAND"
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) started ..."
+	    $PID = $(cat $PID_PATH)
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID started ..."
         else
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) is already running ..."
+	    $PID = $(cat $PID_PATH)
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID is already running ..."
         fi
     ;;
     stop)
         if [ -f $PID_PATH ]; then
             PID=$(cat $PID_PATH);
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) stopping ..."
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopping ..."
             kill $PID;
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) stopped ..."
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopped ..."
             rm $PID_PATH
         else
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) is not running ..."
@@ -46,15 +48,16 @@ case $1 in
     restart)
         if [ -f $PID_PATH ]; then
             PID=$(cat $PID_PATH);
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) stopping ...";
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopping ...";
             kill $PID;
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) stopped ...";
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopped ...";
             rm $PID_PATH
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) starting ..."
 	    sh -c "$START_COMMAND"
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) started ..."
+	    PID=$(cat $PID_PATH)
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID started ..."
         else
-            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT)   is not running ..."
+            echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) is not running ..."
         fi
     ;;
 esac
