@@ -27,7 +27,7 @@ case $1 in
         echo "Starting $SERVICE_NAME ($PROJECT_ENVIRONMENT) ..."
         if [ ! -f $PID_PATH ]; then
 	    sh -c "$START_COMMAND"
-	    $PID = $(cat $PID_PATH)
+	    PID=$(cat $PID_PATH)
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID started ..."
         else
 	    $PID = $(cat $PID_PATH)
