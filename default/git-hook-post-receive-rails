@@ -18,6 +18,8 @@ git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f
 echo "Updating current symlink to $WORK_TREE"
 rm $DEPLOY_DIR/current
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
+#rm $SERVICE_NAME.pid
+#ln -s /tmp/$SERVICE_NAME.pid $SERVICE_NAME.pid
 
 source $HOME/.bashrc
 source /etc/profile

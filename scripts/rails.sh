@@ -18,8 +18,10 @@ git --work-tree=../deploy-repo --git-dir=.git checkout -f
 cd $SCRIPT_PATH/../work/deploy-repo/config
 mkdir -p deploy
 cd deploy/
-COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --daemon'
+PID_PATH='$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/$SERVICE_NAME.pid'
+COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --pidfile=$PID_PATH --daemon'
 cat $SCRIPT_PATH/../app-config.sh $SCRIPT_PATH/../$PROJECT_ENVIRONMENT/config.sh > config.sh
+echo "PID_PATH=\"$PID_PATH\"" >> config.sh
 echo "START_COMMAND=\"$COMMAND\"" >> config.sh
 cp $SCRIPT_PATH/run.sh ./
 cd $SCRIPT_PATH/../work/deploy-repo
