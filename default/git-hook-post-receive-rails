@@ -23,7 +23,7 @@ cd $DEPLOY_DIR && ln -sf $WORK_TREE current
 source $HOME/.bashrc
 source /etc/profile
 cd $DEPLOY_DIR/current
-$HOME/.rbenv/bin/rbenv exec bundle install
+$HOME/.rbenv/bin/rbenv exec bundle check || $HOME/.rbenv/bin/rbenv exec bundle install
 if [ "$PRECOMPILE_ASSETS" != "false" ]; then
 	$HOME/.rbenv/bin/rbenv exec bundle exec rake assets:precompile
 fi
