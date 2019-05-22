@@ -44,7 +44,7 @@ git clone --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO
 cd $BUILD_REPO
 echo "Checked out $GIT_BRANCH from $GIT_REPO"
 
-PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $DEPLOY_SCRIPTS_DIR/$BUILD.sh
+PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $DEPLOY_SCRIPTS_DIR/scripts/$BUILD.sh
 
 if [ ! -d $DEPLOY_REPO ]; then
 	echo "No deployment repo created by $BUILD script. exiting"
