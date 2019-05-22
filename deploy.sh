@@ -15,4 +15,4 @@ fi
 
 cd $SCRIPT_PATH
 
-sh $DEPLOY_SCRIPTS_HOME/scripts/deploy.sh $SCRIPT_PATH $1
+PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/scripts/deploy.sh $1
