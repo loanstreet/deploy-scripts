@@ -2,17 +2,17 @@
 
 set -e
 
+DEPLOY_SCRIPTS_GIT_REPO=git@git.loanstreet.com.my:loanstreet/deploy-scripts.git
+DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
 SCRIPT_PATH=$(dirname $(readlink -f $0))
-mkdir -p $SCRIPT_PATH/deploy-scripts
-cd $SCRIPT_PATH/deploy-scripts
-git init
-git config core.sparsecheckout true
-echo 'deploy.sh' > .git/info/sparse-checkout
-echo 'scripts' > .git/info/sparse-checkout
-git remote add -f origin git@git.loanstreet.com.my:loanstreet/deploy-scripts.git
-git pull origin master
-git --work-tree=../ --git-dir=.git checkout -f
-cd $SCRIPT_PATH
-rm -rf $SCRIPT_PATH/deploy-scripts
 
-sh scripts/deploy.sh $1
+if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
+	git clone --single-branch --depth=1 --branch homedir_install $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
+else
+	cd $DEPLOY_SCRIPTS_HOME
+	git pull origin master
+fi
+
+cd $SCRIPT_PATH
+
+sh $DEPLOY_SCRIPTS_HOME/scripts/deploy.sh $SCRIPT_PATH $1
