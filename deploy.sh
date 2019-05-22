@@ -10,7 +10,7 @@ if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
 	git clone --single-branch --depth=1 --branch homedir_install $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
 else
 	cd $DEPLOY_SCRIPTS_HOME
-	git pull origin master
+	git pull origin homedir_install
 fi
 
 cd $SCRIPT_PATH
