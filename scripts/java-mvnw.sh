@@ -4,7 +4,7 @@ set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
-if [ "$PROJECT_DEPLOY_DIR" = "" ]; then
+if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ "$PROJECT_ENVIRONMENT" = "" ]; then
 	echo "No project deploy directory supplied to java deploy script"
 	exit
 fi

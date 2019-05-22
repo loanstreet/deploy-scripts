@@ -4,8 +4,8 @@ set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
-if [ "$PROJECT_DEPLOY_DIR" = "" ]; then
-	echo "No project deploy directory supplied to java deploy script"
+if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ "$PROJECT_ENVIRONMENT" = "" ]; then
+	echo "No project deploy directory or environment supplied to rails deploy script"
 	exit
 fi
 
