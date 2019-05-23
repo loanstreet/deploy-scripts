@@ -3,25 +3,27 @@
 set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
-DEPLOY_SCRIPTS_DIR=$HOME/.deploy-scripts
+DEPLOY_SCRIPTS_DIR="$SCRIPT_PATH/../"
 
 if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ ! -d "$PROJECT_DEPLOY_DIR" ]; then
 	echo "No project deploy directory specified"
 	exit
 fi
 
+. $SCRIPT_PATH/util.sh
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
 if [ "$1" = "" ]; then
-    echo "No environment set"
-    exit
+	echo "No environment set"
+	exit
 else
-    PROJECT_ENVIRONMENT="$1"
-    if [ ! -f $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh ] || [ "$BUILD" = "" ]; then
-        echo "Please initialize deploy/$PROJECT_ENVIRONMENT/config.sh with vars BUILD, PROJECT_ENVIRONMENT, SERVICE_NAME, GIT_REPO, and GIT_BRANCH"
-        exit
-    fi
-    . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
+	check_structure $PROJECT_DEPLOY_DIR $1
+	PROJECT_ENVIRONMENT="$1"
+	if [ ! -f $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh ] || [ "$BUILD" = "" ]; then
+		echo "Please initialize deploy/$PROJECT_ENVIRONMENT/config.sh with vars BUILD, PROJECT_ENVIRONMENT, SERVICE_NAME, GIT_REPO, and GIT_BRANCH"
+	exit
+	fi
+	. $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 fi
 
 WORK_DIR=$PROJECT_DEPLOY_DIR/work
