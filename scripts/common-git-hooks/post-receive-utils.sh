@@ -20,6 +20,9 @@ create_symlinks() {
 			printf "Creating symlink $j -> $DEPLOY_DIR/shared/$j ... "
                 	ln -s $DEPLOY_DIR/shared/$j $j
 			echo "done"
+			if [ ! -f $DEPLOY_DIR/shared/$j ]; then
+				echo "Shared file $j does not exist. Please create it manually."
+			fi
 	        done
 	fi
 }
