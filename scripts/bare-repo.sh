@@ -27,6 +27,7 @@ fi
 echo "Copying post-receive hook from $POST_RECEIVE_HOOK"
 cp $SCRIPT_DIR/$POST_RECEIVE_HOOK $BARE_REPO_DIR/hooks/post-receive
 cp $SCRIPT_DIR/config.sh $BARE_REPO_DIR/hooks/
+cp $SCRIPT_DIR/post-receive-utils.sh $BARE_REPO_DIR/hooks/
 cd $BARE_REPO_DIR/hooks && chmod +x post-receive
 echo "Post-receive hook deployed. Cleaning up"
 rm -rf $SCRIPT_DIR

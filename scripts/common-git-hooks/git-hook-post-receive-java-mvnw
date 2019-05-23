@@ -20,5 +20,8 @@ echo "Updating current symlink to $WORK_TREE"
 rm $DEPLOY_DIR/current
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
 
+# create shared resources links
+create_symlinks
+
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
