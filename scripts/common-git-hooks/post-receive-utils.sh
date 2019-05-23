@@ -1,3 +1,8 @@
+#!/bin/sh
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/util.sh
+
 create_symlinks() {
 	mkdir -p $DEPLOY_DIR/shared
 	cd $DEPLOY_DIR/current
@@ -7,7 +12,7 @@ create_symlinks() {
         	        mkdir -p $DEPLOY_DIR/shared/$i
 			printf "Creating symlink $i -> $DEPLOY_DIR/shared/$i ... "
                 	ln -sf $DEPLOY_DIR/shared/$i $i
-			echo "done"
+			success "done"
 	        done
 	fi
 	if [ "$LINKED_FILES" != "" ]; then
@@ -19,9 +24,9 @@ create_symlinks() {
 			cd $DEPLOY_DIR/current
 			printf "Creating symlink $j -> $DEPLOY_DIR/shared/$j ... "
                 	ln -s $DEPLOY_DIR/shared/$j $j
-			echo "done"
+			success "done"
 			if [ ! -f $DEPLOY_DIR/shared/$j ]; then
-				echo "Shared file $j does not exist. Please create it manually."
+				warning "Shared file $j does not exist. Please create it manually."
 			fi
 	        done
 	fi

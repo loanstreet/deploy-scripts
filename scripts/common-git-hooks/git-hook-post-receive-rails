@@ -32,14 +32,15 @@ source $HOME/.bashrc
 source /etc/profile
 cd $DEPLOY_DIR/current
 
+title 'deploy - bundle install'
 $HOME/.rbenv/bin/rbenv exec bundle check | indent || $HOME/.rbenv/bin/rbenv exec bundle install 2>&1 | indent
 if [ "$PRECOMPILE_ASSETS" != "false" ]; then
-	title 'deploy - bundle install'
+	title 'deploy - precompile assets'
 	$HOME/.rbenv/bin/rbenv exec bundle exec rake assets:precompile 2>&1 | indent
 fi
 
 if [ "$ACTIVE_RECORD" != "false" ]; then
-	title 'deploy - precompile assets'
+	title 'deploy - migrations'
 	$HOME/.rbenv/bin/rbenv exec bundle exec rake db:migrate 2>&1 | indent
 fi
 
