@@ -83,5 +83,5 @@ info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
 cd $DEPLOY_REPO
 git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
-git push deploy master -f 2>&1 | indent
+git push deploy master -f
 clean_dirs

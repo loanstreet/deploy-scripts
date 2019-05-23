@@ -23,6 +23,7 @@ git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f 2>&1 | indent
 echo "Updating current symlink to $WORK_TREE"
 rm $DEPLOY_DIR/current
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
+mkdir -p $DEPLOY_DIR/current/logs
 
 # create shared resources links
 create_symlinks
