@@ -3,6 +3,8 @@
 set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/util.sh
+title 'build - java maven wrapper'
 
 if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ "$PROJECT_ENVIRONMENT" = "" ]; then
 	echo "No project deploy directory supplied to java deploy script"
@@ -13,7 +15,8 @@ fi
 . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 
 cd $PROJECT_DEPLOY_DIR/work/repo
-./mvnw package -Dmaven.test.skip=true
+./mvnw package -Dmaven.test.skip=true 2>&1 | indent
+title 'build - java - prepare-deployment'
 cd target/
 WARFILE=$(ls *SNAPSHOT.war | head -n1)
 echo "WARFILE=$WARFILE" > deploy-config.sh
@@ -31,9 +34,9 @@ cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/c
 cp $SCRIPT_PATH/run.sh $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
 cp $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/nginx.conf $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo
-git init
+git init 2>&1 | indent
 git config user.name "deployer"
 git config user.email "techgroup@loanstreet.com.my"
-git add *.war
-git add deploy/*
-git commit . -m "push for deployment"
+git add *.war 2>&1 | indent
+git add deploy/* 2>&1 | indent
+git commit . -m "push for deployment" 2>&1 | indent

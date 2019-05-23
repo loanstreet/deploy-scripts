@@ -3,6 +3,9 @@
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/config.sh
 . $SCRIPT_PATH/post-receive-utils.sh
+. $SCRIPT_PATH/util.sh
+
+title 'deploy - post receive hook'
 
 GIT_BARE_REPO=$HOME/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 DEPLOY_DIR=$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT
@@ -16,23 +19,30 @@ echo "Creating working directory $WORK_TREE"
 mkdir -p $WORK_TREE
 
 echo "Checking out working copy"
-git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f
+git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f 2>&1 | indent
 echo "Updating current symlink to $WORK_TREE"
 rm $DEPLOY_DIR/current
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
 
+title 'deploy - shared links'
 # create shared resources links
 create_symlinks
 
 source $HOME/.bashrc
 source /etc/profile
 cd $DEPLOY_DIR/current
-$HOME/.rbenv/bin/rbenv exec bundle check || $HOME/.rbenv/bin/rbenv exec bundle install
+
+$HOME/.rbenv/bin/rbenv exec bundle check | indent || $HOME/.rbenv/bin/rbenv exec bundle install 2>&1 | indent
 if [ "$PRECOMPILE_ASSETS" != "false" ]; then
-	$HOME/.rbenv/bin/rbenv exec bundle exec rake assets:precompile
+	title 'deploy - bundle install'
+	$HOME/.rbenv/bin/rbenv exec bundle exec rake assets:precompile 2>&1 | indent
 fi
+
 if [ "$ACTIVE_RECORD" != "false" ]; then
-	$HOME/.rbenv/bin/rbenv exec bundle exec rake db:migrate
+	title 'deploy - precompile assets'
+	$HOME/.rbenv/bin/rbenv exec bundle exec rake db:migrate 2>&1 | indent
 fi
+
+title 'start application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./config/deploy/run.sh stop && sh ./config/deploy/run.sh start
