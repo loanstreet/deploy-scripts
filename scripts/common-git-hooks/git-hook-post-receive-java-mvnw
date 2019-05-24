@@ -17,6 +17,7 @@ if [ ! -d $DEPLOY_DIR ]; then
         echo "Creating $DEPLOY_DIR"
         mkdir -p $DEPLOY_DIR
 fi
+
 echo "Creating working directory $WORK_TREE"
 mkdir -p $WORK_TREE
 
@@ -32,5 +33,6 @@ mkdir -p $DEPLOY_DIR/current/logs
 # create shared resources links
 create_symlinks
 
+title 'starting application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
