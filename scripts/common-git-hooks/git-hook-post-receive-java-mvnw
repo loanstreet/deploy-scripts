@@ -23,7 +23,7 @@ mkdir -p $WORK_TREE
 echo "Checking out working copy"
 git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f 2>&1 | indent
 echo "Updating current symlink to $WORK_TREE"
-if [ -f "$DEPLOY_DIR/current" ]; then
+if [ -L "$DEPLOY_DIR/current" ]; then
 	rm $DEPLOY_DIR/current
 fi
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
