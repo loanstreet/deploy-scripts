@@ -28,5 +28,7 @@ mkdir -p $DEPLOY_DIR/current/logs
 # create shared resources links
 create_symlinks
 
-echo "Restarting application"
-cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
+title 'deploy - build'
+cd $DEPLOY_DIR/current
+npm install
+npm run build

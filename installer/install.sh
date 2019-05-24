@@ -5,18 +5,31 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/../scripts/util.sh
 
+PROJECT_TYPES=$(ls -d default-* | sed 's/default-//')
+
 if [ ! -d "$2" ]; then
 	error "No such directory: $2"
 fi
 
 DEPLOY_DIR=""
 RELATIVE_DEPLOY=""
-if [ "$1" = "java" ]; then
-	RELATIVE_DEPLOY="deploy"
-elif [ "$1" = "rails" ]; then
+
+UNSUPPORTED=1
+for i in $PROJECT_TYPES; do
+        if [ "$1" = "$i" ]; then
+		UNSUPPORTED=0
+		break
+	fi
+done
+
+if [ $UNSUPPORTED -eq 1 ]; then
+	error "Project type $1 is unsupported"
+fi
+
+if [ "$1" = "rails" ]; then
 	RELATIVE_DEPLOY="config/deploy"
 else
-	error "Project type $1 currently unsupported"
+	RELATIVE_DEPLOY="deploy"
 fi
 
 DEPLOY_DIR="$2/$RELATIVE_DEPLOY"
