@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/config.sh
 . $SCRIPT_PATH/post-receive-utils.sh
@@ -21,7 +23,9 @@ mkdir -p $WORK_TREE
 echo "Checking out working copy"
 git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f 2>&1 | indent
 echo "Updating current symlink to $WORK_TREE"
-rm $DEPLOY_DIR/current
+if [ -f "$DEPLOY_DIR/current" ]; then
+	rm $DEPLOY_DIR/current
+fi
 cd $DEPLOY_DIR && ln -sf $WORK_TREE current
 mkdir -p $DEPLOY_DIR/current/logs
 
