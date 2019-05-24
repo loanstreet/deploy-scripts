@@ -2,7 +2,6 @@
 
 To add deployment capabilities to a project, run the following commands
 ```
-# For a Java Project
 git clone --single-branch --branch homedir_install --depth=1 $HOME/.deploy-scripts
 
 cd $HOME/.deploy-scripts/installer
