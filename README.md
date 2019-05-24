@@ -11,6 +11,9 @@ sh install.sh java /path/to/java/project
 
 # or for a Rails project
 sh install.sh rails /path/to/rails/project
+
+# or for a reactjs project
+sh install.sh reactjs /path/to/reactjs/project
 ```
 Follow the instructions from the installer
 
@@ -18,3 +21,4 @@ Follow the instructions from the installer
 Currently, the following project types are supported
 - Java Maven Wrapper builds
 - Rails (with puma)
+- ReactJS (with npm)
