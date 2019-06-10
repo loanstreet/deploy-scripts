@@ -5,6 +5,7 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/../scripts/util.sh
 
+cd $SCRIPT_PATH/../
 PROJECT_TYPES=$(ls -d default-* | sed 's/default-//')
 
 if [ ! -d "$2" ]; then
