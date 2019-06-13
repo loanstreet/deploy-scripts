@@ -19,6 +19,6 @@ Follow the instructions from the installer
 
 # Supported project types
 Currently, the following project types are supported
-- Java Maven Wrapper builds
+- Java Maven Wrapper builds for Spring boot
 - Rails (with puma)
 - ReactJS (with npm)
