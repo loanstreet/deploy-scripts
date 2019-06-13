@@ -2,7 +2,7 @@
 
 To add deployment capabilities to a project, run the following commands
 ```
-git clone --single-branch --branch homedir_install --depth=1 $HOME/.deploy-scripts
+git clone --single-branch --branch homedir_install --depth=1 git@git.loansreet.com.my:loanstreet/deploy-scripts.git $HOME/.deploy-scripts
 
 cd $HOME/.deploy-scripts/installer
 
