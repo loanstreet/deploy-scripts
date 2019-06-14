@@ -2,10 +2,18 @@
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/util.sh
+. $SCRIPT_PATH/config.sh
+
+GIT_BARE_REPO=$HOME/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+DEPLOY_DIR=$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT
+WORK_TREE=$DEPLOY_DIR/releases/$(date +%s)
 
 create_symlinks() {
 	mkdir -p $DEPLOY_DIR/shared
 	cd $DEPLOY_DIR/current
+	if [ "$LINKED_DIRS" != "" ] || [ "$LINKED_FILES" != "" ]; then
+		title 'deploy - shared symlinks'
+	fi
 	if [ "$LINKED_DIRS" != "" ]; then
         	LINK_DIRS=$(echo "$LINKED_DIRS" | cut -d";" -f1)
 	        for i in $LINK_DIRS; do
@@ -30,4 +38,29 @@ create_symlinks() {
 			fi
 	        done
 	fi
+}
+
+deploy() {
+
+	title 'deploy - post receive hook'
+
+	if [ ! -d $DEPLOY_DIR ]; then
+        	echo "Creating $DEPLOY_DIR"
+	        mkdir -p $DEPLOY_DIR
+	fi
+
+	echo "Creating working directory $WORK_TREE"
+	mkdir -p $WORK_TREE
+
+	echo "Checking out working copy"
+	git --work-tree=$WORK_TREE --git-dir=$GIT_BARE_REPO checkout -f 2>&1 | indent
+	echo "Updating current symlink to $WORK_TREE"
+	if [ -L "$DEPLOY_DIR/current" ]; then
+		rm $DEPLOY_DIR/current
+	fi
+	cd $DEPLOY_DIR && ln -sf $WORK_TREE current
+	mkdir -p $DEPLOY_DIR/current/logs
+
+	# create shared resources links
+	create_symlinks
 }
