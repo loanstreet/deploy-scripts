@@ -22,7 +22,7 @@ cd $PROJECT_DEPLOY_DIR/work/deploy-repo/config
 mkdir -p deploy
 cd deploy/
 PID_PATH='$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/pids/$SERVICE_NAME.pid'
-SOCKET_PATH='unix://$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/sockets/$PROJECT_ENVIRONMENT.sock'
+SOCKET_PATH='unix://$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/sockets/$SERVICE_NAME.sock'
 if [ "$SERVICE_PORT" = "" ]; then
 	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --environment=$PROJECT_ENVIRONMENT --bind=$SOCKET_PATH --pidfile=$PID_PATH --daemon && sleep 3'
 else
