@@ -4,6 +4,6 @@ stages:
 test:
   stage: test
   only:
-    - tests
+    - auto_tests
   script:
     - sh ./tests/rails.sh
