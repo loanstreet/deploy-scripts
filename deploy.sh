@@ -8,12 +8,12 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
 	echo "Downloading deploy-scripts"
-	git clone --single-branch --depth=1 --branch homedir_install $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
+	git clone --single-branch --depth=1 --branch auto_tests $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
 else
 	. $DEPLOY_SCRIPTS_HOME/scripts/util.sh
 	title "deploy-scripts - update"
 	cd $DEPLOY_SCRIPTS_HOME
-	git pull origin homedir_install | indent
+	git pull origin auto_tests | indent
 fi
 
 cd $SCRIPT_PATH
