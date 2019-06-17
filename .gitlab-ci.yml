@@ -1,9 +1,17 @@
 stages:
-  - test
+  - test-java-mvnw
+  - test-rails
 
-test:
-  stage: test
+test-rails:
+  stage: test-rails
   only:
     - homedir_install
   script:
     - sh ./tests/rails.sh
+
+test-java-mvnw:
+  stage: test-java-mvnw
+  only:
+    - homedir_install
+  script:
+    - sh ./tests/java-mvnw.sh

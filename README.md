@@ -7,7 +7,7 @@ git clone --single-branch --branch homedir_install --depth=1 git@git.loansreet.c
 cd $HOME/.deploy-scripts/installer
 
 # For a Java Maven (mvnw) Project
-sh install.sh java /path/to/java/project
+sh install.sh java-mvnw /path/to/java/project
 
 # or for a Rails project
 sh install.sh rails /path/to/rails/project
