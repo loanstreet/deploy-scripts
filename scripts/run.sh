@@ -45,7 +45,7 @@ case $1 in
             kill $PID;
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopped ..."
 	    if [ -f $PID_PATH ]; then
-                rm $PID_PATH
+                rm $PID_PATH 2>&1 >> /dev/null
             fi
         else
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) is not running ..."
@@ -58,7 +58,7 @@ case $1 in
             kill $PID;
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopped ...";
 	    if [ -f $PID_PATH ]; then
-                rm $PID_PATH
+                rm $PID_PATH 2>&1 >> /dev/null
             fi
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) starting ..."
 	    sh -c "$START_COMMAND"
