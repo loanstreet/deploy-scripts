@@ -1,0 +1,9 @@
+stages:
+  - test
+
+test:
+  stage: test
+  only:
+    - tests
+  script:
+    - sh ./tests/rails.sh
