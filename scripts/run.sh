@@ -9,6 +9,10 @@ fi
 
 . $SCRIPT_PATH/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR=$HOME/sites
+fi
+
 if [ "$START_COMMAND" = "" ]; then
 	echo "Please supply a START_COMMAND in config.sh"
 	exit

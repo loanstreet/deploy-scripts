@@ -32,4 +32,5 @@ cp $SCRIPT_DIR/post-receive-utils.sh $BARE_REPO_DIR/hooks/
 cp $SCRIPT_DIR/util.sh $BARE_REPO_DIR/hooks/
 cd $BARE_REPO_DIR/hooks && chmod +x post-receive
 echo "Post-receive hook deployed. Cleaning up"
+cd /tmp
 rm -rf $SCRIPT_DIR
