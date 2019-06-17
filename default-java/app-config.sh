@@ -1,4 +1,5 @@
 BUILD=java-mvnw
+DEPLOYMENT_DIR='$HOME/sites'
 DEPLOYMENT_SERVER=fincon-dev.finology.com.my
 DEPLOYMENT_SSH_USER=deploy
 SERVICE_NAME=app-name

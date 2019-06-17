@@ -13,7 +13,7 @@ if [ $DEPLOYMENT_SSH_USER = "" ] || [ $SERVICE_NAME = "" ] || [ $BUILD = "" ]; t
 fi
 
 SCRIPT_DIR=$(dirname $(readlink -f $0))
-BARE_REPO_DIR=/home/$DEPLOYMENT_SSH_USER/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+BARE_REPO_DIR=$HOME/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 POST_RECEIVE_HOOK=git-hook-post-receive-$BUILD
 
 if [ ! -d $BARE_REPO_DIR ]; then

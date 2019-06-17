@@ -1,4 +1,5 @@
 BUILD=rails
+DEPLOYMENT_DIR='$HOME/sites'
 DEPLOYMENT_SERVER=dev-partners.loanstreet.com.my
 DEPLOYMENT_SSH_USER=deploy
 SERVICE_NAME=app-name

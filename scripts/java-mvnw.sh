@@ -20,8 +20,8 @@ title 'build - java - prepare-deployment'
 cd target/
 WARFILE=$(ls *SNAPSHOT.war | head -n1)
 echo "WARFILE=$WARFILE" > deploy-config.sh
-PATH_TO_JAR='$HOME/sites'
-LOG_DIR='$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
+PATH_TO_JAR=$DEPLOYMENT_DIR
+LOG_DIR='$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
 PATH_TO_JAR=$PATH_TO_JAR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE
 
 echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
