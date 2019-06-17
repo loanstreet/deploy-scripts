@@ -4,6 +4,6 @@ stages:
 test:
   stage: test
   only:
-    - auto_tests
+    - homedir_install
   script:
     - sh ./tests/rails.sh
