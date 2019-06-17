@@ -26,7 +26,7 @@ rm -rf $TEST_WORKING_DIR
 sh deploy/deploy.sh default
 cd $TEST_WORKING_DIR/java-mvnw-deploy-test/default/current
 title 'TEST - check web application'
-sleep 3
+sleep 5
 wget localhost:37567
 printf 'Checking index page contents ... '
 if [ $(grep -c 'Example Spring Boot Application!' index.html) -eq 1 ]; then
