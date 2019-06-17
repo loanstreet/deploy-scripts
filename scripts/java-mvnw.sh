@@ -14,6 +14,10 @@ fi
 . $PROJECT_DEPLOY_DIR/app-config.sh
 . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR='$HOME/sites'
+fi
+
 cd $PROJECT_DEPLOY_DIR/work/repo
 ./mvnw package -Dmaven.test.skip=true 2>&1 | indent
 title 'build - java - prepare-deployment'

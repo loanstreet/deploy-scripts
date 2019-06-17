@@ -4,6 +4,10 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/util.sh
 . $SCRIPT_PATH/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR=$HOME/sites
+fi
+
 GIT_BARE_REPO=$HOME/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 DEPLOY_DIR=$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT
 WORK_TREE=$DEPLOY_DIR/releases/$(date +%s)

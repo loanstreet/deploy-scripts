@@ -12,6 +12,10 @@ fi
 . $SCRIPT_PATH/util.sh
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+	DEPLOYMENT_DIR='$HOME/sites'
+fi
+
 if [ "$1" = "" ]; then
 	error "No environment set"
 else

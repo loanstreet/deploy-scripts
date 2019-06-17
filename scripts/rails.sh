@@ -15,6 +15,10 @@ fi
 . $PROJECT_DEPLOY_DIR/app-config.sh
 . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR='$HOME/sites'
+fi
+
 mkdir -p $PROJECT_DEPLOY_DIR/work/deploy-repo
 cd $PROJECT_DEPLOY_DIR/work/repo
 git --work-tree=../deploy-repo --git-dir=.git checkout -f 2>&1 | indent
@@ -24,9 +28,9 @@ cd deploy/
 PID_PATH='$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/pids/$SERVICE_NAME.pid'
 SOCKET_PATH='unix://$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/sockets/$SERVICE_NAME.sock'
 if [ "$SERVICE_PORT" = "" ]; then
-	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --environment=$PROJECT_ENVIRONMENT --bind=$SOCKET_PATH --pidfile=$PID_PATH --daemon && sleep 3'
+	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C $DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/config/puma.rb --environment=$PROJECT_ENVIRONMENT --bind=$SOCKET_PATH --pidfile=$PID_PATH --daemon && sleep 3'
 else
-	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb --environment=$PROJECT_ENVIRONMENT -p $SERVICE_PORT --pidfile=$PID_PATH --daemon && sleep 3'
+	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C $DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/config/puma.rb --environment=$PROJECT_ENVIRONMENT -p $SERVICE_PORT --pidfile=$PID_PATH --daemon && sleep 3'
 fi
 cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh > config.sh
 echo "PID_PATH=\"$PID_PATH\"" >> config.sh
