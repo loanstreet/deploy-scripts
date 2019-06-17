@@ -5,13 +5,13 @@ stages:
 test-rails:
   stage: test-rails
   only:
-    - spring_boot_test
+    - homedir_install
   script:
     - sh ./tests/rails.sh
 
 test-java-mvnw:
   stage: test-java-mvnw
   only:
-    - spring_boot_test
+    - homedir_install
   script:
     - sh ./tests/java-mvnw.sh
