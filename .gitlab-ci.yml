@@ -1,0 +1,9 @@
+stages:
+  - test
+
+test:
+  stage: test
+  only:
+    - homedir_install
+  script:
+    - sh ./tests/rails.sh

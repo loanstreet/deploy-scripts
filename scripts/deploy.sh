@@ -12,6 +12,10 @@ fi
 . $SCRIPT_PATH/util.sh
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+	DEPLOYMENT_DIR='$HOME/sites'
+fi
+
 if [ "$1" = "" ]; then
 	error "No environment set"
 else
@@ -78,7 +82,7 @@ cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
 
 title 'deploy - push'
-REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/home/$DEPLOYMENT_SSH_USER/repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
 cd $DEPLOY_REPO

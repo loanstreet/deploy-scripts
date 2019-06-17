@@ -14,14 +14,18 @@ fi
 . $PROJECT_DEPLOY_DIR/app-config.sh
 . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR='$HOME/sites'
+fi
+
 cd $PROJECT_DEPLOY_DIR/work/repo
 ./mvnw package -Dmaven.test.skip=true 2>&1 | indent
 title 'build - java - prepare-deployment'
 cd target/
 WARFILE=$(ls *SNAPSHOT.war | head -n1)
 echo "WARFILE=$WARFILE" > deploy-config.sh
-PATH_TO_JAR='$HOME/sites'
-LOG_DIR='$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
+PATH_TO_JAR=$DEPLOYMENT_DIR
+LOG_DIR='$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
 PATH_TO_JAR=$PATH_TO_JAR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE
 
 echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh

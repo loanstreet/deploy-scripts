@@ -13,6 +13,10 @@ fi
 . $PROJECT_DEPLOY_DIR/app-config.sh
 . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR='$HOME/sites'
+fi
+
 title 'build - reactjs - prepare deployment'
 mkdir -p $PROJECT_DEPLOY_DIR/work/deploy-repo
 cd $PROJECT_DEPLOY_DIR/work/repo

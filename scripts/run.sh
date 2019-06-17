@@ -9,13 +9,17 @@ fi
 
 . $SCRIPT_PATH/config.sh
 
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+        DEPLOYMENT_DIR=$HOME/sites
+fi
+
 if [ "$START_COMMAND" = "" ]; then
 	echo "Please supply a START_COMMAND in config.sh"
 	exit
 fi
 
 if [ "$PID_PATH" = "" ]; then
-	PID_PATH=$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT/$SERVICE_NAME.pid
+	PID_PATH=$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/$SERVICE_NAME.pid
 
 	PID_COMMAND='echo $!'
 	PID_COMMAND="$PID_COMMAND > $PID_PATH"
