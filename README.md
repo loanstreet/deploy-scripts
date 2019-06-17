@@ -35,4 +35,12 @@ To run the test for a ruby on rails deployment, please run
 sh tests/rails.sh
 ```
 
+- Java Maven Wrapper
+
+To run the test for a java webapp that uses Maven wrapper (mvnw), please run
+
+```
+sh tests/java-mvnw.sh
+```
+
 in the root of deploy-scripts
