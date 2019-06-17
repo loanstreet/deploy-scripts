@@ -28,8 +28,11 @@ The project now contains automated testing to verify that deployments don't brea
 Currently, the following project-types are tested for deployment on every merge into homedir_install branch
 
 - Ruby on Rails
+
 To run the test for a ruby on rails deployment, please run
+
 ```
 sh tests/rails.sh
 ```
+
 in the root of deploy-scripts
