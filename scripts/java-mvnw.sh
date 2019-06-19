@@ -24,11 +24,10 @@ title 'build - java - prepare-deployment'
 cd target/
 WARFILE=$(ls *SNAPSHOT.war | head -n1)
 echo "WARFILE=$WARFILE" > deploy-config.sh
-PATH_TO_JAR=$DEPLOYMENT_DIR
-LOG_DIR=$DEPLOYMENT_DIR
-LOG_DIR='$LOG_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
-PATH_TO_JAR='$PATH_TO_JAR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE'
+LOG_DIR='$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
+PATH_TO_JAR='$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE'
 
+echo 'eval DEPLOYMENT_DIR=$DEPLOYMENT_DIR' >> deploy-config.sh
 echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
 echo "LOG_DIR=\"$LOG_DIR\"" >> deploy-config.sh
 COMMAND='nohup java -Dspring.profiles.active=$PROJECT_ENVIRONMENT -jar $PATH_TO_JAR --server.port=$SERVICE_PORT /tmp 2>> $LOG_DIR/stderr.log >> $LOG_DIR/stdout.log'

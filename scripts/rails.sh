@@ -33,6 +33,7 @@ else
 	COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C $DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/config/puma.rb --environment=$PROJECT_ENVIRONMENT -p $SERVICE_PORT --pidfile=$PID_PATH --daemon && sleep 3'
 fi
 cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh > config.sh
+echo 'eval DEPLOYMENT_DIR=$DEPLOYMENT_DIR' >> config.sh
 echo "PID_PATH=\"$PID_PATH\"" >> config.sh
 echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> config.sh
 echo "START_COMMAND=\"$COMMAND\"" >> config.sh
