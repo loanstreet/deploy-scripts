@@ -6,6 +6,8 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 if [ "$DEPLOYMENT_DIR" = "" ]; then
         DEPLOYMENT_DIR=$HOME/sites
+else
+	DEPLOYMENT_DIR=$(eval $DEPLOYMENT_DIR)
 fi
 
 GIT_BARE_REPO=$HOME/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
