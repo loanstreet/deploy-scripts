@@ -11,7 +11,7 @@ if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
 	git clone --single-branch --depth=1 --branch homedir_install $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
 else
 	. $DEPLOY_SCRIPTS_HOME/scripts/util.sh
-	title "deploy-scripts - update"
+	title "deploy-scripts $(cat $DEPLOY_SCRIPTS_HOME/.VERSION) - update"
 	cd $DEPLOY_SCRIPTS_HOME
 	git pull origin homedir_install | indent
 fi
