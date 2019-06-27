@@ -27,11 +27,11 @@ mkdir -p deploy
 cd deploy/
 PID_PATH=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/pids/$SERVICE_NAME.pid'
 SOCKET_PATH=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/sockets/$PROJECT_ENVIRONMENT.sock'
-COMMAND='cd $DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current && /bin/bash -c \x27source venv/bin/activate && uwsgi --ini deploy/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH &\x27 && sleep 5'
+COMMAND='cd $DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current'
 cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh > config.sh
 echo "PID_PATH=\"$PID_PATH\"" >> config.sh
 echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> config.sh
-echo "START_COMMAND=\"$COMMAND\"" >> config.sh
+echo "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH &' && sleep 5\"" >> config.sh
 cp $SCRIPT_PATH/run.sh ./
 
 title 'build - python - prepare-deployment'
