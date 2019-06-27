@@ -10,14 +10,14 @@ deploy
 source $HOME/.bashrc
 source /etc/profile
 
-if [ ! -d $DEPLOY_DIR/shared/venv ]; then
+if [ ! -d $DEPLOY_DIR/shared/venv ] || [ "$(ls "$DEPLOY_DIR/shared/venv" | wc -l)" = "0" ]; then
 	title 'deploy - initialize virtual env'
 	cd $DEPLOY_DIR/shared
 	python3 -m venv venv
 fi
 
 title 'deploy - activate virtual env'
-cd $DEPLOY/current
+cd $DEPLOY_DIR/current
 source venv/bin/activate
 pip3 install -r requirements.txt 2>&1 | indent
 
