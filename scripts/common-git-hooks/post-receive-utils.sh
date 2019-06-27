@@ -23,7 +23,7 @@ create_symlinks() {
 	if [ "$LINKED_DIRS" != "" ]; then
         	LINK_DIRS=$(echo "$LINKED_DIRS" | cut -d";" -f1)
 	        for i in $LINK_DIRS; do
-			BASEDIR=$(basename $i)
+			BASEDIR=$(dirname $i)
 			mkdir -p $DEPLOY_DIR/current/$BASEDIR
         	        mkdir -p $DEPLOY_DIR/shared/$i
 			printf "Creating symlink $i -> $DEPLOY_DIR/shared/$i ... "
