@@ -45,7 +45,6 @@ fi
 if [ ! -d "$DEPLOY_DIR/default" ]; then
 	cp -r "$SCRIPT_PATH/../default-$1" $DEPLOY_DIR/default
 	rm $DEPLOY_DIR/default/app-config.sh
-	rm $DEPLOY_DIR/default/uwsgi.ini $DEPLOY_DIR/default/requirements.txt
 fi
 if [ "$1" = "python-uwsgi-flask" ]; then
 	if [ ! 	-f "$DEPLOY_DIR/uwsgi.ini" ]; then
@@ -54,6 +53,7 @@ if [ "$1" = "python-uwsgi-flask" ]; then
 	if [ !  -f "$DEPLOY_DIR/requirements.txt" ]; then
                 cp "$SCRIPT_PATH/../default-$1/requirements.txt" $DEPLOY_DIR/
         fi
+	rm $DEPLOY_DIR/default/uwsgi.ini $DEPLOY_DIR/default/requirements.txt
 fi
 success "done"
 
