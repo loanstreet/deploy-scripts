@@ -45,6 +45,15 @@ fi
 if [ ! -d "$DEPLOY_DIR/default" ]; then
 	cp -r "$SCRIPT_PATH/../default-$1" $DEPLOY_DIR/default
 	rm $DEPLOY_DIR/default/app-config.sh
+	rm $DEPLOY_DIR/default/uwsgi.ini $DEPLOY_DIR/default/requirements.txt
+fi
+if [ "$1" = "python-uwsgi-flask" ]; then
+	if [ ! 	-f "$DEPLOY_DIR/uwsgi.ini" ]; then
+		cp "$SCRIPT_PATH/../default-$1/uwsgi.ini" $DEPLOY_DIR/
+	fi
+	if [ !  -f "$DEPLOY_DIR/requirements.txt" ]; then
+                cp "$SCRIPT_PATH/../default-$1/requirements.txt" $DEPLOY_DIR/
+        fi
 fi
 success "done"
 
@@ -56,4 +65,10 @@ info "within the folder according to your deployment settings\n"
 info "Once you have made the edits, you can deploy by executing the 'deploy.sh' script"
 info "from your project directory. For example:\n"
 info "\tsh $RELATIVE_DEPLOY/deploy.sh staging"
+
+if [ -f "$SCRIPT_PATH/../default-$1/post_install.sh" ]; then
+	echo "\n"
+	sh "$SCRIPT_PATH/../default-$1/post_install.sh"
+fi
+
 line

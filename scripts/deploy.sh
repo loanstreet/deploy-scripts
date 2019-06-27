@@ -46,7 +46,7 @@ clean_dirs
 BUILD_REPO=$PROJECT_DEPLOY_DIR/work/repo/
 info "Creating repo to build program at $BUILD_REPO"
 mkdir -p $WORK_DIR
-git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO 2>&1 | indent
+git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO #2>&1 | indent
 cd $BUILD_REPO
 info "Checked out $GIT_BRANCH from $GIT_REPO"
 
