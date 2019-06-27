@@ -23,6 +23,8 @@ create_symlinks() {
 	if [ "$LINKED_DIRS" != "" ]; then
         	LINK_DIRS=$(echo "$LINKED_DIRS" | cut -d";" -f1)
 	        for i in $LINK_DIRS; do
+			BASEDIR=$(basename $i)
+			mkdir -p $DEPLOY_DIR/current/$BASEDIR
         	        mkdir -p $DEPLOY_DIR/shared/$i
 			printf "Creating symlink $i -> $DEPLOY_DIR/shared/$i ... "
                 	ln -sf $DEPLOY_DIR/shared/$i $i
@@ -65,7 +67,7 @@ deploy() {
 		rm $DEPLOY_DIR/current
 	fi
 	cd $DEPLOY_DIR && ln -sf $WORK_TREE current
-	mkdir -p $DEPLOY_DIR/current/logs
+	# mkdir -p $DEPLOY_DIR/current/logs
 
 	# create shared resources links
 	create_symlinks
