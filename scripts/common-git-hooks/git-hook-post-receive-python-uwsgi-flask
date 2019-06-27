@@ -5,6 +5,10 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/post-receive-utils.sh
 
+if [ -d "$DEPLOY_DIR/current/tmp" ]; then
+	mkdir -p "$DEPLOY_DIR/current/tmp"
+fi
+
 deploy
 
 source $HOME/.bashrc
