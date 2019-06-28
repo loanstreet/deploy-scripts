@@ -44,6 +44,7 @@ case $1 in
             PID=$(cat $PID_PATH);
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopping ..."
             kill $PID;
+	    sleep 5 # wait to stop completely
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopped ..."
 	    if [ -f $PID_PATH ]; then
                 rm $PID_PATH 2>&1 >> /dev/null
@@ -57,6 +58,7 @@ case $1 in
             PID=$(cat $PID_PATH);
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopping ...";
             kill $PID;
+	    sleep 5 # wait to stop completely
             echo "$SERVICE_NAME ($PROJECT_ENVIRONMENT) PID: $PID stopped ...";
 	    if [ -f $PID_PATH ]; then
                 rm $PID_PATH 2>&1 >> /dev/null
