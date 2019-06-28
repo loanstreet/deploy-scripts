@@ -35,7 +35,6 @@ echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> config.sh
 echo "UWSGI_LOG_PATH=\"$UWSGI_LOG_PATH\""
 echo "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/$PROJECT_ENVIRONMENT/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"" >> config.sh
 cp $SCRIPT_PATH/run.sh ./
-echo "env = IMAGE_API_CONFIG=\"$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/config/environments/$PROJECT_ENVIRONMENT.cfg\"" >> "$PROJECT_ENVIRONMENT/uwsgi.ini"
 
 title 'build - python - prepare-deployment'
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo
