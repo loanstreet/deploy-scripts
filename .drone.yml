@@ -1,0 +1,57 @@
+---
+kind: pipeline
+name: test-java-mvnw
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test-java-mvnw
+  image: loanstreet-ubuntu-19.04/java:8
+  volumes:
+  - name: ssh
+    path: /root/.ssh
+  - name: maven
+    path: /root/.m2
+  commands:
+  - service ssh start
+  - sh ./tests/java-mvnw.sh
+
+volumes:
+- name: ssh
+  host:
+    path: /root/.ssh
+- name: maven
+  host:
+    path: /dronetmp/m2
+
+---
+kind: pipeline
+name: test-rails
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test-rails
+  image: loanstreet-ubuntu-19.04/ruby:2.5
+  volumes:
+  - name: ssh
+    path: /root/.ssh
+  - name: bundler
+    path: /drone/bundler
+  commands:
+  - service ssh start
+  - sh ./tests/rails.sh
+
+
+volumes:
+- name: ssh
+  host:
+    path: /root/.ssh
+- name: bundler
+  host:
+    path: /dronetmp/ruby-2.5.3/bundle
+...
