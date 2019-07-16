@@ -5,6 +5,9 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/../scripts/util.sh
 
+if [ "$USER" = "" ]; then
+	export USER="root"
+fi
 
 cd $SCRIPT_PATH/../
 COPY_PROJECT_DIR="/tmp/deploy-scripts/projects"
