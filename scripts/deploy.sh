@@ -30,6 +30,7 @@ fi
 
 WORK_DIR=$PROJECT_DEPLOY_DIR/work
 BUILD_REPO=$WORK_DIR/repo/
+DEPS_DIR=$WORK_DIR/deps
 DEPLOY_REPO=$WORK_DIR/deploy-repo
 
 clean_dirs() {
@@ -42,10 +43,24 @@ clean_dirs() {
 title 'build - prepare'
 
 clean_dirs
-
-BUILD_REPO=$PROJECT_DEPLOY_DIR/work/repo/
-info "Creating repo to build program at $BUILD_REPO"
 mkdir -p $WORK_DIR
+
+if [ "$DEPENDENCIES" != "" ]; then
+	info "Building dependent projects"
+	mkdir -p $DEPS_DIR && cd $DEPS_DIR
+	DEP_LABELS=$(echo "$DEPENDENCIES" | cut -d";" -f1)
+	for i in $DEP_LABELS; do
+		if [ "$i_GIT_REPO" != "" ] && [ "$i_GIT_BRANCH" != "" ] && [ "$i_BUILD_COMMAND" != "" ]; then
+			info "Building git-hosted $i"
+			mkdir $i
+			git clone --single-branch --depth=1 --branch $i_GIT_BRANCH $i_GIT_REPO $i
+			cd $i
+			sh -c "$i_BUILD_COMMAND"
+		fi
+	done
+fi
+
+info "Creating repo to build program at $BUILD_REPO"
 git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO #2>&1 | indent
 cd $BUILD_REPO
 info "Checked out $GIT_BRANCH from $GIT_REPO"
