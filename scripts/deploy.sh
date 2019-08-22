@@ -50,12 +50,15 @@ if [ "$DEPENDENCIES" != "" ]; then
 	mkdir -p $DEPS_DIR && cd $DEPS_DIR
 	DEP_LABELS=$(echo "$DEPENDENCIES" | cut -d";" -f1)
 	for i in $DEP_LABELS; do
-		if [ "$i_GIT_REPO" != "" ] && [ "$i_GIT_BRANCH" != "" ] && [ "$i_BUILD_COMMAND" != "" ]; then
+		DEP_REPO=$(eval "echo \${${i}_GIT_REPO}")
+		DEP_BRANCH=$(eval "echo \${${i}_GIT_BRANCH}")
+		DEP_COMMAND=$(eval "echo \${${i}_BUILD_COMMAND}")
+		if [ "$DEP_REPO" != "" ] && [ "$DEP_BRANCH" != "" ] && [ "$DEP_COMMAND" != "" ]; then
 			info "Building git-hosted $i"
 			mkdir $i
-			git clone --single-branch --depth=1 --branch $i_GIT_BRANCH $i_GIT_REPO $i
+			git clone --single-branch --depth=1 --branch $DEP_BRANCH $DEP_REPO $i
 			cd $i
-			sh -c "$i_BUILD_COMMAND"
+			sh -c "$DEP_COMMAND"
 		fi
 	done
 fi
