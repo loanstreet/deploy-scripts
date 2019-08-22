@@ -49,7 +49,7 @@ if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
 	echo "Downloading deploy-scripts"
 	git clone --single-branch --depth=1 --branch $DEPLOY_SCRIPTS_GIT_BRANCH $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
 fi
-cd $DEPLOY_SCRIPTS_HOME && PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh deploy.sh $1
+PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/deploy.sh $1
 EOF
 
 cp -r -n $SCRIPT_PATH/../default-$1/* $DEPLOY_DIR/
