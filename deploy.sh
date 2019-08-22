@@ -3,6 +3,9 @@
 set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
+
+cd $SCRIPT_PATH
+
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 . $SCRIPT_PATH/scripts/util.sh
@@ -16,4 +19,5 @@ if [ "$1" = "" ]; then
 	error "No deployment enviroment supplied"
 fi
 
+cd $PROJECT_DEPLOY_DIR
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/scripts/deploy.sh $1
