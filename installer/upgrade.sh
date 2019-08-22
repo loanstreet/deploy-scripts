@@ -30,15 +30,19 @@ fi
 info "Updating environments"
 
 cd "$1"
-ENVIRONMENTS=$(ls -d)
+ENVIRONMENTS=$(ls -d */)
 
 for i in $ENVIRONMENTS; do
 	info "Copying $i"
-	cp -r "$i" $TMP_DEPLOY/environments/
-	cd "$TMP_DEPLOY/environments/$i"
+	cp -r "$i" $TMP_DEPLOY/deploy/environments/
+	cd "$TMP_DEPLOY/deploy/environments/$i"
 	mkdir assets
-	mv nginx.conf assets/
-	mv uwsgi.ini assets/
+	if [ -f "nginx.conf" ]; then
+		mv nginx.conf assets/
+	fi
+	if [ -f "uwsgi.ini" ]; then
+		mv uwsgi.ini assets/
+	fi
 	cd "$1"
 	success "done"
 done
