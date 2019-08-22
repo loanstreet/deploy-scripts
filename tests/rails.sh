@@ -12,15 +12,15 @@ if [ "$PUMA_PID" != "" ]; then
 	kill -9 $PUMA_PID
 	success 'done'
 fi
-copy_deployment_files 'rails' $SCRIPT_PATH/resources/rails-project 
+copy_deployment_files 'rails' $SCRIPT_PATH/resources/rails-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/rails-project
-mv config/deploy/default config/deploy/development
+mv config/deploy/environments/default config/deploy/environments/development
 echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SSH_USER=$USER\nGIT_REPO=file://$COPY_PROJECT_DIR/rails-project\nSERVICE_NAME=rails-deploy-test\nLINKED_FILES=\n" >> config/deploy/app-config.sh
-echo "PROJECT_ENVIRONMENT=development\nGIT_BRANCH=master\nSERVICE_PORT=37566" >> config/deploy/development/config.sh
+echo "PROJECT_ENVIRONMENT=development\nGIT_BRANCH=master\nSERVICE_PORT=37566" >> config/deploy/environments/development/config.sh
 cat config/deploy/app-config.sh
-cat config/deploy/development/config.sh
+cat config/deploy/environments/development/config.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
 sh config/deploy/deploy.sh development

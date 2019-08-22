@@ -12,15 +12,15 @@ if [ "$JAVA_PID" != "" ]; then
 	kill -9 $JAVA_PID
 	success 'done'
 fi
-copy_deployment_files 'java-mvnw' $SCRIPT_PATH/resources/java-mvnw-project 
+copy_deployment_files 'java-mvnw' $SCRIPT_PATH/resources/java-mvnw-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/java-mvnw-project
 echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SSH_USER=$USER\nGIT_REPO=file://$COPY_PROJECT_DIR/java-mvnw-project\nSERVICE_NAME=java-mvnw-deploy-test\nLINKED_FILES=\n" >> deploy/app-config.sh
-echo "GIT_BRANCH=master\nSERVICE_PORT=37567" >> deploy/default/config.sh
-cat deploy/app-config.sh deploy/default/config.sh
+echo "GIT_BRANCH=master\nSERVICE_PORT=37567" >> deploy/environments/default/config.sh
+cat deploy/app-config.sh deploy/environments/default/config.sh
 # hack for hardcoded nginx conf copying. to be made configurable later.
-touch deploy/default/nginx.conf
+touch deploy/environments/default/assets/nginx.conf
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
 sh deploy/deploy.sh default

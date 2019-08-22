@@ -11,7 +11,7 @@ if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ "$PROJECT_ENVIRONMENT" = "" ]; then
 fi
 
 . $PROJECT_DEPLOY_DIR/app-config.sh
-. $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
+. $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh
 
 if [ "$DEPLOYMENT_DIR" = "" ]; then
         DEPLOYMENT_DIR='$HOME/sites'
@@ -24,7 +24,8 @@ git --work-tree=../deploy-repo --git-dir=.git checkout -f 2>&1 | indent
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo/
 mkdir -p deploy
 cd deploy/
-cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh > config.sh
+cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh > config.sh
+cp -r $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/* ./
 
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo
 git init 2>&1 | indent

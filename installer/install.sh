@@ -13,11 +13,10 @@ if [ ! -d "$2" ]; then
 fi
 
 DEPLOY_DIR=""
-RELATIVE_DEPLOY=""
 
 UNSUPPORTED=1
 for i in $PROJECT_TYPES; do
-        if [ "$1" = "$i" ]; then
+	if [ "$1" = "$i" ]; then
 		UNSUPPORTED=0
 		break
 	fi
@@ -27,35 +26,41 @@ if [ $UNSUPPORTED -eq 1 ]; then
 	error "Project type $1 is unsupported"
 fi
 
-if [ "$1" = "rails" ]; then
-	RELATIVE_DEPLOY="config/deploy"
-else
-	RELATIVE_DEPLOY="deploy"
+DEPLOY_DIR="$2/deploy"
+
+if [ -f "$SCRIPT_PATH/../default-$1/installer/config.sh" ]; then
+	. $SCRIPT_PATH/../default-$1/installer/config.sh
+	if [ "$INSTALL_DIR" != "" ]; then
+		DEPLOY_DIR="$2/$INSTALL_DIR"
+	fi
 fi
 
-DEPLOY_DIR="$2/$RELATIVE_DEPLOY"
 printf "\nCopying deployment files to $DEPLOY_DIR ... "
 mkdir -p $DEPLOY_DIR
-if [ ! -f "$DEPLOY_DIR/deploy.sh" ]; then
-	cp $SCRIPT_PATH/../deploy.sh $DEPLOY_DIR
+cat << 'EOF' > $DEPLOY_DIR/deploy.sh
+#!/bin/sh
+
+DEPLOY_SCRIPTS_GIT_REPO=git@git.loanstreet.com.my:loanstreet/deploy-scripts.git
+DEPLOY_SCRIPTS_GIT_BRANCH=ver_0.3
+DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+
+if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
+	echo "Downloading deploy-scripts"
+	git clone --single-branch --depth=1 --branch $DEPLOY_SCRIPTS_GIT_BRANCH $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
+else
+	cd $DEPLOY_SCRIPTS_HOME && PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh deploy.sh $1
 fi
-if [ ! -f "$DEPLOY_DIR/app-config.sh" ]; then
-	cp "$SCRIPT_PATH/../default-$1/app-config.sh" $DEPLOY_DIR
-fi
-if [ ! -d "$DEPLOY_DIR/default" ]; then
-	cp -r "$SCRIPT_PATH/../default-$1" $DEPLOY_DIR/default
-	rm $DEPLOY_DIR/default/app-config.sh
-fi
-if [ "$1" = "python-uwsgi-flask" ]; then
-	if [ ! 	-f "$DEPLOY_DIR/uwsgi.ini" ]; then
-		cp "$SCRIPT_PATH/../default-$1/uwsgi.ini" $DEPLOY_DIR/
-	fi
-	if [ !  -f "$DEPLOY_DIR/requirements.txt" ]; then
-                cp "$SCRIPT_PATH/../default-$1/requirements.txt" $DEPLOY_DIR/
-        fi
-	rm $DEPLOY_DIR/default/uwsgi.ini $DEPLOY_DIR/default/requirements.txt
-fi
+EOF
+
+cp -r -n $SCRIPT_PATH/../default-$1/* $DEPLOY_DIR/
+rm -rf $DEPLOY_DIR/installer
+
 success "done"
+
+if [ "$3" = "--no-post-install" ]; then
+	exit
+fi
 
 line
 info "Please edit the variables in app-config.sh to suit your deployment\n"
@@ -64,11 +69,11 @@ info "Please rename it to your desired environment (eg. staging) name and edit t
 info "within the folder according to your deployment settings\n"
 info "Once you have made the edits, you can deploy by executing the 'deploy.sh' script"
 info "from your project directory. For example:\n"
-info "\tsh $RELATIVE_DEPLOY/deploy.sh staging"
+info "\tsh $DEPLOY_DIR/deploy.sh staging"
 
-if [ -f "$SCRIPT_PATH/../default-$1/post_install.sh" ]; then
+if [ -f "$SCRIPT_PATH/../default-$1/installer/post_install.sh" ]; then
 	echo "\n"
-	sh "$SCRIPT_PATH/../default-$1/post_install.sh"
+	sh "$SCRIPT_PATH/../default-$1/installer/post_install.sh"
 fi
 
 line

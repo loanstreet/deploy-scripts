@@ -12,7 +12,7 @@ if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ "$PROJECT_ENVIRONMENT" = "" ]; then
 fi
 
 . $PROJECT_DEPLOY_DIR/app-config.sh
-. $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
+. $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh
 
 if [ "$DEPLOYMENT_DIR" = "" ]; then
         DEPLOYMENT_DIR='$HOME/sites'
@@ -34,9 +34,9 @@ COMMAND='nohup java -Dspring.profiles.active=$PROJECT_ENVIRONMENT -jar $PATH_TO_
 echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
 mkdir -p $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
 cp *.war $PROJECT_DEPLOY_DIR/work/deploy-repo
-cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy/config.sh
+cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy/config.sh
 cp $SCRIPT_PATH/run.sh $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
-cp $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/nginx.conf $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
+cp -r $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/* $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy/
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo
 git init 2>&1 | indent
 git config user.name "deployer"

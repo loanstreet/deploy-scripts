@@ -2,20 +2,18 @@
 
 set -e
 
-DEPLOY_SCRIPTS_GIT_REPO=git@git.loanstreet.com.my:loanstreet/deploy-scripts.git
-DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
 SCRIPT_PATH=$(dirname $(readlink -f $0))
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
-	echo "Downloading deploy-scripts"
-	git clone --single-branch --depth=1 --branch homedir_install $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
-else
-	. $DEPLOY_SCRIPTS_HOME/scripts/util.sh
-	title "deploy-scripts $(cat $DEPLOY_SCRIPTS_HOME/.VERSION) - update"
-	cd $DEPLOY_SCRIPTS_HOME
-	git pull origin homedir_install | indent
+. $SCRIPT_PATH/scripts/util.sh
+title "deploy-scripts $(cat $SCRIPT_PATH/.VERSION) - update"
+#git pull origin $CURRENT_BRANCH | indent
+
+if [ "$PROJECT_DEPLOY_DIR" = "" ]; then
+	error "No project directory specified through PROJECT_DEPLOY_DIR variable"
+fi
+if [ "$1" = "" ]; then
+	error "No deployment enviroment supplied"
 fi
 
-cd $SCRIPT_PATH
-
-PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/scripts/deploy.sh $1
+PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/scripts/deploy.sh $1
