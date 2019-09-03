@@ -75,7 +75,6 @@ if [ ! -d $DEPLOY_REPO ]; then
 fi
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
-	info "No deployment server specified to push to. Exiting"
 	exit
 fi
 
