@@ -30,7 +30,7 @@ fi
 
 WORK_DIR=$PROJECT_DEPLOY_DIR/work
 BUILD_REPO=$WORK_DIR/repo/
-DEPS_DIR=$WORK_DIR/deps
+# DEPS_DIR=$WORK_DIR/deps
 DEPLOY_REPO=$WORK_DIR/deploy-repo
 
 clean_dirs() {
@@ -45,23 +45,23 @@ title 'build - prepare'
 clean_dirs
 mkdir -p $WORK_DIR
 
-if [ "$DEPENDENCIES" != "" ]; then
-	info "Building dependent projects"
-	mkdir -p $DEPS_DIR && cd $DEPS_DIR
-	DEP_LABELS=$(echo "$DEPENDENCIES" | cut -d";" -f1)
-	for i in $DEP_LABELS; do
-		DEP_REPO=$(eval "echo \${${i}_GIT_REPO}")
-		DEP_BRANCH=$(eval "echo \${${i}_GIT_BRANCH}")
-		DEP_COMMAND=$(eval "echo \${${i}_BUILD_COMMAND}")
-		if [ "$DEP_REPO" != "" ] && [ "$DEP_BRANCH" != "" ] && [ "$DEP_COMMAND" != "" ]; then
-			info "Building git-hosted $i"
-			mkdir $i
-			git clone --single-branch --depth=1 --branch $DEP_BRANCH $DEP_REPO $i
-			cd $i
-			sh -c "$DEP_COMMAND"
-		fi
-	done
-fi
+# if [ "$DEPENDENCIES" != "" ]; then
+# 	info "Building dependent projects"
+# 	mkdir -p $DEPS_DIR && cd $DEPS_DIR
+# 	DEP_LABELS=$(echo "$DEPENDENCIES" | cut -d";" -f1)
+# 	for i in $DEP_LABELS; do
+# 		DEP_REPO=$(eval "echo \${${i}_GIT_REPO}")
+# 		DEP_BRANCH=$(eval "echo \${${i}_GIT_BRANCH}")
+# 		DEP_COMMAND=$(eval "echo \${${i}_BUILD_COMMAND}")
+# 		if [ "$DEP_REPO" != "" ] && [ "$DEP_BRANCH" != "" ] && [ "$DEP_COMMAND" != "" ]; then
+# 			info "Building git-hosted $i"
+# 			mkdir $i
+# 			git clone --single-branch --depth=1 --branch $DEP_BRANCH $DEP_REPO $i
+# 			cd $i
+# 			sh -c "$DEP_COMMAND"
+# 		fi
+# 	done
+# fi
 
 info "Creating repo to build program at $BUILD_REPO"
 git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO #2>&1 | indent
@@ -104,11 +104,13 @@ ssh -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
 cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
 
-title 'deploy - push'
-REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
-info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
+if [ "$DEPLOYMENT_TYPE" = "" ]; then
+	title 'deploy - push'
+	REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+	info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
-cd $DEPLOY_REPO
-git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
-git push deploy master -f
+	cd $DEPLOY_REPO
+	git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
+	git push deploy master -f
+fi
 clean_dirs
