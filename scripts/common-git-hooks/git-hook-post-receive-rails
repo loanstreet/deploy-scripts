@@ -12,7 +12,7 @@ source /etc/profile
 cd $DEPLOY_DIR/current
 
 title 'deploy - bundle install'
-$HOME/.rbenv/bin/rbenv exec bundle check || $HOME/.rbenv/bin/rbenv exec bundle install --path vendor/bundle --jobs 4 --without development test --deployment --quiet 2>&1 | indent
+$HOME/.rbenv/bin/rbenv exec bundle check --path vendor/bundle || $HOME/.rbenv/bin/rbenv exec bundle install --path vendor/bundle --jobs 4 --without development test --deployment --quiet 2>&1 | indent
 if [ "$PRECOMPILE_ASSETS" != "false" ]; then
 	title 'deploy - precompile assets'
 	$HOME/.rbenv/bin/rbenv exec bundle exec rake assets:precompile 2>&1 | indent
