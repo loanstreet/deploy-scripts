@@ -47,6 +47,8 @@ steps:
   - ln -sf /drone/bundler vendor/bundle
   - pwd
   - ls -al vendor/
+  - ls -al vendor/bundle
+  - ls -al /drone/bundler
   - service ssh start
   - sh ./tests/rails.sh
 
