@@ -10,3 +10,4 @@ LINKED_DIRS="log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system"
 # rails specific
 # ACTIVE_RECORD=false
 # PRECOMPILE_ASSETS=false
+# BUNDLE_PATH=vendor/bundle
