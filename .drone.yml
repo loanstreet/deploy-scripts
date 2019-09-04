@@ -44,7 +44,6 @@ steps:
     path: /drone/bundler
   commands:
   - ln -sf /drone/bundler /tmp/bundle
-  - ls -al /tmp/bundle/
   - service ssh start
   - sh ./tests/rails.sh
 
