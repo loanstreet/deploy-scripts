@@ -43,6 +43,7 @@ steps:
   - name: bundler
     path: /drone/bundler
   commands:
+  - mkdir vendor
   - ln -sf /drone/bundler vendor/bundle
   - service ssh start
   - sh ./tests/rails.sh
