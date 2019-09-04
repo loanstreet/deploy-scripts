@@ -45,6 +45,8 @@ steps:
   commands:
   - mkdir vendor
   - ln -sf /drone/bundler vendor/bundle
+  - pwd
+  - ls -al vendor/
   - service ssh start
   - sh ./tests/rails.sh
 
