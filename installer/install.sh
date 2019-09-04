@@ -42,15 +42,14 @@ cat << 'EOF' > $DEPLOY_DIR/deploy.sh
 
 DEPLOY_SCRIPTS_GIT_REPO=git@git.loanstreet.com.my:loanstreet/deploy-scripts.git
 DEPLOY_SCRIPTS_GIT_BRANCH="ver_0.3"
-DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
+DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts-0.3"
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
 	echo "Downloading deploy-scripts"
-	git clone --single-branch --depth=1 --branch $DEPLOY_SCRIPTS_GIT_BRANCH $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
-else
-	cd $DEPLOY_SCRIPTS_HOME && git fetch origin +refs/heads/$DEPLOY_SCRIPTS_GIT_BRANCH && cd $SCRIPT_PATH
+	git clone $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
 fi
+cd $DEPLOY_SCRIPTS_HOME && git fetch origin +refs/heads/$DEPLOY_SCRIPTS_GIT_BRANCH && git checkout $DEPLOY_SCRIPTS_GIT_BRANCH && cd $SCRIPT_PATH
 PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/deploy.sh $1
 EOF
 
