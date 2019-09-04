@@ -75,6 +75,7 @@ if [ ! -d $DEPLOY_REPO ]; then
 fi
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
+	clean_dirs
 	exit
 fi
 
