@@ -5,6 +5,9 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 DEPLOY_SCRIPTS_DIR="$SCRIPT_PATH/../"
 
+# default SSH port
+DEPLOYMENT_SSH_PORT=22
+
 if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ ! -d "$PROJECT_DEPLOY_DIR" ]; then
 	error "No project deploy directory specified"
 fi
@@ -15,6 +18,8 @@ fi
 if [ "$DEPLOYMENT_DIR" = "" ]; then
 	DEPLOYMENT_DIR='$HOME/sites'
 fi
+
+
 
 if [ "$1" = "" ]; then
 	error "No environment set"
@@ -99,15 +104,14 @@ else
 fi
 
 info "Copying scripts to create bare git repo"
-scp -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
-ssh -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
+scp -P$DEPLOYMENT_SSH_PORT -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
+ssh -p $DEPLOYMENT_SSH_PORT -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
 cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
 
-if [ "$DEPLOYMENT_TYPE" = "" ]; then
-	title 'deploy - push'
-	REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
-	info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
+title 'deploy - push'
+REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:$DEPLOYMENT_SSH_PORT/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
 	cd $DEPLOY_REPO
 	git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
