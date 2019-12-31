@@ -42,7 +42,7 @@ cat << 'EOF' > $DEPLOY_DIR/deploy.sh
 
 DEPLOY_SCRIPTS_GIT_REPO=git@git.loanstreet.com.my:loanstreet/deploy-scripts.git
 DEPLOY_SCRIPTS_GIT_BRANCH="ver_0.3"
-DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts-0.3"
+DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts-$DEPLOY_SCRIPTS_GIT_BRANCH"
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then

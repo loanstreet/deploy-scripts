@@ -16,7 +16,7 @@ fi
 . $PROJECT_DEPLOY_DIR/$PROJECT_ENVIRONMENT/config.sh
 
 if [ "$DEPLOYMENT_DIR" = "" ]; then
-        DEPLOYMENT_DIR='$HOME/sites'
+	DEPLOYMENT_DIR='$HOME/sites'
 fi
 
 mkdir -p $PROJECT_DEPLOY_DIR/work/deploy-repo
