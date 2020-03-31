@@ -1,0 +1,29 @@
+#!/bin/bash -l
+
+set -e
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/post-receive-utils.sh
+
+deploy
+
+source $HOME/.bashrc
+source /etc/profile
+
+if [ ! -d $DEPLOY_DIR/shared/venv ] || [ "$(ls "$DEPLOY_DIR/shared/venv" | wc -l)" = "0" ]; then
+	title 'deploy - initialize virtual env'
+	cd $DEPLOY_DIR/shared
+	python3 -m venv venv
+fi
+
+title 'deploy - activate virtual env'
+cd $DEPLOY_DIR/current
+source venv/bin/activate
+pip3 install -r deploy/requirements.txt 2>&1 | indent
+
+title 'deploy - Run Migrations'
+cd $DEPLOY_DIR/current && ./manage migrate 2>&1 | indent
+
+title 'start application'
+echo "Restarting application"
+cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start

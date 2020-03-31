@@ -12,6 +12,9 @@ sh install.sh java-mvnw /path/to/java/project
 # or for a Rails project
 sh install.sh rails /path/to/rails/project
 
+# or for a Django project
+sh install.sh python-django /path/to/django/project
+
 # or for a reactjs project
 sh install.sh reactjs /path/to/reactjs/project
 ```
