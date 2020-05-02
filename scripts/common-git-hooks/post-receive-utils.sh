@@ -49,11 +49,11 @@ create_symlinks() {
 }
 
 exec_post_deploy() {
-	if [ ! -f $DEPLOY_DIR/deploy/scripts/post_deploy.sh ]; then
+	if [ ! -f $DEPLOY_DIR/current/deploy/scripts/post_deploy.sh ]; then
 		return
 	fi
 
-	cd $DEPLOY_DIR
+	cd $DEPLOY_DIR/current
 	title 'deploy - executing post deployment'
 	sh deploy/scripts/post_deploy.sh
 }
