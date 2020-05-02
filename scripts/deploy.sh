@@ -86,16 +86,18 @@ if [ ! -d $DEPLOY_REPO ]; then
 else if [ -d $PROJECT_SCRIPTS_DIR ]; then
 	cp -r $PROJECT_SCRIPTS_DIR $DEPLOY_REPO/deploy/
 	cd $DEPLOY_REPO
-	git add deploy/scripts
-	git commit . -m "added project scripts to server side deployment"
+	git add deploy/scripts 2>&1 | indent
+	git commit . -m "added project scripts to server side deployment" 2>&1 | indent
 	info "Copied project deployment scripts to server side deployment"
-	cd $BUILD_REPO
 fi
 
-if [ -f $PROJECT_SCRIPTS_DIR/post_build.sh ]; then
+if [ -f $DEPLOY_REPO/scripts/post_build.sh ]; then
+	cd $DEPLOY_REPO
 	title 'build - post build script'
-	sh $PROJECT_SCRIPTS_DIR/post_build.sh
+	sh scripts/post_build.sh
 fi
+
+cd $BUILD_REPO
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
 	clean_dirs
