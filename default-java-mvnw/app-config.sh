@@ -6,3 +6,4 @@ SERVICE_NAME=app-name
 GIT_REPO=git@github.com-loanstreet:loanstreet/app-name.git
 # LINKED_FILES="config/database.yml config/sms.yml"
 LINKED_DIRS="logs"
+RESOURCE_DIRS="src/main/resources"

@@ -91,6 +91,18 @@ else if [ -d $PROJECT_SCRIPTS_DIR ]; then
 	info "Copied project deployment scripts to server side deployment"
 fi
 
+if [ "$RESOURCE_DIRS" != "" ]; then
+	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
+	for i in $RES_DIRS; do
+		mkdir -p $DEPLOY_REPO/$i
+		cp -r $BUILD_REPO/$i $DEPLOY_REPO/$i
+	done
+	cd $DEPLOY_REPO
+	git add . 2>&1 | indent
+	git commit . -m "Added resource directories to deployment" 2>&1 | indent
+	info "Copied resource files to deployment"
+fi
+
 if [ -f $DEPLOY_REPO/deploy/scripts/post_build.sh ]; then
 	cd $DEPLOY_REPO
 	title 'build - post build script'
