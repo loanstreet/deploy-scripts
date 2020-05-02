@@ -35,7 +35,7 @@ fi
 
 PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
 WORK_DIR=$PROJECT_DEPLOY_DIR/work
-BUILD_REPO=$WORK_DIR/repo/
+BUILD_REPO=$WORK_DIR/repo
 # DEPS_DIR=$WORK_DIR/deps
 DEPLOY_REPO=$WORK_DIR/deploy-repo
 
@@ -94,8 +94,10 @@ fi
 if [ "$RESOURCE_DIRS" != "" ]; then
 	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
 	for i in $RES_DIRS; do
-		mkdir -p $DEPLOY_REPO/$i
-		cp -r $BUILD_REPO/$i $DEPLOY_REPO/$i
+		echo "$BUILD_REPO/$i"
+		echo "$DEPLOY_REPO/$i"
+		mkdir -p "$DEPLOY_REPO/$i"
+		cp -r $BUILD_REPO/$i/* $DEPLOY_REPO/$i/
 	done
 	cd $DEPLOY_REPO
 	git add . 2>&1 | indent
