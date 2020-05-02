@@ -21,8 +21,10 @@ echo "GIT_BRANCH=master\nSERVICE_PORT=37567" >> deploy/environments/default/conf
 cat deploy/app-config.sh deploy/environments/default/config.sh
 # hack for hardcoded nginx conf copying. to be made configurable later.
 touch deploy/environments/default/assets/nginx.conf
-# add some script to post deployment
+# add some hook scripts
 echo 'echo "Running post deployment scripts"' >> deploy/scripts/post_deploy.sh
+echo 'echo "Running pre build scripts"' >> deploy/scripts/pre_build.sh
+echo 'echo "Running post build scripts"' >> deploy/scripts/post_build.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
 sh deploy/deploy.sh default

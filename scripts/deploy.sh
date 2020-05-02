@@ -74,6 +74,11 @@ git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $B
 cd $BUILD_REPO
 info "Checked out $GIT_BRANCH from $GIT_REPO"
 
+if [ -f ./deploy/scripts/pre_build.sh ]; then
+	title 'build - pre-build script'
+	sh ./deploy/scripts/pre_build.sh
+fi
+
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $DEPLOY_SCRIPTS_DIR/scripts/$BUILD.sh
 
 if [ ! -d $DEPLOY_REPO ]; then
@@ -85,6 +90,11 @@ else if [ -d $PROJECT_SCRIPTS_DIR ]; then
 	git commit . -m "added project scripts to server side deployment"
 	info "Copied project deployment scripts to server side deployment"
 	cd $BUILD_REPO
+fi
+
+if [ -f ./deploy/scripts/post_build.sh ]; then
+	title 'build - post-build script'
+	sh ./deploy/scripts/post_build.sh
 fi
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
