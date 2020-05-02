@@ -91,10 +91,10 @@ else if [ -d $PROJECT_SCRIPTS_DIR ]; then
 	info "Copied project deployment scripts to server side deployment"
 fi
 
-if [ -f $DEPLOY_REPO/scripts/post_build.sh ]; then
+if [ -f $DEPLOY_REPO/deploy/scripts/post_build.sh ]; then
 	cd $DEPLOY_REPO
 	title 'build - post build script'
-	sh scripts/post_build.sh
+	sh deploy/scripts/post_build.sh
 fi
 
 cd $BUILD_REPO
