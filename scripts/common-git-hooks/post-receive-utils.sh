@@ -54,7 +54,7 @@ exec_post_deploy() {
 	fi
 
 	cd $DEPLOY_DIR/current
-	title 'deploy - post-deploy script'
+	title 'deploy - post deploy script'
 	sh deploy/scripts/post_deploy.sh
 }
 

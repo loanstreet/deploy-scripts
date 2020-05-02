@@ -74,9 +74,9 @@ git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $B
 cd $BUILD_REPO
 info "Checked out $GIT_BRANCH from $GIT_REPO"
 
-if [ -f ./deploy/scripts/pre_build.sh ]; then
-	title 'build - pre-build script'
-	sh ./deploy/scripts/pre_build.sh
+if [ -f $PROJECT_SCRIPTS_DIR/pre_build.sh ]; then
+	title 'build - pre build script'
+	sh $PROJECT_SCRIPTS_DIR/pre_build.sh
 fi
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $DEPLOY_SCRIPTS_DIR/scripts/$BUILD.sh
@@ -92,9 +92,9 @@ else if [ -d $PROJECT_SCRIPTS_DIR ]; then
 	cd $BUILD_REPO
 fi
 
-if [ -f ./deploy/scripts/post_build.sh ]; then
-	title 'build - post-build script'
-	sh ./deploy/scripts/post_build.sh
+if [ -f $PROJECT_SCRIPTS_DIR/post_build.sh ]; then
+	title 'build - post build script'
+	sh $PROJECT_SCRIPTS_DIR/post_build.sh
 fi
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
