@@ -33,6 +33,7 @@ else
 	. $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh
 fi
 
+PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
 WORK_DIR=$PROJECT_DEPLOY_DIR/work
 BUILD_REPO=$WORK_DIR/repo/
 # DEPS_DIR=$WORK_DIR/deps
@@ -77,6 +78,13 @@ PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT 
 
 if [ ! -d $DEPLOY_REPO ]; then
 	error "No deployment repo created by $BUILD script. Exiting"
+else if [ -d $PROJECT_SCRIPTS_DIR ]; then
+	cp -r $PROJECT_SCRIPTS_DIR $DEPLOY_REPO/deploy/
+	cd $DEPLOY_REPO
+	git add deploy/scripts
+	git commit . -m "added project scripts to server side deployment"
+	info "Copied project deployment scripts to server side deployment"
+	cd $BUILD_REPO
 fi
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then

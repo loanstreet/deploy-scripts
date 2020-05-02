@@ -48,6 +48,15 @@ create_symlinks() {
 	fi
 }
 
+exec_post_deploy() {
+	if [ ! -f $DEPLOY_DIR/deploy/scripts/post_deploy.sh ]; then
+		return
+	fi
+
+	cd $DEPLOY_DIR
+	sh deploy/scripts/post_deploy.sh
+}
+
 deploy() {
 
 	title 'deploy - post receive hook'
@@ -71,4 +80,6 @@ deploy() {
 
 	# create shared resources links
 	create_symlinks
+
+	exec_post_deploy
 }
