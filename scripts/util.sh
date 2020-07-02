@@ -113,7 +113,7 @@ check_structure_ver_03() {
 	fi
 }
 
-copy_docker_files {
+copy_docker_files() {
 	PROJECT_DIR="$1"
 	PROJECT_ENVIRONMENT="$2"
 	DESTINATION_DIR="$3"
