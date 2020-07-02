@@ -14,7 +14,7 @@ fi
 . $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh
 
 if [ "$DEPLOYMENT_DIR" = "" ]; then
-        DEPLOYMENT_DIR='$HOME/sites'
+		DEPLOYMENT_DIR='$HOME/sites'
 fi
 
 title 'build - reactjs - prepare deployment'
