@@ -21,6 +21,11 @@ cd $DEPLOY_DIR/current
 source venv/bin/activate
 pip3 install -r deploy/requirements.txt 2>&1 | indent
 
+if [ "$MIGRATIONS" = true ]; then
+	title 'deploy - Run Migrations'
+	cd $DEPLOY_DIR/current && ./manage.py migrate 2>&1 | indent
+fi
+
 title 'start application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
