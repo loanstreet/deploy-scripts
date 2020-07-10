@@ -10,3 +10,5 @@ deploy
 title 'starting application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
+
+post_startup

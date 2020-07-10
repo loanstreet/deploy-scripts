@@ -11,3 +11,5 @@ title 'deploy - build'
 cd $DEPLOY_DIR/current
 npm install
 npm run build
+
+post_startup

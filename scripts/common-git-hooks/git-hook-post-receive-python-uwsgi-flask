@@ -24,3 +24,5 @@ pip3 install -r deploy/requirements.txt 2>&1 | indent
 title 'start application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
+
+post_startup

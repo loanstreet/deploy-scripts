@@ -29,3 +29,5 @@ fi
 title 'start application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current && sh ./config/deploy/run.sh stop && sh ./config/deploy/run.sh start
+
+post_startup

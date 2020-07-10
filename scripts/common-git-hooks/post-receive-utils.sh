@@ -58,6 +58,16 @@ exec_post_deploy() {
 	sh deploy/scripts/post_deploy.sh
 }
 
+post_startup() {
+	if [ ! -f $DEPLOY_DIR/current/deploy/scripts/post_startup.sh ]; then
+		return
+	fi
+
+	cd $DEPLOY_DIR/current
+	title 'deploy - post startup script'
+	sh deploy/scripts/post_startup.sh
+}
+
 deploy() {
 
 	title 'deploy - post receive hook'
