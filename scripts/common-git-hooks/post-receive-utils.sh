@@ -80,6 +80,8 @@ delete_old_releases() {
 	ls -t1 | tail -n +$RELEASE_COUNT | xargs rm -rf
 
 	success "done"
+	
+	cd $DEPLOY_DIR/current
 }
 
 deploy() {
