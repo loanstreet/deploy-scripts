@@ -68,6 +68,20 @@ post_startup() {
 	sh deploy/scripts/post_startup.sh
 }
 
+delete_old_releases() {
+	cd $WORK_TREE/../
+
+	if [ "$RELEASE_COUNT" = "" ]; then
+		RELEASE_COUNT=5
+	fi
+
+	printf "Deleting releases older than last $RELEASE_COUNT ... "
+
+	ls -t1 | tail -n +$RELEASE_COUNT | xargs rm -rf
+
+	success "done"
+}
+
 deploy() {
 
 	title 'deploy - post receive hook'
@@ -91,6 +105,8 @@ deploy() {
 
 	# create shared resources links
 	create_symlinks
+	
+	delete_old_releases
 
 	exec_post_deploy
 }
