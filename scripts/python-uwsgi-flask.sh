@@ -33,7 +33,7 @@ cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_
 echo "PID_PATH=\"$PID_PATH\"" >> config.sh
 echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> config.sh
 echo "UWSGI_LOG_PATH=\"$UWSGI_LOG_PATH\"" >> config.sh
-echo "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/environments/$PROJECT_ENVIRONMENT/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"" >> config.sh
+echo "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/environments/$PROJECT_ENVIRONMENT/assets/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"" >> config.sh
 cp $SCRIPT_PATH/run.sh ./
 
 title 'build - python - prepare-deployment'
