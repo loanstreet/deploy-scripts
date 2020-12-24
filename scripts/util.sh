@@ -44,32 +44,32 @@ check_structure() {
 	fi
 	printf "app-config.sh ... "
 	if [ ! -f "$PROJECT_DIR/app-config.sh" ]; then
-                error "not found"
+				error "not found"
 		structure_error_stop
-        else
-                success "found"
-        fi
+		else
+				success "found"
+		fi
 	printf "Environment $PROJECT_ENVIRONMENT ... "
 	if [ ! -d "$PROJECT_DIR/$PROJECT_ENVIRONMENT" ]; then
-                error "not found"
+				error "not found"
 		structure_error_stop
-        else
-                success "found"
-        fi
+		else
+				success "found"
+		fi
 	printf "$PROJECT_ENVIRONMENT/config.sh ... "
 	if [ ! -f "$PROJECT_DIR/$PROJECT_ENVIRONMENT/config.sh" ]; then
-                error "not found"
+				error "not found"
 		structure_error_stop
-        else
-                success "found"
-        fi
+		else
+				success "found"
+		fi
 	. $PROJECT_DIR/app-config.sh
 	printf "Custom post-receive hook ... "
 	if [ ! -f "$PROJECT_DIR/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD" ]; then
-                warning "not found. Will use generic hook"
-        else
-                success "found"
-        fi
+				warning "not found. Will use generic hook"
+		else
+				success "found"
+		fi
 }
 
 check_structure_ver_03() {
@@ -87,14 +87,14 @@ check_structure_ver_03() {
 	if [ ! -f "$PROJECT_DIR/app-config.sh" ]; then
 		error "not found"
 		structure_error_stop
-    else
+	else
 		success "found"
-    fi
+	fi
 	printf "Environment $PROJECT_ENVIRONMENT ... "
 	if [ ! -d "$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT" ]; then
 		error "not found"
 		structure_error_stop
-    else
+	else
 		success "found"
 	fi
 	printf "$PROJECT_ENVIRONMENT/config.sh ... "
@@ -110,5 +110,48 @@ check_structure_ver_03() {
 		warning "not found. Will use generic hook"
 	else
 		success "found"
+	fi
+}
+
+copy_docker_files() {
+	PROJECT_DIR="$1"
+	PROJECT_ENVIRONMENT="$2"
+	DESTINATION_DIR="$3"
+
+	if [ ! -d "$PROJECT_DIR/$PROJECT_ENVIRONMENT" ]; then
+		error "Environment directory for $PROJECT_ENVIRONMENT not found"
+		structure_error_stop
+	fi
+
+	if [ ! -d "$DESTINATION_DIR" ]; then
+		error "Deploy repo dir $DESTINATION_DIR not found"
+		structure_error_stop
+	fi
+
+	PROJECT_DOCKERFILE_PATH="$PROJECT_DIR/docker/Dockerfile"
+	PROJECT_DOCKER_COMPOSE_PATH="$PROJECT_DIR/docker/docker-compose.yml"
+	DOCKERFILE_PATH="$PROJECT_DIR/$PROJECT_ENVIRONMENT/docker/Dockerfile"
+	DOCKER_COMPOSE_PATH="$PROJECT_DIR/$PROJECT_ENVIRONMENT/docker/docker-compose.yml"
+
+	if [ -f "$DOCKERFILE_PATH" ]; then
+		info "Copying Dockerfile $DOCKERFILE_PATH to $DESTINATION_DIR"
+		cp $DOCKERFILE_PATH $DESTINATION_DIR
+	elif [ -f "$PROJECT_DOCKERFILE_PATH" ]; then
+		info "Copying generic Dockerfile $PROJECT_DOCKERFILE_PATH to $DESTINATION_DIR"
+		cp $PROJECT_DOCKERFILE_PATH $DESTINATION_DIR
+	else
+		error "No Dockerfile found"
+		structure_error_stop
+	fi
+
+	if [ -f "$DOCKER_COMPOSE_PATH" ]; then
+			info "Copying docker-compose file $DOCKER_COMPOSE_PATH to $DESTINATION_DIR"
+			cp $DOCKER_COMPOSE_PATH $DESTINATION_DIR
+	elif [ -f "$PROJECT_DOCKER_COMPOSE_PATH" ]; then
+			info "Copying generic docker-compose file $PROJECT_DOCKER_COMPOSE_PATH to $DESTINATION_DIR"
+			cp $PROJECT_DOCKER_COMPOSE_PATH $DESTINATION_DIR
+	else
+			error "No docker-compose.yml found"
+			structure_error_stop
 	fi
 }

@@ -34,6 +34,7 @@ else
 fi
 
 PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
+PROJECT_DOCKER_DIR=$PROJECT_DEPLOY_DIR/docker
 WORK_DIR=$PROJECT_DEPLOY_DIR/work
 BUILD_REPO=$WORK_DIR/repo
 # DEPS_DIR=$WORK_DIR/deps
@@ -105,6 +106,15 @@ if [ "$RESOURCE_DIRS" != "" ]; then
 	info "Copied resource files to deployment"
 fi
 
+if [ "$DOCKERIZE" = true ]; then
+	copy_docker_files $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT $DEPLOY_REPO
+
+	cd $DEPLOY_REPO
+	git add . 2>&1 | indent
+	git commit . -m "Added docker files to deployment" 2>&1 | indent
+	info "Copied docker files to deployment"
+fi
+
 if [ -f $DEPLOY_REPO/deploy/scripts/post_build.sh ]; then
 	cd $DEPLOY_REPO
 	title 'build - post build script'
@@ -112,6 +122,8 @@ if [ -f $DEPLOY_REPO/deploy/scripts/post_build.sh ]; then
 fi
 
 cd $BUILD_REPO
+
+exit
 
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
 	clean_dirs
