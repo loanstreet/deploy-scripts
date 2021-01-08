@@ -5,8 +5,9 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/../scripts/util.sh
 
+cd $SCRIPT_PATH/../project-templates/
+PROJECT_TYPES=$(ls -d *)
 cd $SCRIPT_PATH/../
-PROJECT_TYPES=$(ls -d default-* | sed 's/default-//')
 
 if [ ! -d "$2" ]; then
 	error "No such directory: $2"
@@ -28,8 +29,8 @@ fi
 
 DEPLOY_DIR="$2/deploy"
 
-if [ -f "$SCRIPT_PATH/../default-$1/installer/config.sh" ]; then
-	. $SCRIPT_PATH/../default-$1/installer/config.sh
+if [ -f "$SCRIPT_PATH/../project-templates/$1/installer/config.sh" ]; then
+	. $SCRIPT_PATH/../project-templates/$1/installer/config.sh
 	if [ "$INSTALL_DIR" != "" ]; then
 		DEPLOY_DIR="$2/$INSTALL_DIR"
 	fi
@@ -53,7 +54,7 @@ cd $DEPLOY_SCRIPTS_HOME && git fetch origin +refs/heads/$DEPLOY_SCRIPTS_GIT_BRAN
 PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/deploy.sh $1
 EOF
 
-cp -r -n $SCRIPT_PATH/../default-$1/* $DEPLOY_DIR/
+cp -r -n $SCRIPT_PATH/../project-templates/$1/* $DEPLOY_DIR/
 rm -rf $DEPLOY_DIR/installer
 
 success "done"
@@ -71,9 +72,9 @@ info "Once you have made the edits, you can deploy by executing the 'deploy.sh' 
 info "from your project directory. For example:\n"
 info "\tsh $DEPLOY_DIR/deploy.sh staging"
 
-if [ -f "$SCRIPT_PATH/../default-$1/installer/post_install.sh" ]; then
+if [ -f "$SCRIPT_PATH/../project-templates/$1/installer/post_install.sh" ]; then
 	echo "\n"
-	sh "$SCRIPT_PATH/../default-$1/installer/post_install.sh"
+	sh "$SCRIPT_PATH/../project-templates/$1/installer/post_install.sh"
 fi
 
 line
