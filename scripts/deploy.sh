@@ -118,37 +118,47 @@ if [ "$DEPLOYMENT_SERVER" = "" ]; then
 	exit
 fi
 
-title 'deploy - bare repo scripts'
 TIMESTAMP=$(date +%s)
 BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 
-mkdir -p $BARE_REPO_SCRIPT_DIR
-cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh > $BARE_REPO_SCRIPT_DIR/config.sh
-cp $SCRIPT_PATH/common-git-hooks/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
-cp $SCRIPT_PATH/util.sh $BARE_REPO_SCRIPT_DIR/
-cp $SCRIPT_PATH/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
-CUSTOM_POST_RECEIVE_HOOK=$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD
-if [ -f "$CUSTOM_POST_RECEIVE_HOOK" ]; then
-	info "Copying custom post-receive hook $CUSTOM_POST_RECEIVE_HOOK"
-	cp $CUSTOM_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
-else
-	GENERIC_POST_RECEIVE_HOOK=$SCRIPT_PATH/common-git-hooks/git-hook-post-receive-$BUILD
-	info "Copying generic post-receive hook $GENERIC_POST_RECEIVE_HOOK"
-	cp $GENERIC_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
-fi
+DEST_REPO=$(echo $DEPLOYMENT_SERVER | cut -c -4)
+DEPLOY_BRANCH=master
+if [ "$DEST_REPO" != "git@" ]; then
+	title 'deploy - bare repo scripts'
+	mkdir -p $BARE_REPO_SCRIPT_DIR
+	cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh > $BARE_REPO_SCRIPT_DIR/config.sh
+	cp $SCRIPT_PATH/common-git-hooks/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
+	cp $SCRIPT_PATH/util.sh $BARE_REPO_SCRIPT_DIR/
+	cp $SCRIPT_PATH/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
+	CUSTOM_POST_RECEIVE_HOOK=$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD
+	if [ -f "$CUSTOM_POST_RECEIVE_HOOK" ]; then
+		info "Copying custom post-receive hook $CUSTOM_POST_RECEIVE_HOOK"
+		cp $CUSTOM_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
+	else
+		GENERIC_POST_RECEIVE_HOOK=$SCRIPT_PATH/common-git-hooks/git-hook-post-receive-$BUILD
+		info "Copying generic post-receive hook $GENERIC_POST_RECEIVE_HOOK"
+		cp $GENERIC_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
+	fi
 
-info "Copying scripts to create bare git repo"
-scp -P$DEPLOYMENT_SSH_PORT -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
+	info "Copying scripts to create bare git repo"
+	scp -P$DEPLOYMENT_SSH_PORT -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
 ssh -p $DEPLOYMENT_SSH_PORT -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
 cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
 EOSSH
+REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:$DEPLOYMENT_SSH_PORT/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+else
+REMOTE_GIT_BARE_REPO=$DEPLOYMENT_SERVER
+cd $DEPLOY_REPO
+git checkout -b $PROJECT_ENVIRONMENT
+DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
+fi
 
 title 'deploy - push'
-REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:$DEPLOYMENT_SSH_PORT/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
+
 info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
 	cd $DEPLOY_REPO
 	git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
-	git push deploy master -f
+	git push deploy $DEPLOY_BRANCH -f
 fi
 clean_dirs
