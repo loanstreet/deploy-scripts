@@ -42,7 +42,7 @@ mkdir -p $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
 cp $WARFILE $PROJECT_DEPLOY_DIR/work/deploy-repo
 cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh deploy-config.sh > $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy/config.sh
 cp $SCRIPT_PATH/run.sh $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy
-cp -r $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/* $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy/
+cp -rL $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/* $PROJECT_DEPLOY_DIR/work/deploy-repo/deploy/
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo
 git init 2>&1 | indent
 git config user.name "deployer"
