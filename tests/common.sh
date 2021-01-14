@@ -18,7 +18,7 @@ copy_deployment_files() {
 	rm -rf $COPY_PROJECT_DIR
 	mkdir -p $COPY_PROJECT_DIR
 	printf "Copying project to $COPY_PROJECT_DIR/ ... "
-	cp -r "$2" $COPY_PROJECT_DIR/
+	cp -r "$2" "$COPY_PROJECT_DIR/$1-project"
 	success 'done'
 	echo "Initializing git repo in $COPY_PROJECT_DIR/$1-project"
 	cd $COPY_PROJECT_DIR/$1-project

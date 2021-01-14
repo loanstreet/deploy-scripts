@@ -58,7 +58,7 @@ mkdir -p $WORK_DIR
 
 info "Creating repo to build program at $BUILD_REPO"
 ds_set_repo_type
-. "$SCRIPT_PATH/$REPO_TYPE.sh"
+. "$SCRIPT_PATH/repo/$REPO_TYPE.sh"
 ds_repo_fetch $REPO $BUILD_REPO
 
 if [ -f $PROJECT_SCRIPTS_DIR/pre_build.sh ]; then
@@ -128,8 +128,8 @@ fi
 # 	info "Copied docker files to deployment"
 # fi
 
-if [ -f $DEPLOY_REPO/deploy/scripts/post_build.sh ]; then
-	cd $DEPLOY_REPO
+if [ -f "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh" ]; then
+	cd $DEPLOY_PACKAGE_DIR
 	title 'build - post build script'
 	sh deploy/scripts/post_build.sh
 fi

@@ -12,7 +12,7 @@ if [ "$JAVA_PID" != "" ]; then
 	kill -9 $JAVA_PID
 	success 'done'
 fi
-copy_deployment_files 'java' $SCRIPT_PATH/resources/java-project
+copy_deployment_files 'java' $SCRIPT_PATH/resources/java-mvnw-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/java-project
