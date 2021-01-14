@@ -5,128 +5,115 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 DEPLOY_SCRIPTS_DIR="$SCRIPT_PATH/../"
 
+# default SSH port
+DEPLOYMENT_SSH_PORT=22
+
 if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ ! -d "$PROJECT_DEPLOY_DIR" ]; then
 	error "No project deploy directory specified"
 fi
 
 . $SCRIPT_PATH/util.sh
-. $SCRIPT_PATH/defaults.sh
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
-PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
-# PROJECT_DOCKER_DIR=$PROJECT_DEPLOY_DIR/docker
-WORK_DIR=$PROJECT_DEPLOY_DIR/.build
-BUILD_REPO=$WORK_DIR/repo
-DEPLOY_PACKAGE_DIR=$WORK_DIR/package
+if [ "$DEPLOYMENT_DIR" = "" ]; then
+	DEPLOYMENT_DIR='$HOME/sites'
+fi
+
+
+
 if [ "$1" = "" ]; then
 	error "No environment set"
+else
+	title "check-files"
+	check_structure_ver_03 $PROJECT_DEPLOY_DIR $1
+	PROJECT_ENVIRONMENT="$1"
+	if [ ! -f $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh ] || [ "$BUILD" = "" ]; then
+		error "Please initialize deploy/environments/$PROJECT_ENVIRONMENT/config.sh with vars BUILD, PROJECT_ENVIRONMENT, SERVICE_NAME, GIT_REPO, and GIT_BRANCH"
+	fi
+	. $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh
 fi
-PROJECT_ENVIRONMENT="$1"
-DEPLOYMENT_ASSETS_DIR="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/"
 
-ds_clean_dirs() {
+PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
+PROJECT_DOCKER_DIR=$PROJECT_DEPLOY_DIR/docker
+WORK_DIR=$PROJECT_DEPLOY_DIR/work
+BUILD_REPO=$WORK_DIR/repo
+# DEPS_DIR=$WORK_DIR/deps
+DEPLOY_REPO=$WORK_DIR/deploy-repo
+
+clean_dirs() {
 	if [ -d $WORK_DIR ]; then
 		info "Deleting deployment work dir $WORK_DIR"
 		rm -rf $WORK_DIR
 	fi
 }
 
-ds_set_repo_type() {
-	REPO_STR=$(echo $DEPLOYMENT_SERVER | cut -c -4)
-	if [ "$REPO_STR" = "git@" ]; then
-		REPO_TYPE="git"
-	fi
-}
+title 'build - prepare'
 
-title "check-files"
-check_structure_ver_03 $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT
-CONFIG_SH_PATH="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh"
-if [ ! -f $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh ]; then
-	error "Please initialize $CONFIG_SH_PATH"
-fi
-
-. "$CONFIG_SH_PATH"
-
-if [ "$TYPE" = "" ] || [ "$REPO" = "" ] || [ "$DEPLOYMENT_SERVER" = "" ] || [ "PROJECT_NAME" = "" ]; then
-	error "Please set the variables TYPE, REPO, PROJECT_NAME, and DEPLOYMENT_SERVER in $CONFIG_SH_PATH"
-fi
-
-title 'repo - checkout'
-
-ds_clean_dirs
+clean_dirs
 mkdir -p $WORK_DIR
 
+# if [ "$DEPENDENCIES" != "" ]; then
+# 	info "Building dependent projects"
+# 	mkdir -p $DEPS_DIR && cd $DEPS_DIR
+# 	DEP_LABELS=$(echo "$DEPENDENCIES" | cut -d";" -f1)
+# 	for i in $DEP_LABELS; do
+# 		DEP_REPO=$(eval "echo \${${i}_GIT_REPO}")
+# 		DEP_BRANCH=$(eval "echo \${${i}_GIT_BRANCH}")
+# 		DEP_COMMAND=$(eval "echo \${${i}_BUILD_COMMAND}")
+# 		if [ "$DEP_REPO" != "" ] && [ "$DEP_BRANCH" != "" ] && [ "$DEP_COMMAND" != "" ]; then
+# 			info "Building git-hosted $i"
+# 			mkdir $i
+# 			git clone --single-branch --depth=1 --branch $DEP_BRANCH $DEP_REPO $i
+# 			cd $i
+# 			sh -c "$DEP_COMMAND"
+# 		fi
+# 	done
+# fi
+
 info "Creating repo to build program at $BUILD_REPO"
-ds_set_repo_type
-. "$SCRIPT_PATH/$REPO_TYPE.sh"
-ds_repo_fetch $REPO $BUILD_REPO
+GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO #2>&1 | indent
+cd $BUILD_REPO
+info "Checked out $GIT_BRANCH from $GIT_REPO"
 
 if [ -f $PROJECT_SCRIPTS_DIR/pre_build.sh ]; then
 	title 'build - pre build script'
 	sh $PROJECT_SCRIPTS_DIR/pre_build.sh
 fi
 
-if [ "$BUILD" != "" ]; then
-	title 'build'
-	info "Building the project in $BUILD_REPO"
-	BUILD_SCRIPTS_PATH="$SCRIPT_PATH/../projects/$TYPE/build/$BUILD.sh"
-	if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
-		BUILD_SCRIPTS_PATH="$SCRIPT_PATH/build/$BUILD.sh"
-		if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
-			error "No build scripts available for $BUILD on $TYPE"
-		fi
-	fi
-	. $BUILD_SCRIPTS_PATH
-	ds_build $BUILD_REPO $DEPLOY_PACKAGE_DIR
-fi
+PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT sh $DEPLOY_SCRIPTS_DIR/scripts/$BUILD.sh
 
-title 'package'
-mkdir -p "$DEPLOY_PACKAGE_DIR/deploy"
-DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/deploy/config.sh"
-
-ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
-ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
-
-. "$SCRIPT_PATH/../projects/$TYPE/format/$FORMAT.sh"
-ds_format $DEPLOY_PACKAGE_DIR
-
-cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/deploy"
-cp -rL "$DEPLOYMENT_ASSETS_DIR/*" "$DEPLOY_PACKAGE_DIR/deploy"
-
-title 'package'
-. "$SCRIPT_PATH/package/$PACKAGE.sh"
-ds_package $DEPLOY_PACKAGE_DIR
-
-if [ -d $PROJECT_SCRIPTS_DIR ]; then
-	cp -r $PROJECT_SCRIPTS_DIR "$DEPLOY_PACKAGE_DIR/deploy"
-	cd $DEPLOY_PACKAGE_DIR
+if [ ! -d $DEPLOY_REPO ]; then
+	error "No deployment repo created by $BUILD script. Exiting"
+else if [ -d $PROJECT_SCRIPTS_DIR ]; then
+	cp -r $PROJECT_SCRIPTS_DIR $DEPLOY_REPO/deploy/
+	cd $DEPLOY_REPO
 	git add deploy/scripts 2>&1 | indent
 	git commit . -m "added project scripts to server side deployment" 2>&1 | indent
 	info "Copied project deployment scripts to server side deployment"
 fi
 
-# if [ "$RESOURCE_DIRS" != "" ]; then
-# 	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
-# 	for i in $RES_DIRS; do
-# 		echo "$BUILD_REPO/$i"
-# 		echo "$DEPLOY_REPO/$i"
-# 		mkdir -p "$DEPLOY_REPO/$i"
-# 		cp -r $BUILD_REPO/$i/* $DEPLOY_REPO/$i/
-# 	done
-# 	cd $DEPLOY_REPO
-# 	git add . 2>&1 | indent
-# 	git commit . -m "Added resource directories to deployment" 2>&1 | indent
-# 	info "Copied resource files to deployment"
-# fi
+if [ "$RESOURCE_DIRS" != "" ]; then
+	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
+	for i in $RES_DIRS; do
+		echo "$BUILD_REPO/$i"
+		echo "$DEPLOY_REPO/$i"
+		mkdir -p "$DEPLOY_REPO/$i"
+		cp -r $BUILD_REPO/$i/* $DEPLOY_REPO/$i/
+	done
+	cd $DEPLOY_REPO
+	git add . 2>&1 | indent
+	git commit . -m "Added resource directories to deployment" 2>&1 | indent
+	info "Copied resource files to deployment"
+fi
 
-# if [ "$DOCKERIZE" = true ]; then
-# 	copy_docker_files $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT $DEPLOY_REPO
+if [ "$DOCKERIZE" = true ]; then
+	copy_docker_files $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT $DEPLOY_REPO
 
-# 	cd $DEPLOY_REPO
-# 	git add . 2>&1 | indent
-# 	git commit . -m "Added docker files to deployment" 2>&1 | indent
-# 	info "Copied docker files to deployment"
-# fi
+	cd $DEPLOY_REPO
+	git add . 2>&1 | indent
+	git commit . -m "Added docker files to deployment" 2>&1 | indent
+	info "Copied docker files to deployment"
+fi
 
 if [ -f $DEPLOY_REPO/deploy/scripts/post_build.sh ]; then
 	cd $DEPLOY_REPO

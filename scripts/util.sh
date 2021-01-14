@@ -31,6 +31,14 @@ structure_error_stop() {
 	error "Error encountered in deploy script structure. Stopping."
 }
 
+ds_cat_file() {
+	if [ "$1" = "" ] || [ "$2" = "" ]; then
+		error "ds_cat_file: Need a source and a destination file"
+	fi
+	cat "$1" >> "$2"
+	echo "\n" >> "$2"
+}
+
 check_structure() {
 	PROJECT_DIR="$1"
 	PROJECT_ENVIRONMENT="$2"
