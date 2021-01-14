@@ -47,7 +47,7 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
 	echo "Downloading deploy-scripts"
-	git clone $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
+	GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
 fi
 cd $DEPLOY_SCRIPTS_HOME && git fetch origin +refs/heads/$DEPLOY_SCRIPTS_GIT_BRANCH && git checkout $DEPLOY_SCRIPTS_GIT_BRANCH && cd $SCRIPT_PATH
 PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/deploy.sh $1

@@ -41,4 +41,4 @@ git pull origin $GIT_PUSH_BRANCH
 cp -r $WORK_DIR/repo/target/maven-repo/* ./
 git add . 2>&1 | indent
 git commit . -m "commit to repository" 2>&1 | indent
-git push origin $GIT_PUSH_BRANCH
+GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push origin $GIT_PUSH_BRANCH

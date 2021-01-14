@@ -70,7 +70,7 @@ mkdir -p $WORK_DIR
 # fi
 
 info "Creating repo to build program at $BUILD_REPO"
-git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO #2>&1 | indent
+GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone --progress --single-branch --depth=1 --branch $GIT_BRANCH $GIT_REPO $BUILD_REPO #2>&1 | indent
 cd $BUILD_REPO
 info "Checked out $GIT_BRANCH from $GIT_REPO"
 
@@ -159,6 +159,6 @@ info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
 
 	cd $DEPLOY_REPO
 	git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
-	git push deploy $DEPLOY_BRANCH -f
+	GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push deploy $DEPLOY_BRANCH -f
 fi
 clean_dirs
