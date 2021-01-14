@@ -20,7 +20,22 @@ fi
 title 'build - reactjs - prepare deployment'
 mkdir -p $PROJECT_DEPLOY_DIR/work/deploy-repo
 cd $PROJECT_DEPLOY_DIR/work/repo
-git --work-tree=../deploy-repo --git-dir=.git checkout -f 2>&1 | indent
+if [ "$REACTJS_BUILD_LOCAL" = "true" ]; then
+	if [ "$REACTJS_ENVJS_PATH" = "" ]; then
+		error "No env.js supplied, which is needed when building locally"
+	else
+		ln -s "../../$REACTJS_ENVJS_PATH" src/_config/env.js
+	fi
+	if [ "$NPM_PREFIX" != "" ]; then
+		mkdir -p $NPM_PREFIX && ln -sf $NPM_PREFIX node_modules && npm install
+	else
+		npm install
+	fi
+	npm run build
+	cp -r ./build/* $PROJECT_DEPLOY_DIR/work/deploy-repo/
+else
+	git --work-tree=../deploy-repo --git-dir=.git checkout -f 2>&1 | indent
+fi
 cd $PROJECT_DEPLOY_DIR/work/deploy-repo/
 mkdir -p deploy
 cd deploy/
