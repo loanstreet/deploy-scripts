@@ -123,8 +123,6 @@ fi
 
 cd $BUILD_REPO
 
-exit
-
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
 	clean_dirs
 	exit
