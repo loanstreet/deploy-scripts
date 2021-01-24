@@ -7,8 +7,8 @@ fi
 . ./config.sh
 . ./util.sh
 
-if [ $DEPLOYMENT_SERVER_USER = "" ] || [ $SERVICE_NAME = "" ] || [ $BUILD = "" ]; then
-	echo "Bare repo creation: DEPLOYMENT_SERVER_USER or SERVICE_NAME or BUILD not set. exiting."
+if [ $DEPLOYMENT_SERVER_USER = "" ] || [ $SERVICE_NAME = "" ]; then
+	echo "Bare repo creation: DEPLOYMENT_SERVER_USER or SERVICE_NAME not set. exiting."
 	exit
 fi
 
@@ -28,6 +28,7 @@ fi
 echo "Copying post-receive hook from $POST_RECEIVE_HOOK"
 cp $SCRIPT_DIR/$POST_RECEIVE_HOOK $BARE_REPO_DIR/hooks/post-receive
 cp $SCRIPT_DIR/config.sh $BARE_REPO_DIR/hooks/
+cp $SCRIPT_DIR/post-deploy-utils.sh $BARE_REPO_DIR/hooks/
 cp $SCRIPT_DIR/post-receive-utils.sh $BARE_REPO_DIR/hooks/
 cp $SCRIPT_DIR/util.sh $BARE_REPO_DIR/hooks/
 cd $BARE_REPO_DIR/hooks && chmod +x post-receive

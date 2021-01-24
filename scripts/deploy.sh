@@ -22,7 +22,7 @@ fi
 # Directory for project-specific pre and post build and post deploy scripts
 PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
 
-# Working directory to build/prepare and push the deployment
+# Working direc\033[1;36mtory to build/prepare and push the deployment
 WORK_DIR=$PROJECT_DEPLOY_DIR/.build
 # Directory into which project repo deployment branch is checked out
 BUILD_REPO=$WORK_DIR/repo
@@ -46,11 +46,27 @@ ds_clean_dirs() {
 	fi
 }
 
-# Determine repo type from which to check out by repo url assigned to var REPO
+# If REPO_TYPE is unset, determine repo type from which to check out by repo url assigned to var REPO
 ds_set_repo_type() {
-	REPO_STR=$(echo $REPO | cut -c -4)
-	if [ "$REPO_STR" = "git@" ]; then
-		REPO_TYPE="git"
+	if [ "$REPO_TYPE" = "" ]; then
+		REPO_STR=$(echo $REPO | cut -c -4)
+		if [ "$REPO_STR" = "git@" ]; then
+			REPO_TYPE="git"
+		else
+			error "Failed to determine REPO_TYPE for project checkout"
+		fi
+	fi
+}
+
+# If PUSH is unset, determine how to push from var DEPLOYMENT_SERVER
+ds_set_push_type() {
+	if [ "$PUSH" = "" ]; then
+		PUSH_STR=$(echo $DEPLOYMENT_SERVER | cut -c -4)
+		if [ "$PUSH_STR" = "git@" ]; then
+			PUSH="git"
+		else
+			info "No PUSH type specified. Deployment not pushed."
+		fi
 	fi
 }
 
@@ -116,19 +132,25 @@ ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
 # Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
-title "format: $FORMAT"
-. "$SCRIPT_PATH/../projects/$TYPE/format/$FORMAT.sh"
-ds_format $DEPLOY_PACKAGE_DIR
-rm "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
+if [ "$FORMAT" != "" ]; then
+	title "format: $FORMAT"
+	. "$SCRIPT_PATH/../projects/$TYPE/format/$FORMAT.sh"
+	ds_format $DEPLOY_PACKAGE_DIR
+fi
+rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 
 cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/deploy"
 # Copy all files under project environment-specific assets/ dir to the deployment
-cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/deploy/"
+if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
+	cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/deploy/"
+fi
 
-# Package the deployment files in the desired format using ds_package() to be ready for delivery to deployment target
-title "package: $PACKAGE"
-. "$SCRIPT_PATH/package/$PACKAGE.sh"
-ds_package $DEPLOY_PACKAGE_DIR
+if [ "$PACKAGE" != "" ]; then
+	# Package the deployment files in the desired format using ds_package() to be ready for delivery to deployment target
+	title "package: $PACKAGE"
+	. "$SCRIPT_PATH/package/$PACKAGE.sh"
+	ds_package $DEPLOY_PACKAGE_DIR
+fi
 
 # if [ "$RESOURCE_DIRS" != "" ]; then
 # 	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
@@ -170,7 +192,10 @@ fi
 
 # Push the packaged deployment files using ds_push() to the deployment server
 title "push: $PUSH"
-. "$SCRIPT_PATH/push/$PUSH.sh"
-ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
+ds_set_push_type
+if [ "$PUSH" != "" ]; then
+	. "$SCRIPT_PATH/push/$PUSH.sh"
+	ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
+fi
 
 ds_clean_dirs

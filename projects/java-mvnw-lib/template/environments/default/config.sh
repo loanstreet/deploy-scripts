@@ -1,3 +1,0 @@
-PROJECT_ENVIRONMENT=default
-GIT_BRANCH=default
-GIT_PUSH_BRANCH=snapshot

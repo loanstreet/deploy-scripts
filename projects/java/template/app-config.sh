@@ -1,6 +1,7 @@
 TYPE=java
 BUILD=mvnw
 FORMAT=spring-boot
+RESTART_COMMAND='sh ./deploy/run.sh restart'
 
 REPO=git@github.com-loanstreet:loanstreet/app-name.git
 DEPLOYMENT_SERVER=fincon-dev.finology.com.my

@@ -5,4 +5,5 @@ DEPLOYMENT_SERVER_USER=deploy
 REPO_TYPE=git
 PUSH=git-bare
 PACKAGE=git
+RESTART_COMMAND="sh deploy/run.sh restart"
 DEPLOYMENT_DIR='$HOME/sites'
