@@ -16,7 +16,9 @@ copy_deployment_files 'java' $SCRIPT_PATH/resources/java-mvnw-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/java-project
-echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SSH_USER=$USER\nGIT_REPO=file://$COPY_PROJECT_DIR/java-project\nSERVICE_NAME=java-deploy-test\nLINKED_FILES=\n" >> deploy/app-config.sh
+PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/java-project/deploy"
+DEPLOY_SCRIPTS_HOME="$SCRIPT_PATH/../"
+echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/java-project\nSERVICE_NAME=java-deploy-test\nLINKED_FILES=\n" >> deploy/app-config.sh
 echo "GIT_BRANCH=master\nSERVICE_PORT=37567" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh deploy/environments/default/config.sh
 # hack for hardcoded nginx conf copying. to be made configurable later.
@@ -27,7 +29,8 @@ echo 'echo "Running pre build scripts"' >> deploy/scripts/pre_build.sh
 echo 'echo "Running post build scripts"' >> deploy/scripts/post_build.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
-sh deploy/deploy.sh default
+#sh deploy/deploy.sh default
+PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $TEST_WORKING_DIR/java-deploy-test/default/current
 title 'TEST - check web application'
 sleep 5

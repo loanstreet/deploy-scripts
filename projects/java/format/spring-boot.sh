@@ -10,6 +10,7 @@ ds_format() {
 		error "package: java: config.sh must specify a SERVICE_PORT"
 	fi
 
+	printf "Preparing spring boot deployment ... "
 	PATH_TO_JAR=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/$WARFILE'
 	echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
 	LOG_DIR=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs'
@@ -18,4 +19,5 @@ ds_format() {
 	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
 
 	cat deploy-config.sh >> ./deploy/config.sh
+	success 'done'
 }

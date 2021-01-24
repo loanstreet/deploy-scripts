@@ -6,15 +6,15 @@ fi
 
 . ./config.sh
 . ./util.sh
-	
-if [ $DEPLOYMENT_SSH_USER = "" ] || [ $SERVICE_NAME = "" ] || [ $BUILD = "" ]; then
-	echo "Bare repo creation: DEPLOYMENT_SSH_USER or SERVICE_NAME or BUILD not set. exiting."
+
+if [ $DEPLOYMENT_SERVER_USER = "" ] || [ $SERVICE_NAME = "" ] || [ $BUILD = "" ]; then
+	echo "Bare repo creation: DEPLOYMENT_SERVER_USER or SERVICE_NAME or BUILD not set. exiting."
 	exit
 fi
 
 SCRIPT_DIR=$(dirname $(readlink -f $0))
 BARE_REPO_DIR=$HOME/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
-POST_RECEIVE_HOOK=git-hook-post-receive-$BUILD
+POST_RECEIVE_HOOK="post-receive-hook"
 
 if [ ! -d $BARE_REPO_DIR ]; then
 	echo "Creating bare repo directory at $BARE_REPO_DIR"

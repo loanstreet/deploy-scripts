@@ -2,28 +2,43 @@
 
 set -e
 
+# Current script dir
 SCRIPT_PATH=$(dirname $(readlink -f $0))
+# Deploy scripts installation dir
 DEPLOY_SCRIPTS_DIR="$SCRIPT_PATH/../"
 
+# Make sure project directory is known
 if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ ! -d "$PROJECT_DEPLOY_DIR" ]; then
 	error "No project deploy directory specified"
 fi
 
+# Include deploy-scripts utility functions
 . $SCRIPT_PATH/util.sh
+# Include default env vars
 . $SCRIPT_PATH/defaults.sh
+# Include env vars for project
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
+# Directory for project-specific pre and post build and post deploy scripts
 PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
-# PROJECT_DOCKER_DIR=$PROJECT_DEPLOY_DIR/docker
+
+# Working directory to build/prepare and push the deployment
 WORK_DIR=$PROJECT_DEPLOY_DIR/.build
+# Directory into which project repo deployment branch is checked out
 BUILD_REPO=$WORK_DIR/repo
+# Directory where files will be assembled for deployment
 DEPLOY_PACKAGE_DIR=$WORK_DIR/package
+
+# Make sure the project environment is set
 if [ "$1" = "" ]; then
 	error "No environment set"
 fi
 PROJECT_ENVIRONMENT="$1"
-DEPLOYMENT_ASSETS_DIR="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/"
 
+# Project environment specific directory from which to copy files as-is to be added to the deployment
+DEPLOYMENT_ASSETS_DIR="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets"
+
+# Clean working directory (WORK_DIR)
 ds_clean_dirs() {
 	if [ -d $WORK_DIR ]; then
 		info "Deleting deployment work dir $WORK_DIR"
@@ -31,45 +46,59 @@ ds_clean_dirs() {
 	fi
 }
 
+# Determine repo type from which to check out by repo url assigned to var REPO
 ds_set_repo_type() {
-	REPO_STR=$(echo $DEPLOYMENT_SERVER | cut -c -4)
+	REPO_STR=$(echo $REPO | cut -c -4)
 	if [ "$REPO_STR" = "git@" ]; then
 		REPO_TYPE="git"
 	fi
 }
 
+# Check if the deploy/ directory in the project has the required files
 title "check-files"
 check_structure_ver_03 $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT
+# Path to the environment specific config.sh
 CONFIG_SH_PATH="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh"
-if [ ! -f $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh ]; then
+if [ ! -f "$CONFIG_SH_PATH" ]; then
 	error "Please initialize $CONFIG_SH_PATH"
 fi
-
+# Include vars from environment specific config.sh
 . "$CONFIG_SH_PATH"
 
+# Ensure that the minimal no. of vars are set
 if [ "$TYPE" = "" ] || [ "$REPO" = "" ] || [ "$DEPLOYMENT_SERVER" = "" ] || [ "PROJECT_NAME" = "" ]; then
 	error "Please set the variables TYPE, REPO, PROJECT_NAME, and DEPLOYMENT_SERVER in $CONFIG_SH_PATH"
 fi
 
-title 'repo - checkout'
-
+# Initialize working directory
 ds_clean_dirs
 mkdir -p $WORK_DIR
 
-info "Creating repo to build program at $BUILD_REPO"
+# Checkout branch to be deployed into repo/ inside working dir
 ds_set_repo_type
+title "repo: checkout: $REPO_TYPE"
+info "Creating repo to build program at $BUILD_REPO"
+# Get and run ds_repo_fetch() function for project repo type
 . "$SCRIPT_PATH/repo/$REPO_TYPE.sh"
 ds_repo_fetch $REPO $BUILD_REPO
 
+# Execute any custom pre-build scripts
 if [ -f $PROJECT_SCRIPTS_DIR/pre_build.sh ]; then
-	title 'build - pre build script'
+	title 'build: pre build script'
 	sh $PROJECT_SCRIPTS_DIR/pre_build.sh
 fi
 
+# Create directory to place deployment files into
+mkdir -p $DEPLOY_PACKAGE_DIR
+
+# Directory holding scripts for the type of project to be deployed (configured by var TYPE)
+PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"
+
+# Find and execute ds_build() function to build the files for deployment (configured by var BUILD)
 if [ "$BUILD" != "" ]; then
-	title 'build'
+	title "build: $BUILD"
 	info "Building the project in $BUILD_REPO"
-	BUILD_SCRIPTS_PATH="$SCRIPT_PATH/../projects/$TYPE/build/$BUILD.sh"
+	BUILD_SCRIPTS_PATH="$PROJECT_TYPE_DIR/build/$BUILD.sh"
 	if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
 		BUILD_SCRIPTS_PATH="$SCRIPT_PATH/build/$BUILD.sh"
 		if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
@@ -80,30 +109,26 @@ if [ "$BUILD" != "" ]; then
 	ds_build $BUILD_REPO $DEPLOY_PACKAGE_DIR
 fi
 
-title 'package'
+# Compile all the env vars into a config.sh to be added to the deployment files
 mkdir -p "$DEPLOY_PACKAGE_DIR/deploy"
 DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/deploy/config.sh"
-
 ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
+# Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
+title "format: $FORMAT"
 . "$SCRIPT_PATH/../projects/$TYPE/format/$FORMAT.sh"
 ds_format $DEPLOY_PACKAGE_DIR
+rm "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 
 cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/deploy"
-cp -rL "$DEPLOYMENT_ASSETS_DIR/*" "$DEPLOY_PACKAGE_DIR/deploy"
+# Copy all files under project environment-specific assets/ dir to the deployment
+cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/deploy/"
 
-title 'package'
+# Package the deployment files in the desired format using ds_package() to be ready for delivery to deployment target
+title "package: $PACKAGE"
 . "$SCRIPT_PATH/package/$PACKAGE.sh"
 ds_package $DEPLOY_PACKAGE_DIR
-
-if [ -d $PROJECT_SCRIPTS_DIR ]; then
-	cp -r $PROJECT_SCRIPTS_DIR "$DEPLOY_PACKAGE_DIR/deploy"
-	cd $DEPLOY_PACKAGE_DIR
-	git add deploy/scripts 2>&1 | indent
-	git commit . -m "added project scripts to server side deployment" 2>&1 | indent
-	info "Copied project deployment scripts to server side deployment"
-fi
 
 # if [ "$RESOURCE_DIRS" != "" ]; then
 # 	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
@@ -128,60 +153,24 @@ fi
 # 	info "Copied docker files to deployment"
 # fi
 
+# Run any post-build scripts if they were supplied
 if [ -f "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh" ]; then
 	cd $DEPLOY_PACKAGE_DIR
 	title 'build - post build script'
 	sh deploy/scripts/post_build.sh
 fi
 
-cd $BUILD_REPO
 
+cd $BUILD_REPO
+# Quit if no target server is specified for delivering the deployment to
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
 	clean_dirs
 	exit
 fi
 
-TIMESTAMP=$(date +%s)
-BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
+# Push the packaged deployment files using ds_push() to the deployment server
+title "push: $PUSH"
+. "$SCRIPT_PATH/push/$PUSH.sh"
+ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
 
-DEST_REPO=$(echo $DEPLOYMENT_SERVER | cut -c -4)
-DEPLOY_BRANCH=master
-if [ "$DEST_REPO" != "git@" ]; then
-	title 'deploy - bare repo scripts'
-	mkdir -p $BARE_REPO_SCRIPT_DIR
-	cat $PROJECT_DEPLOY_DIR/app-config.sh $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh > $BARE_REPO_SCRIPT_DIR/config.sh
-	cp $SCRIPT_PATH/common-git-hooks/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
-	cp $SCRIPT_PATH/util.sh $BARE_REPO_SCRIPT_DIR/
-	cp $SCRIPT_PATH/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
-	CUSTOM_POST_RECEIVE_HOOK=$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD
-	if [ -f "$CUSTOM_POST_RECEIVE_HOOK" ]; then
-		info "Copying custom post-receive hook $CUSTOM_POST_RECEIVE_HOOK"
-		cp $CUSTOM_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
-	else
-		GENERIC_POST_RECEIVE_HOOK=$SCRIPT_PATH/common-git-hooks/git-hook-post-receive-$BUILD
-		info "Copying generic post-receive hook $GENERIC_POST_RECEIVE_HOOK"
-		cp $GENERIC_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
-	fi
-
-	info "Copying scripts to create bare git repo"
-	scp -o StrictHostKeyChecking=no -P$DEPLOYMENT_SSH_PORT -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
-ssh -o "StrictHostKeyChecking no" -p $DEPLOYMENT_SSH_PORT -t $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER << EOSSH
-cd $BARE_REPO_SCRIPT_DIR && sh ./bare-repo.sh
-EOSSH
-REMOTE_GIT_BARE_REPO=ssh://$DEPLOYMENT_SSH_USER@$DEPLOYMENT_SERVER:$DEPLOYMENT_SSH_PORT/~/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
-else
-REMOTE_GIT_BARE_REPO=$DEPLOYMENT_SERVER
-cd $DEPLOY_REPO
-git checkout -b $PROJECT_ENVIRONMENT
-DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
-fi
-
-title 'deploy - push'
-
-info "Deploying $PROJECT_ENVIRONMENT to $REMOTE_GIT_BARE_REPO"
-
-	cd $DEPLOY_REPO
-	git remote add deploy $REMOTE_GIT_BARE_REPO 2>&1 | indent
-	GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push deploy $DEPLOY_BRANCH -f
-fi
-clean_dirs
+ds_clean_dirs
