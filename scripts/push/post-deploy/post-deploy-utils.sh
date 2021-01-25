@@ -2,7 +2,7 @@ create_symlinks() {
 	mkdir -p $DEPLOY_DIR/shared
 	cd $DEPLOY_DIR/current
 	if [ "$LINKED_DIRS" != "" ] || [ "$LINKED_FILES" != "" ]; then
-		title 'deploy - shared symlinks'
+		title 'remote: shared symlinks'
 	fi
 	if [ "$LINKED_DIRS" != "" ]; then
 			LINK_DIRS=$(echo "$LINKED_DIRS" | cut -d";" -f1)
@@ -38,7 +38,7 @@ exec_post_deploy() {
 	fi
 
 	cd $DEPLOY_DIR/current
-	title 'deploy - post deploy script'
+	title 'remote: post deploy script'
 	sh deploy/scripts/post_deploy.sh
 }
 
@@ -48,7 +48,7 @@ post_startup() {
 	fi
 
 	cd $DEPLOY_DIR/current
-	title 'deploy - post startup script'
+	title 'remote: post startup script'
 	sh deploy/scripts/post_startup.sh
 }
 
@@ -69,8 +69,6 @@ delete_old_releases() {
 }
 
 create_deploy_dir() {
-	title 'deploy - post receive hook'
-
 	if [ ! -d $DEPLOY_DIR ]; then
 			echo "Creating $DEPLOY_DIR"
 			mkdir -p $DEPLOY_DIR

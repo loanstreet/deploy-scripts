@@ -5,9 +5,10 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/post-receive-utils.sh
 
+title 'push: git-bare: post receive hook'
 deploy
 
-title 'starting application'
+title 'push: git-bare: starting application'
 echo "Restarting application"
 cd $DEPLOY_DIR/current
 . ./deploy/config.sh

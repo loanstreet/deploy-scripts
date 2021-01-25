@@ -17,6 +17,7 @@ ds_format() {
 	echo "LOG_DIR=\"$LOG_DIR\"" >> deploy-config.sh
 	COMMAND='nohup java -Dspring.profiles.active=$PROJECT_ENVIRONMENT -jar $PATH_TO_JAR --server.port=$SERVICE_PORT /tmp 2>> $LOG_DIR/stderr.log >> $LOG_DIR/stdout.log'
 	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
+	echo "RESTART_COMMAND=\"sh .\/deploy\/run.sh restart\"" >> deploy-config.sh
 
 	cat deploy-config.sh >> ./deploy/config.sh
 	success 'done'
