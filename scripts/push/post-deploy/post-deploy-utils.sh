@@ -92,3 +92,13 @@ update_symlinks() {
 
 	exec_post_deploy
 }
+
+restart_application() {
+	cd $DEPLOY_DIR/current
+	. ./deploy/config.sh
+	if [ "$RESTART_COMMAND" != "" ]; then
+		title 'remote: starting application'
+		echo "Restarting application"
+		sh -c "$RESTART_COMMAND"
+	fi
+}

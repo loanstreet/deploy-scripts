@@ -8,10 +8,6 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 title 'push: git-bare: post receive hook'
 deploy
 
-title 'push: git-bare: starting application'
-echo "Restarting application"
-cd $DEPLOY_DIR/current
-. ./deploy/config.sh
-sh -c "$RESTART_COMMAND"
+restart_application
 
 post_startup
