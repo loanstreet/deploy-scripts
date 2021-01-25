@@ -131,6 +131,14 @@ DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/deploy/config.sh"
 ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
+INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep -c 'run.sh')
+
+# If restart command used run.sh script, include it in the deployment
+if [ $INCLUDE_RUN_SH -gt 0 ]; then
+	cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/deploy"
+	echo 'RESTART_COMMAND="sh ./deploy/run.sh restart"' >> "$DEPLOY_CONFIG_SH"
+fi
+
 # Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
 if [ "$FORMAT" != "" ]; then
 	title "format: $FORMAT"
@@ -139,12 +147,6 @@ if [ "$FORMAT" != "" ]; then
 fi
 rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 
-INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep -c 'run.sh')
-
-# If restart command used run.sh script, include it in the deployment
-if [ $INCLUDE_RUN_SH -gt 0 ]; then
-	cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/deploy"
-fi
 # Copy all files under project environment-specific assets/ dir to the deployment
 if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
 	cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/deploy/"
