@@ -1,0 +1,41 @@
+{
+  "name": "reactjs-project",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html",
+    "dev-server": "browser-sync start -s -f . --no-notify --host 127.0.0.1 --port 37568"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "babel-preset-nano-react-app": "^0.1.0",
+    "parcel-bundler": "^1.12.4",
+    "browser-sync": "^2.26.7"
+  },
+  "babel": {
+    "presets": [
+      "nano-react-app"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        },
+        "babel-class-props"
+      ],
+      [
+        "@babel/plugin-transform-react-jsx",
+        {
+          "pragmaFrag": "React.Fragment"
+        }
+      ]
+    ]
+  }
+}

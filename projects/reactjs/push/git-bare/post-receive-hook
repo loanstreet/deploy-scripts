@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/post-receive-utils.sh
+
+deploy
+
+# if [ "$REACTJS_BUILD_LOCAL" != "true" ]; then
+# 	title 'deploy - build'
+# 	cd $DEPLOY_DIR/current
+# 	npm install
+# 	npm run build
+# fi
+
+post_startup

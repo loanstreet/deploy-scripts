@@ -1,0 +1,17 @@
+{
+  "name": "1591604421",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src.9b63da46.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "browser-sync start -s -f . --no-notify --host 127.0.0.1 --port 37568"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "phantomjs-prebuilt": "^2.1.16"
+  }
+}
