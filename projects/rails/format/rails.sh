@@ -5,6 +5,7 @@ ds_format() {
 
 	cd "$1"
 
+	info "Preparing deployment files for packaging ... "
 	git --work-tree=./ --git-dir=../repo/.git checkout -f 2>&1 | indent
 	PID_PATH=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/pids/$SERVICE_NAME.pid'
 	SOCKET_PATH='unix://'$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/sockets/$SERVICE_NAME.sock'
