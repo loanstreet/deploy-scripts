@@ -8,26 +8,27 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 deploy
 
 source $HOME/.bashrc
-source /etc/profile
+# source /etc/profile
 
 if [ ! -d $DEPLOY_DIR/shared/venv ] || [ "$(ls "$DEPLOY_DIR/shared/venv" | wc -l)" = "0" ]; then
-	title 'deploy - initialize virtual env'
+	title 'remote: initialize virtual env'
 	cd $DEPLOY_DIR/shared
+	printf "Initializing virtual environment at $DEPLOY_DIR/shared/venv ... "
 	python3 -m venv venv
+	success "done"
 fi
 
-title 'deploy - activate virtual env'
+title 'remote: activate virtual env'
 cd $DEPLOY_DIR/current
 source venv/bin/activate
-pip3 install -r deploy/requirements.txt 2>&1 | indent
+pip install -U pip
+pip3 install -r requirements.txt
 
-if [ "$MIGRATIONS" = true ]; then
+if [ "$FORMAT" = "django" ]; then
 	title 'deploy - Run Migrations'
 	cd $DEPLOY_DIR/current && ./manage.py migrate 2>&1 | indent
 fi
 
-title 'start application'
-echo "Restarting application"
-cd $DEPLOY_DIR/current && sh ./deploy/run.sh stop && sh ./deploy/run.sh start
+restart_application
 
 post_startup

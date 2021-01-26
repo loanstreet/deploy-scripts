@@ -1,3 +1,3 @@
 wheel
 uwsgi
-flask
+django<3

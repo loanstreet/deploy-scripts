@@ -1,8 +1,10 @@
-BUILD=python-uwsgi-flask
+TYPE=python
+FORMAT=django
+REPO=git@github.com-loanstreet:loanstreet/app-name.git
+
 DEPLOYMENT_DIR='$HOME/sites'
 DEPLOYMENT_SERVER=fincon-dev.finology.com.my
-DEPLOYMENT_SSH_USER=deploy
+DEPLOYMENT_SERVER_USER=deploy
 SERVICE_NAME=app-name
-GIT_REPO=git@github.com-loanstreet:loanstreet/app-name.git
 LINKED_DIRS="venv uploads logs tmp/sockets tmp/pids"
 # LINKED_FILES="config/database.yml"
