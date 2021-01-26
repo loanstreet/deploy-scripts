@@ -1,5 +1,5 @@
 ds_push() {
-	if [ "$1" = "" ] then
+	if [ "$1" = "" ]; then
 		error "push: git: Too few arguments given to ds_push"
 	fi
 

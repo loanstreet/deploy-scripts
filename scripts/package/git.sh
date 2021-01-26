@@ -1,9 +1,14 @@
 ds_package() {
 	if [ "$1" = "" ]; then
-		error "package: spring-boot: java: Too few arguments given"
+		error "package: git: Too few arguments given"
 	fi
 
 	cd "$1"
+
+	if [ "$DOCKERIZE" = "true" ]; then
+		copy_docker_files "$PROJECT_DEPLOY_DIR" $PROJECT_ENVIRONMENT "$1"
+	fi
+
 	git init 2>&1 | indent
 	git config user.name "deployer"
 	git config user.email "techgroup@loanstreet.com.my"

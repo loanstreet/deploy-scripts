@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  default:
+    image: django_project:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: default
+    volumes:
+    - ./../../shared:/shared
+    ports:
+      - 30000:3000
+    env_file:
+      - ./deploy/config.sh

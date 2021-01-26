@@ -1,3 +1,4 @@
 wheel
 uwsgi
 django<3
+tornado
