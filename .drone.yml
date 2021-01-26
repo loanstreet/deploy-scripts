@@ -55,4 +55,52 @@ volumes:
 - name: bundler
   host:
     path: /dronetmp/ruby-2.5.3/bundle
+
+---
+kind: pipeline
+name: test-django
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test-django
+  image: loanstreet-ubuntu-19.04/ruby:2.5
+  volumes:
+  - name: ssh
+    path: /root/.ssh
+  commands:
+  - service ssh start
+  - sh ./tests/django.sh
+
+
+volumes:
+- name: ssh
+  host:
+    path: /root/.ssh
+
+---
+kind: pipeline
+name: test-reactjs
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test-reactjs
+  image: loanstreet-ubuntu-19.04/ruby:2.5
+  volumes:
+  - name: ssh
+    path: /root/.ssh
+  commands:
+  - service ssh start
+  - sh ./tests/reactjs.sh
+
+
+volumes:
+- name: ssh
+  host:
+    path: /root/.ssh
 ...
