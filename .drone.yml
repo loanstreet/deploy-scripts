@@ -16,7 +16,7 @@ steps:
     path: /root/.m2
   commands:
   - service ssh start
-  - sh ./tests/java-mvnw.sh
+  - sh ./tests/java.sh
 
 volumes:
 - name: ssh
