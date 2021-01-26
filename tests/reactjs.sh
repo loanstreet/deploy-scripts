@@ -38,7 +38,7 @@ sleep 6
 SRV_SCRIPT_PID=$(ps -elf | grep 'tmp-webserver' | grep -v grep | awk '{print $4}')
 info "Temp Web Server PID: $SRV_SCRIPT_PID"
 title 'TEST - check web application'
-QT_QPA_PLATFORM="" phantomjs phantomjs.js > index.test.html 2>&1
+phantomjs phantomjs.js > index.test.html 2>&1
 printf 'Checking index page contents ... '
 if [ $(grep -c 'Welcome to React Parcel Micro App!' index.test.html) -eq 1 ]; then
 	success 'success!'
