@@ -94,6 +94,8 @@ steps:
   volumes:
   - name: ssh
     path: /root/.ssh
+  - name: tmpdir
+    path: /tmp/phantomjs
   commands:
   - . ~/.profile
   - service ssh start
@@ -104,4 +106,7 @@ volumes:
 - name: ssh
   host:
     path: /root/.ssh
+- name: tmpdir
+  host:
+    path: /dronetmp/tmp
 ...
