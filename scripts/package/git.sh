@@ -13,7 +13,7 @@ ds_package() {
 	if [ -d $PROJECT_SCRIPTS_DIR ]; then
 		cp -r $PROJECT_SCRIPTS_DIR "$1/deploy"
 		cd "$1"
-		git add deploy/scripts 2>&1 | indent
+		git add $INSTALL_DIR/scripts 2>&1 | indent
 		git commit . -m "added project scripts to server side deployment" 2>&1 | indent
 		info "Copied project deployment scripts to server side deployment"
 	fi

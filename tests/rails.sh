@@ -16,14 +16,16 @@ copy_deployment_files 'rails' $SCRIPT_PATH/resources/rails-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/rails-project
+PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/rails-project/config/deploy"
 mv config/deploy/environments/default config/deploy/environments/production
-echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SSH_USER=$USER\nGIT_REPO=file://$COPY_PROJECT_DIR/rails-project\nSERVICE_NAME=rails-deploy-test\nBUNDLE_PATH=/tmp/bundle\nLINKED_FILES=\nLINKED_DIRS=\"log tmp/pids tmp/cache tmp/sockets public/system\"" >> config/deploy/app-config.sh
+echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/rails-project\nSERVICE_NAME=rails-deploy-test\nBUNDLE_PATH=/tmp/bundle\nLINKED_FILES=\nLINKED_DIRS=\"log tmp/pids tmp/cache tmp/sockets public/system\"" >> config/deploy/app-config.sh
 echo "PROJECT_ENVIRONMENT=production\nGIT_BRANCH=master\nSERVICE_PORT=37566" >> config/deploy/environments/production/config.sh
 cat config/deploy/app-config.sh
 cat config/deploy/environments/production/config.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
-sh config/deploy/deploy.sh production
+#sh config/deploy/deploy.sh production
+PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh production
 cd $TEST_WORKING_DIR/rails-deploy-test/production/current
 title 'TEST - check web application'
 wget localhost:37566

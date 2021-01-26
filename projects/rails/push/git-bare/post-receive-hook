@@ -8,7 +8,7 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 deploy
 
 source $HOME/.bashrc
-source /etc/profile
+# source /etc/profile
 cd $DEPLOY_DIR/current
 
 title 'deploy - bundle install'
@@ -26,8 +26,6 @@ if [ "$ACTIVE_RECORD" != "false" ]; then
 	RAILS_ENV=$PROJECT_ENVIRONMENT $HOME/.rbenv/bin/rbenv exec bundle exec rake db:migrate 2>&1 | indent
 fi
 
-title 'start application'
-echo "Restarting application"
-cd $DEPLOY_DIR/current && sh ./config/deploy/run.sh stop && sh ./config/deploy/run.sh start
+restart_application
 
 post_startup

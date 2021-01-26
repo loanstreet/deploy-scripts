@@ -2,7 +2,7 @@ indent() { sed 's/.*\r//g; s/^/  /'; }
 
 line() {
 	printf "\033[1;36m"
-	if [ "$TERM" = "" ]; then
+	if [ "$TERM" = "" ] || [ "$TERM" = "dumb" ]; then
 		printf -- "-----------------------------------------------------------------------------------------\n"
 	else
 		printf %"$(tput cols)"s |tr " " "-"
@@ -25,7 +25,7 @@ success() {
 
 error() {
 	printf "\033[1;31m$1\033[0m\n"
-	exit
+	exit 1
 }
 
 warning() {
