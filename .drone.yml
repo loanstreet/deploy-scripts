@@ -79,34 +79,34 @@ volumes:
 - name: ssh
   host:
     path: /root/.ssh
+#
+# ---
+# kind: pipeline
+# name: test-reactjs
 
----
-kind: pipeline
-name: test-reactjs
+# platform:
+#   os: linux
+#   arch: amd64
 
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: test-reactjs
-  image: loanstreet-ubuntu-20.04/node:13
-  volumes:
-  - name: ssh
-    path: /root/.ssh
-  - name: tmpdir
-    path: /tmp/phantomjs
-  commands:
-  - . ~/.profile
-  - service ssh start
-  - sh ./tests/reactjs.sh
+# steps:
+# - name: test-reactjs
+#   image: loanstreet-ubuntu-20.04/node:13
+#   volumes:
+#   - name: ssh
+#     path: /root/.ssh
+#   - name: tmpdir
+#     path: /tmp/phantomjs
+#   commands:
+#   - . ~/.profile
+#   - service ssh start
+#   - sh ./tests/reactjs.sh
 
 
-volumes:
-- name: ssh
-  host:
-    path: /root/.ssh
-- name: tmpdir
-  host:
-    path: /dronetmp/tmp
+# volumes:
+# - name: ssh
+#   host:
+#     path: /root/.ssh
+# - name: tmpdir
+#   host:
+#     path: /dronetmp/tmp
 ...
