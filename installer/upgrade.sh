@@ -9,10 +9,15 @@ if [ "$1" = "" ] || [ ! -f "$1/app-config.sh" ]; then
 	error "No old deployment directory supplied"
 fi
 
+DSVER=$(grep 'ver_0.3' "$1/deploy.sh" | wc -l)
+
+if [ $DSVER -ne 1 ]; then
+	error "Can only upgrade from ver 0.3 to 0.5"
+fi
+
 . "$1/app-config.sh"
 
-PREFIX='deploy'
-
+PREFIX="deploy"
 if [ "$BUILD" = "" ]; then
 	error "Corrupt app-config.sh, no BUILD variable found"
 elif [ "$BUILD" = "rails" ]; then
@@ -23,38 +28,56 @@ TIMESTAMP=$(date +%s)
 TMP_DEPLOY="/tmp/deploy-scripts-upgrade-$TIMESTAMP"
 
 mkdir -p $TMP_DEPLOY
-sh $SCRIPT_PATH/install.sh $BUILD $TMP_DEPLOY --no-post-install
-rm -rf $TMP_DEPLOY/$PREFIX/environments/default
+cp -r "$1/"* "$TMP_DEPLOY/"
 
-cp "$1/app-config.sh" $TMP_DEPLOY/$PREFIX/app-config.sh
-if [ -f "$1/requirements.txt" ]; then
-	cp "$1/requirements.txt" $TMP_DEPLOY/$PREFIX/requirements.txt
+NEW_CFG_PATH="$TMP_DEPLOY/app-config.sh.new"
+
+while IFS= read -r line
+do
+	CHECK=$(echo $line | grep "BUILD" | wc -l)
+	CHECK_REPO=$(echo $line | grep "GIT_REPO" | wc -l)
+	CHECK_SSH_PRM=$(echo $line | grep "SSH_" | wc -l)
+	if [ $CHECK -eq 0 ]; then
+		if [ $CHECK_REPO -eq 1 ]; then
+			echo "REPO=$GIT_REPO" >> $NEW_CFG_PATH
+		elif [ $CHECK_SSH_PRM -eq 1 ]; then
+			:
+		else
+			echo $line >> $NEW_CFG_PATH
+		fi
+	else
+		if [ "$BUILD" = "java-mvnw" ] || [ "$BUILD" = "java-mvnw-lib" ]; then
+			echo "TYPE=java\nBUILD=mvnw\nFORMAT=spring-boot\n" >> $NEW_CFG_PATH
+		elif [ "$BUILD" = "python-uwsgi-flask" ]; then
+			echo "TYPE=python\nFORMAT=flask\n" >> $NEW_CFG_PATH
+		elif [ "$BUILD" = "python-django" ]; then
+			echo "TYPE=python\nFORMAT=django\n" >> $NEW_CFG_PATH
+		elif [ "$BUILD" = "reactjs" ]; then
+			echo "TYPE=reactjs\nBUILD=npm\n" >> $NEW_CFG_PATH
+		elif [ "$BUILD" = "rails" ]; then
+			echo "TYPE=rails\nFORMAT=rails\n" >> $NEW_CFG_PATH
+		fi
+	fi
+done < "$TMP_DEPLOY/app-config.sh"
+
+if [ "$DEPLOYMENT_SSH_USER" != "" ]; then
+	echo "DEPLOYMENT_SERVER_USER=$DEPLOYMENT_SSH_USER" >> $NEW_CFG_PATH
+fi
+if [ "$DEPLOYMENT_SSH_PORT" != "" ]; then
+	echo "DEPLOYMENT_SERVER_PORT=$DEPLOYMENT_SSH_PORT" >> $NEW_CFG_PATH
 fi
 
-info "Updating environments"
-
-cd "$1"
-ENVIRONMENTS=$(ls -d */)
-
-for i in $ENVIRONMENTS; do
-	info "Copying $i"
-	cp -r "$i" $TMP_DEPLOY/$PREFIX/environments/
-	cd "$TMP_DEPLOY/$PREFIX/environments/$i"
-	mkdir assets
-	if [ -f "nginx.conf" ]; then
-		mv nginx.conf assets/
-	fi
-	if [ -f "uwsgi.ini" ]; then
-		mv uwsgi.ini assets/
-	fi
-	cd "$1"
-	success "done"
-done
+info "Replacing old app-config.sh with new"
+mv $NEW_CFG_PATH "$TMP_DEPLOY/app-config.sh"
 
 info "Moving new deployment directory to old"
 cd "$1/.."
+if [ -d "$1/../.deploy-old" ]; then
+	mv "$1/../.deploy-old" "$1/../.deploy-older"
+fi
 mv deploy .deploy-old
-mv $TMP_DEPLOY/$PREFIX ./
+mkdir deploy
+mv $TMP_DEPLOY/* $1/
 success "done"
 
 success "Migrated old deployment structure in $1 to $(cat $SCRIPT_PATH/../.VERSION)"
