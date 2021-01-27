@@ -38,6 +38,7 @@ sleep 6
 SRV_SCRIPT_PID=$(ps -elf | grep 'tmp-webserver' | grep -v grep | awk '{print $4}')
 info "Temp Web Server PID: $SRV_SCRIPT_PID"
 title 'TEST - check web application'
+export PATH="$TEST_WORKING_DIR/reactjs-deploy-test/default/current/node_modules/phantomjs-prebuilt/lib/phantom/bin:$PATH"
 phantomjs phantomjs.js > index.test.html 2>&1
 printf 'Checking index page contents ... '
 if [ $(grep -c 'Welcome to React Parcel Micro App!' index.test.html) -eq 1 ]; then
