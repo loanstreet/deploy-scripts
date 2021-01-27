@@ -140,7 +140,7 @@ DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/$INSTALL_DIR/config.sh"
 ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
-INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep -c 'run.sh')
+INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
 # If restart command used run.sh script, include it in the deployment
 if [ $INCLUDE_RUN_SH -gt 0 ]; then
