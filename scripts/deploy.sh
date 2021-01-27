@@ -202,7 +202,7 @@ fi
 cd $BUILD_REPO
 # Quit if no target server is specified for delivering the deployment to
 if [ "$DEPLOYMENT_SERVER" = "" ]; then
-	clean_dirs
+	ds_clean_dirs
 	exit
 fi
 
