@@ -24,13 +24,44 @@ elif [ "$BUILD" = "rails" ]; then
 	PREFIX='config/deploy'
 fi
 
+TYPE=""
+FORMAT=""
+
+if [ "$BUILD" = "java-mvnw" ] || [ "$BUILD" = "java-mvnw-lib" ]; then
+	TYPE="java"
+	BUILD="mvnw"
+	FORMAT="spring-boot"
+elif [ "$BUILD" = "python-uwsgi-flask" ]; then
+	TYPE="python"
+	BUILD=""
+	FORMAT="flask"
+elif [ "$BUILD" = "python-django" ]; then
+	TYPE="python"
+	BUILD=""
+	FORMAT="django"
+elif [ "$BUILD" = "reactjs" ]; then
+	TYPE="reactjs"
+	BUILD="npm"
+elif [ "$BUILD" = "rails" ]; then
+	TYPE="rails"
+	BUILD=""
+	FORMAT="rails"
+fi
+
 TIMESTAMP=$(date +%s)
 TMP_DEPLOY="/tmp/deploy-scripts-upgrade-$TIMESTAMP"
 
 mkdir -p $TMP_DEPLOY
-cp -r "$1/"* "$TMP_DEPLOY/"
+sh $SCRIPT_PATH/install.sh $TYPE $TMP_DEPLOY --no-post-install
+rm -rf $TMP_DEPLOY/$PREFIX/environments/default
 
-NEW_CFG_PATH="$TMP_DEPLOY/app-config.sh.new"
+NEW_CFG_PATH="$TMP_DEPLOY/$PREFIX/app-config.sh.new"
+if [ "$BUILD" != "" ]; then
+	echo "BUILD=$BUILD\n" >> $NEW_CFG_PATH
+fi
+if [ "$FORMAT" != "" ]; then
+	echo "FORMAT=$FORMAT\n" >> $NEW_CFG_PATH
+fi
 
 while IFS= read -r line
 do
@@ -45,20 +76,8 @@ do
 		else
 			echo $line >> $NEW_CFG_PATH
 		fi
-	else
-		if [ "$BUILD" = "java-mvnw" ] || [ "$BUILD" = "java-mvnw-lib" ]; then
-			echo "TYPE=java\nBUILD=mvnw\nFORMAT=spring-boot\n" >> $NEW_CFG_PATH
-		elif [ "$BUILD" = "python-uwsgi-flask" ]; then
-			echo "TYPE=python\nFORMAT=flask\n" >> $NEW_CFG_PATH
-		elif [ "$BUILD" = "python-django" ]; then
-			echo "TYPE=python\nFORMAT=django\n" >> $NEW_CFG_PATH
-		elif [ "$BUILD" = "reactjs" ]; then
-			echo "TYPE=reactjs\nBUILD=npm\n" >> $NEW_CFG_PATH
-		elif [ "$BUILD" = "rails" ]; then
-			echo "TYPE=rails\nFORMAT=rails\n" >> $NEW_CFG_PATH
-		fi
 	fi
-done < "$TMP_DEPLOY/app-config.sh"
+done < "$1/app-config.sh"
 
 if [ "$DEPLOYMENT_SSH_USER" != "" ]; then
 	echo "DEPLOYMENT_SERVER_USER=$DEPLOYMENT_SSH_USER" >> $NEW_CFG_PATH
@@ -67,17 +86,19 @@ if [ "$DEPLOYMENT_SSH_PORT" != "" ]; then
 	echo "DEPLOYMENT_SERVER_PORT=$DEPLOYMENT_SSH_PORT" >> $NEW_CFG_PATH
 fi
 
-info "Replacing old app-config.sh with new"
-mv $NEW_CFG_PATH "$TMP_DEPLOY/app-config.sh"
+mv $NEW_CFG_PATH "$TMP_DEPLOY/$PREFIX/app-config.sh"
 
 info "Moving new deployment directory to old"
 cd "$1/.."
 if [ -d "$1/../.deploy-old" ]; then
 	mv "$1/../.deploy-old" "$1/../.deploy-older"
 fi
-mv deploy .deploy-old
-mkdir deploy
-mv $TMP_DEPLOY/* $1/
+cp -r deploy .deploy-old
+info "Replacing old app-config.sh with new"
+mv "$TMP_DEPLOY/$PREFIX/app-config.sh" "$1/app-config.sh"
+info "Replacing old deploy.sh with new"
+mv "$TMP_DEPLOY/$PREFIX/deploy.sh" "$1/deploy.sh"
+
 success "done"
 
 success "Migrated old deployment structure in $1 to $(cat $SCRIPT_PATH/../.VERSION)"
