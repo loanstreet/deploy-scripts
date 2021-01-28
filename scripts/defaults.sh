@@ -7,3 +7,4 @@ PUSH=git-bare
 PACKAGE=git
 RESTART_COMMAND="sh deploy/run.sh restart"
 DEPLOYMENT_DIR='$HOME/sites'
+DOCKER_COMPOSE_OPTS="--no-cache"

@@ -7,5 +7,5 @@ ds_package() {
 
 	copy_docker_files "$PROJECT_DEPLOY_DIR" $PROJECT_ENVIRONMENT "$1"
 
-	docker-compose build
+	docker-compose build $DOCKER_COMPOSE_OPTS
 }
