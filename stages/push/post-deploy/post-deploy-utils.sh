@@ -95,15 +95,23 @@ update_symlinks() {
 
 restart_application() {
 	cd $DEPLOY_DIR/current
-	# To be fixed later
-	if [ -f "./config/deploy/config.sh" ]; then
-		. ./config/deploy/config.sh
-	else
-		. ./deploy/config.sh
-	fi
+	. ./"$DS_DIR/config.sh"
 	if [ "$RESTART_COMMAND" != "" ]; then
 		title 'remote: starting application'
 		echo "Restarting application"
 		sh -c "$RESTART_COMMAND"
 	fi
+}
+
+dockerize() {
+	cd $DEPLOY_DIR/current
+	if [ ! -f "docker-compose.yml" ]; then
+		error "No docker-compose.yml found. Docker image management is currently only supported through docker-compose"
+	fi
+	if [ ! -f "Dockerfile" ]; then
+		error "No Dockerfile supplied"
+	fi
+	title 'remote: dockerizing'
+	docker-compose down
+	docker-compose up --build -d
 }

@@ -16,6 +16,7 @@ DEPLOY_DIR=$DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT
 WORK_TREE=$DEPLOY_DIR/releases/$(date +%s)
 
 deploy() {
+	title 'remote: deploy'
 	create_deploy_dir
 
 	echo "Checking out working copy"

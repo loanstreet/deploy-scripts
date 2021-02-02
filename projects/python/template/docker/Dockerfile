@@ -14,8 +14,8 @@ RUN rm -rf Dockerfile docker-compose.yml
 
 RUN python3 -m venv venv
 RUN . venv/bin/activate && pip install -U pip && pip install -r requirements.txt
-RUN echo 'cd /app\n. venv/bin/activate\npython run_tornado.py --port=3000' > start.sh
+RUN echo 'cd /app\n. venv/bin/activate\npython manage.py runserver 0.0.0.0:8000' > start.sh
 
-EXPOSE 3000
+EXPOSE 8000
 
 CMD ["sh", "start.sh"]

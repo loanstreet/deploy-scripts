@@ -10,25 +10,29 @@ deploy
 source $HOME/.bashrc
 # source /etc/profile
 
-if [ ! -d $DEPLOY_DIR/shared/venv ] || [ "$(ls "$DEPLOY_DIR/shared/venv" | wc -l)" = "0" ]; then
-	title 'remote: initialize virtual env'
-	cd $DEPLOY_DIR/shared
-	printf "Initializing virtual environment at $DEPLOY_DIR/shared/venv ... "
-	python3 -m venv venv
-	success "done"
+if [ "$DOCKERIZE" = "true" ]; then
+	dockerize
+else
+	if [ ! -d $DEPLOY_DIR/shared/venv ] || [ "$(ls "$DEPLOY_DIR/shared/venv" | wc -l)" = "0" ]; then
+		title 'remote: initialize virtual env'
+		cd $DEPLOY_DIR/shared
+		printf "Initializing virtual environment at $DEPLOY_DIR/shared/venv ... "
+		python3 -m venv venv
+		success "done"
+	fi
+
+	title 'remote: activate virtual env'
+	cd $DEPLOY_DIR/current
+	source venv/bin/activate
+	pip install -U pip
+	pip3 install -r requirements.txt
+
+	if [ "$FORMAT" = "django" ]; then
+		title 'remote: django: run migrations'
+		cd $DEPLOY_DIR/current && ./manage.py migrate 2>&1 | indent
+	fi
+
+	restart_application
+
+	post_startup
 fi
-
-title 'remote: activate virtual env'
-cd $DEPLOY_DIR/current
-source venv/bin/activate
-pip install -U pip
-pip3 install -r requirements.txt
-
-if [ "$FORMAT" = "django" ]; then
-	title 'deploy - Run Migrations'
-	cd $DEPLOY_DIR/current && ./manage.py migrate 2>&1 | indent
-fi
-
-restart_application
-
-post_startup

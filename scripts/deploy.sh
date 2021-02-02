@@ -140,6 +140,9 @@ DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/$INSTALL_DIR/config.sh"
 ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
+# Include deployment files location in the deployment config
+echo "DS_DIR=$INSTALL_DIR" >> "$DEPLOY_CONFIG_SH"
+
 INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
 # If restart command used run.sh script, include it in the deployment
@@ -198,11 +201,18 @@ if [ "$DEPLOYMENT_SERVER" = "" ]; then
 fi
 
 # Push the packaged deployment files using ds_push() to the deployment server
-title "push: $PUSH"
 ds_set_push_type
 if [ "$PUSH" != "" ]; then
+	title "push: $PUSH"
 	. "$SCRIPT_PATH/../stages/push/$PUSH.sh"
 	ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
+fi
+
+# Run post push tasks using ds_post_push()
+if [ "$POST_PUSH" != "" ]; then
+	title "post-push: $POST_PUSH"
+	. "$SCRIPT_PATH/../stages/post-push/$POST_PUSH.sh"
+	ds_post_push $DEPLOY_PACKAGE_DIR
 fi
 
 ds_clean_dirs
