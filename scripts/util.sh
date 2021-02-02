@@ -168,4 +168,16 @@ copy_docker_files() {
 			error "No docker-compose.yml found"
 			structure_error_stop
 	fi
+
+	if [ "$DOCKER_ADD_SSH_KEY" != "" ]; then
+		DOCKER_ADD_SSH_PUBLIC_KEY="$DOCKER_ADD_SSH_KEY.pub"
+		if [ -f "$DOCKER_ADD_SSH_KEY" ] && [ -f "$DOCKER_ADD_SSH_KEY.pub" ]; then
+			info "Copying keys ... "
+			info "\t$DOCKER_ADD_SSH_KEY"
+			info "\t$DOCKER_ADD_SSH_PUBLIC_KEY"
+			cp "$DOCKER_ADD_SSH_KEY" $DESTINATION_DIR
+			cp "$DOCKER_ADD_SSH_PUBLIC_KEY" $DESTINATION_DIR
+			success "done"
+		fi
+	fi
 }
