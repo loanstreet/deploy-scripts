@@ -107,7 +107,7 @@ ds_set_repo_type
 title "repo: checkout: $REPO_TYPE"
 info "Creating repo to build program at $BUILD_REPO"
 # Get and run ds_repo_fetch() function for project repo type
-. "$SCRIPT_PATH/repo/$REPO_TYPE.sh"
+. "$SCRIPT_PATH/../stages/repo/$REPO_TYPE.sh"
 ds_repo_fetch $REPO $BUILD_REPO
 
 # Execute any custom pre-build scripts
@@ -164,7 +164,7 @@ fi
 if [ "$PACKAGE" != "" ]; then
 	# Package the deployment files in the desired format using ds_package() to be ready for delivery to deployment target
 	title "package: $PACKAGE"
-	. "$SCRIPT_PATH/package/$PACKAGE.sh"
+	. "$SCRIPT_PATH/../stages/package/$PACKAGE.sh"
 	ds_package $DEPLOY_PACKAGE_DIR
 fi
 
@@ -180,15 +180,6 @@ fi
 # 	git add . 2>&1 | indent
 # 	git commit . -m "Added resource directories to deployment" 2>&1 | indent
 # 	info "Copied resource files to deployment"
-# fi
-
-# if [ "$DOCKERIZE" = true ]; then
-# 	copy_docker_files $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT $DEPLOY_REPO
-
-# 	cd $DEPLOY_REPO
-# 	git add . 2>&1 | indent
-# 	git commit . -m "Added docker files to deployment" 2>&1 | indent
-# 	info "Copied docker files to deployment"
 # fi
 
 # Run any post-build scripts if they were supplied
@@ -210,7 +201,7 @@ fi
 title "push: $PUSH"
 ds_set_push_type
 if [ "$PUSH" != "" ]; then
-	. "$SCRIPT_PATH/push/$PUSH.sh"
+	. "$SCRIPT_PATH/../stages/push/$PUSH.sh"
 	ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
 fi
 
