@@ -20,9 +20,9 @@ rm -rf $TEST_WORKING_DIR
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $COPY_PROJECT_DIR
-sleep 5
+sleep 20
 title 'TEST - check web application'
-wget --no-check-certificate http://deploy-scripts.finology.com.my/
+wget http://deploy-scripts.finology.com.my/
 printf 'Checking index page contents ... '
 if [ $(grep -c 'The install worked successfully! Congratulations!' index.html) -eq 1 ]; then
 	success 'success!'
