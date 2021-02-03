@@ -121,34 +121,34 @@ volumes:
     host:
       path: /root/.docker
 
----
-kind: pipeline
-name: test-docker
+# ---
+# kind: pipeline
+# name: test-docker
 
-platform:
-  os: linux
-  arch: amd64
+# platform:
+#   os: linux
+#   arch: amd64
 
-steps:
-  - name: test-docker
-    image: loanstreet-ubuntu-20.04/docker:19
-    volumes:
-      - name: ssh
-        path: /root/.ssh
-      - name: dockersock
-        path: /var/run/docker.sock
-    commands:
-      - service ssh start
-      - sh ./tests/docker.sh
+# steps:
+#   - name: test-docker
+#     image: loanstreet-ubuntu-20.04/docker:19
+#     volumes:
+#       - name: ssh
+#         path: /root/.ssh
+#       - name: dockersock
+#         path: /var/run/docker.sock
+#     commands:
+#       - service ssh start
+#       - sh ./tests/docker.sh
 
 
-volumes:
-  - name: ssh
-    host:
-      path: /root/.ssh
-  - name: dockersock
-    host:
-      path: /var/run/docker.sock
+# volumes:
+#   - name: ssh
+#     host:
+#       path: /root/.ssh
+#   - name: dockersock
+#     host:
+#       path: /var/run/docker.sock
 #
 # ---
 # kind: pipeline
