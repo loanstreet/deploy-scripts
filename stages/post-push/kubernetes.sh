@@ -127,7 +127,7 @@ ds_post_push() {
 
 			ds_debug_cat "$KUBE_SVC_FILE"
 
-			yamllint "$KUBE_SVC_FILE"
+			# yamllint "$KUBE_SVC_FILE"
 
 			KUBE_SERVICE_CFG="$KUBE_SVC_FILE"
 		fi
