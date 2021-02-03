@@ -11,6 +11,9 @@ ds_kube_ingress_nginx() {
 	TIMESTAMP=$(date '+%s')
 	KUBERNETES_NGINX_CONFIG="$KUBERNETES_HOME/$KUBERNETES_CLUSTER-ingress-nginx-$TIMESTAMP.yaml"
 	cp "$SCRIPT_PATH/../stages/post-push/kubernetes-resources/ingress-nginx.yaml" "$KUBERNETES_NGINX_CONFIG"
+	if [ "$KUBERNETES_CERT_MANAGER" != "" ]; then
+		echo "    cert-manager.io/cluster-issuer: \"$KUBERNETES_CERT_MANAGER\"" >> "$KUBERNETES_NGINX_CONFIG"
+	fi
 	echo "spec:\n  rules:" >> "$KUBERNETES_NGINX_CONFIG"
 
 	HOST_CFG=$(cat <<-END
@@ -22,15 +25,40 @@ ds_kube_ingress_nginx() {
               servicePort: $3
 END
 	)
-	echo "$HOST_CFG" > "$NGINX_SITES/$1"
 
+	HOST_FILE="$NGINX_SITES/$1"
+	if [ "$KUBERNETES_TLS" = "true" ]; then
+		if [ -f "$HOST_FILE" ]; then
+			rm -f $HOST_FILE
+		fi
+		HOST_FILE="$NGINX_SITES/tls_$1"
+	fi
+	echo "$HOST_CFG" > "$HOST_FILE"
+
+	TLS_HOSTS=""
 	SITES=$(ls $NGINX_SITES/)
 	for i in $SITES; do
-		cat "$NGINX_SITES/$i" >> "$KUBERNETES_NGINX_CONFIG"
+		TLS=$(echo $i | cut -c -4)
+		if [ "$TLS" = "tls_" ]; then
+			TLS_HOST=$(echo $i | cut -d_ -f2)
+			TLS_HOSTS="$TLS_HOSTS $TLS_HOST"
+		fi
+		cat "$HOST_FILE" >> "$KUBERNETES_NGINX_CONFIG"
 	done
 
+	debug "TLS Hosts: $TLS_HOSTS"
+
+	if [ "$TLS_HOSTS" != "" ]; then
+		echo "\n  tls:\n    - hosts:" >> "$KUBERNETES_NGINX_CONFIG"
+		TLS_LIST=$(echo "$TLS_HOSTS" | cut -d";" -f1)
+		for j in $TLS_LIST; do
+			echo "      - $j" >> "$KUBERNETES_NGINX_CONFIG"
+		done
+		echo "      secretName: ingress-tls" >> "$KUBERNETES_NGINX_CONFIG"
+	fi
+
 	ds_debug_cat "$KUBERNETES_NGINX_CONFIG"
-	yamllint "$KUBERNETES_NGINX_CONFIG"
+	# yamllint "$KUBERNETES_NGINX_CONFIG"
 
 	if [ "$?" = "0" ]; then
 		kubectl apply -f "$KUBERNETES_NGINX_CONFIG"
@@ -38,7 +66,7 @@ END
 	else
 		error "Error encountered while generating ingress-nginx config"
 	fi
-	rm -f "$KUBERNETES_NGINX_CONFIG" "$NGINX_SITES/$1"
+	rm -f "$KUBERNETES_NGINX_CONFIG"
 }
 
 ds_post_push() {
@@ -107,19 +135,18 @@ ds_post_push() {
 	else
 		info "Kubernetes service $KUBE_SERVICE exists. Applying new image"
 		debug "Setting new image for kube deployment"
-		# kubectl set image deployment $KUBE_SERVICE $KUBE_SERVICE=$TAG
+		kubectl set image deployment $KUBE_SERVICE $KUBE_SERVICE=$TAG
 	fi
 
 	if [ "$KUBERNETES_NGINX_SERVICE_HOST" = "" ]; then
 		KUBERNETES_NGINX_SERVICE_HOST="$SERVICE_NAME"
 	fi
 
-	if [ ! -f "$KUBERNETES_HOME/sites/$KUBERNETES_CLUSTER/$KUBERNETES_NGINX_SERVICE_HOST" ]; then
-		if [ "$KUBERNETES_NGINX" = "true" ]; then
-			if [ "$KUBERNETES_NGINX_SERVICE_PORT" = "" ]; then
-				KUBERNETES_NGINX_SERVICE_PORT="80"
-			fi
-			ds_kube_ingress_nginx "$KUBERNETES_NGINX_SERVICE_HOST" "$KUBE_SERVICE" "$KUBERNETES_NGINX_SERVICE_PORT"
+
+	if [ "$KUBERNETES_NGINX" = "true" ]; then
+		if [ "$KUBERNETES_NGINX_SERVICE_PORT" = "" ]; then
+			KUBERNETES_NGINX_SERVICE_PORT="80"
 		fi
+		ds_kube_ingress_nginx "$KUBERNETES_NGINX_SERVICE_HOST" "$KUBE_SERVICE" "$KUBERNETES_NGINX_SERVICE_PORT"
 	fi
 }
