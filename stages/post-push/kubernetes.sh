@@ -14,7 +14,7 @@ ds_kube_ingress_nginx() {
 	TIMESTAMP=$(date '+%s')
 	KUBERNETES_NGINX_CONFIG="$KUBERNETES_HOME/$KUBERNETES_CLUSTER-ingress-nginx-$TIMESTAMP.yaml"
 	cp "$SCRIPT_PATH/../stages/post-push/kubernetes-resources/ingress-nginx.yaml" "$KUBERNETES_NGINX_CONFIG"
-	if [ "$KUBERNETES_CERT_MANAGER" != "" ]; then
+	if [ "$KUBERNETES_CERT_MANAGER" != "" ] && [ "$KUBERNETES_TLS" = "true" ]; then
 		echo "    cert-manager.io/cluster-issuer: \"$KUBERNETES_CERT_MANAGER\"" >> "$KUBERNETES_NGINX_CONFIG"
 	fi
 	echo "spec:\n  rules:" >> "$KUBERNETES_NGINX_CONFIG"
