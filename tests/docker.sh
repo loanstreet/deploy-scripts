@@ -19,6 +19,7 @@ title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $TEST_WORKING_DIR/python-deploy-test/default/current
+sleep 5
 title 'TEST - check web application'
 wget 127.0.0.1:8000
 printf 'Checking index page contents ... '

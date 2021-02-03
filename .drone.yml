@@ -80,35 +80,6 @@ volumes:
     host:
       path: /root/.ssh
 
-# ---
-# kind: pipeline
-# name: test-docker
-
-# platform:
-#   os: linux
-#   arch: amd64
-
-# steps:
-# - name: test-docker
-#   image: loanstreet-ubuntu-20.04/docker:19
-#   volumes:
-#   - name: ssh
-#     path: /root/.ssh
-#   - name: dockersock
-#     path: /var/run/docker.sock
-#   commands:
-#   - service ssh start
-#   - sh ./tests/docker.sh
-
-
-# volumes:
-# - name: ssh
-#   host:
-#     path: /root/.ssh
-# - name: dockersock
-#   host:
-#     path: /var/run/docker.sock
-
 ---
 kind: pipeline
 name: test-kubernetes
@@ -125,6 +96,8 @@ steps:
         path: /root/.ssh
       - name: kube
         path: /root/.kube
+      - name: docker
+        path: /root/.docker
       - name: dockersock
         path: /var/run/docker.sock
     commands:
@@ -144,6 +117,38 @@ volumes:
   - name: kube
     host:
       path: /root/.kube
+  - name: docker
+    host:
+      path: /root/.docker
+
+---
+kind: pipeline
+name: test-docker
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: test-docker
+    image: loanstreet-ubuntu-20.04/docker:19
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - service ssh start
+      - sh ./tests/docker.sh
+
+
+volumes:
+  - name: ssh
+    host:
+      path: /root/.ssh
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
 #
 # ---
 # kind: pipeline
