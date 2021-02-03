@@ -11,7 +11,8 @@ ds_package() {
 
 	if [ $TAG -eq 0 ]; then
 		TIMESTAMP=$(date +%Y%m%d%H%M%S)
-		TAG="$SERVICE_NAME-$PROJECT_ENVIRONMENT:$TIMESTAMP"
+		SRV_NAME=$(echo $SERVICE_NAME | cut -d"." -f1)
+		TAG="$SRV_NAME-$PROJECT_ENVIRONMENT:$TIMESTAMP"
 		BUILDSTR=$(grep 'build:' docker-compose.yml)
 		if [ "$BUILDSTR" != "" ]; then
 			sed -i "s/build\:/image\: $TAG\n$BUILDSTR/g" docker-compose.yml
