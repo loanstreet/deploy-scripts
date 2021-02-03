@@ -108,6 +108,42 @@ volumes:
 - name: dockersock
   host:
     path: /var/run/docker.sock
+
+---
+kind: pipeline
+name: test-kubernetes
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test-docker
+  image: loanstreet-ubuntu-20.04/kube:1.19
+  volumes:
+  - name: ssh
+    path: /root/.ssh
+  - name: kube
+    path: /root/.kube
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  - service ssh start
+  # Test on existing development cluster
+  - echo '172.104.38.26        python.local' >> /etc/hosts
+  - sh ./tests/kubernetes.sh
+
+
+volumes:
+- name: ssh
+  host:
+    path: /root/.ssh
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
+- name: kube
+  host:
+    path: /root/.kube
 #
 # ---
 # kind: pipeline

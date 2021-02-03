@@ -23,6 +23,12 @@ success() {
 	printf "\033[1;32m$1\033[0m\n"
 }
 
+debug() {
+	if [ "$DS_DEBUG" = "true" ]; then
+		printf "\033[1;35m$1\033[0m\n"
+	fi
+}
+
 error() {
 	printf "\033[1;31m$1\033[0m\n"
 	exit 1
@@ -124,6 +130,22 @@ check_structure_ver_03() {
 	else
 		success "found"
 	fi
+}
+
+ds_debug_cat() {
+	if [ "$1" = "" ]; then
+		return
+	fi
+	CONT=$(cat $1)
+	debug "$CONT"
+}
+
+ds_debug_exec() {
+	if [ "$1" = "" ]; then
+		return
+	fi
+	CONT=$(sh -c "$1")
+	debug "$CONT"
 }
 
 copy_docker_files() {

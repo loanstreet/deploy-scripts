@@ -9,6 +9,8 @@ if [ "$USER" = "" ]; then
 	export USER="root"
 fi
 
+DS_DEBUG=true
+
 cd $SCRIPT_PATH/../
 COPY_PROJECT_DIR="/tmp/deploy-scripts/projects"
 TEST_WORKING_DIR="/tmp/deploy-scripts/test"

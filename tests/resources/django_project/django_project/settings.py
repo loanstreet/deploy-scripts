@@ -25,7 +25,9 @@ SECRET_KEY = '=bq5#a2lo^j8m@un1mkg+s*1issa_!sa_^y#3xkg7f9(9#=x#y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "pythontest.local"
+]
 
 
 # Application definition
