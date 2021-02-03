@@ -26,7 +26,9 @@ SECRET_KEY = '=bq5#a2lo^j8m@un1mkg+s*1issa_!sa_^y#3xkg7f9(9#=x#y'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "pythontest.local"
+    "pythontest.local",
+    "127.0.0.1",
+    "localhost"
 ]
 
 

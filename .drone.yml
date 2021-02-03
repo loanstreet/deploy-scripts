@@ -118,7 +118,7 @@ platform:
   arch: amd64
 
 steps:
-  - name: test-docker
+  - name: test-kubernetes
     image: loanstreet-ubuntu-20.04/kube:1.19
     volumes:
       - name: ssh
