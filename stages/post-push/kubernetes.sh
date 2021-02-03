@@ -92,7 +92,8 @@ ds_post_push() {
 		error "post-push: kubernetes: Failed to look up tag in docker-compose.yml"
 	fi
 
-	KUBE_SERVICE="$SERVICE_NAME-$PROJECT_ENVIRONMENT"
+	SRV_NAME=$(echo $SERVICE_NAME | cut -d"." -f1)
+	KUBE_SERVICE="$SRV_NAME-$PROJECT_ENVIRONMENT"
 
 	EXISTING_SERVICE=$(kubectl get services | grep "$KUBE_SERVICE" | wc -l)
 	if [ $EXISTING_SERVICE -eq 0 ]; then
