@@ -7,24 +7,24 @@ platform:
   arch: amd64
 
 steps:
-- name: test-java-mvnw
-  image: loanstreet-ubuntu-19.04/java:8
-  volumes:
-  - name: ssh
-    path: /root/.ssh
-  - name: maven
-    path: /root/.m2
-  commands:
-  - service ssh start
-  - sh ./tests/java.sh
+  - name: test-java-mvnw
+    image: loanstreet-ubuntu-19.04/java:8
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+      - name: maven
+        path: /root/.m2
+    commands:
+      - service ssh start
+      - sh ./tests/java.sh
 
 volumes:
-- name: ssh
-  host:
-    path: /root/.ssh
-- name: maven
-  host:
-    path: /dronetmp/m2
+  - name: ssh
+    host:
+      path: /root/.ssh
+  - name: maven
+    host:
+      path: /dronetmp/m2
 
 ---
 kind: pipeline
@@ -35,26 +35,26 @@ platform:
   arch: amd64
 
 steps:
-- name: test-rails
-  image: loanstreet-ubuntu-19.04/ruby:2.5
-  volumes:
-  - name: ssh
-    path: /root/.ssh
-  - name: bundler
-    path: /drone/bundler
-  commands:
-  - ln -sf /drone/bundler /tmp/bundle
-  - service ssh start
-  - sh ./tests/rails.sh
+  - name: test-rails
+    image: loanstreet-ubuntu-19.04/ruby:2.5
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+      - name: bundler
+        path: /drone/bundler
+    commands:
+      - ln -sf /drone/bundler /tmp/bundle
+      - service ssh start
+      - sh ./tests/rails.sh
 
 
 volumes:
-- name: ssh
-  host:
-    path: /root/.ssh
-- name: bundler
-  host:
-    path: /dronetmp/ruby-2.5.3/bundle
+  - name: ssh
+    host:
+      path: /root/.ssh
+  - name: bundler
+    host:
+      path: /dronetmp/ruby-2.5.3/bundle
 
 ---
 kind: pipeline
@@ -65,49 +65,49 @@ platform:
   arch: amd64
 
 steps:
-- name: test-django
-  image: loanstreet-ubuntu-20.04/python:3.7
-  volumes:
-  - name: ssh
-    path: /root/.ssh
-  commands:
-  - service ssh start
-  - sh ./tests/django.sh
+  - name: test-django
+    image: loanstreet-ubuntu-20.04/python:3.7
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+    commands:
+      - service ssh start
+      - sh ./tests/django.sh
 
 
 volumes:
-- name: ssh
-  host:
-    path: /root/.ssh
-
----
-kind: pipeline
-name: test-docker
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: test-docker
-  image: loanstreet-ubuntu-20.04/docker:19
-  volumes:
   - name: ssh
-    path: /root/.ssh
-  - name: dockersock
-    path: /var/run/docker.sock
-  commands:
-  - service ssh start
-  - sh ./tests/docker.sh
+    host:
+      path: /root/.ssh
+
+# ---
+# kind: pipeline
+# name: test-docker
+
+# platform:
+#   os: linux
+#   arch: amd64
+
+# steps:
+# - name: test-docker
+#   image: loanstreet-ubuntu-20.04/docker:19
+#   volumes:
+#   - name: ssh
+#     path: /root/.ssh
+#   - name: dockersock
+#     path: /var/run/docker.sock
+#   commands:
+#   - service ssh start
+#   - sh ./tests/docker.sh
 
 
-volumes:
-- name: ssh
-  host:
-    path: /root/.ssh
-- name: dockersock
-  host:
-    path: /var/run/docker.sock
+# volumes:
+# - name: ssh
+#   host:
+#     path: /root/.ssh
+# - name: dockersock
+#   host:
+#     path: /var/run/docker.sock
 
 ---
 kind: pipeline
@@ -118,32 +118,32 @@ platform:
   arch: amd64
 
 steps:
-- name: test-docker
-  image: loanstreet-ubuntu-20.04/kube:1.19
-  volumes:
-  - name: ssh
-    path: /root/.ssh
-  - name: kube
-    path: /root/.kube
-  - name: dockersock
-    path: /var/run/docker.sock
-  commands:
-  - service ssh start
-  # Test on existing development cluster
-  - echo '172.104.38.26        python.local' >> /etc/hosts
-  - sh ./tests/kubernetes.sh
+  - name: test-docker
+    image: loanstreet-ubuntu-20.04/kube:1.19
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+      - name: kube
+        path: /root/.kube
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - service ssh start
+      # Test on existing development cluster
+      - echo '172.104.38.26        python.local' >> /etc/hosts
+      - sh ./tests/kubernetes.sh
 
 
 volumes:
-- name: ssh
-  host:
-    path: /root/.ssh
-- name: dockersock
-  host:
-    path: /var/run/docker.sock
-- name: kube
-  host:
-    path: /root/.kube
+  - name: ssh
+    host:
+      path: /root/.ssh
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
+  - name: kube
+    host:
+      path: /root/.kube
 #
 # ---
 # kind: pipeline
