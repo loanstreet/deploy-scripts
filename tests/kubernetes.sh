@@ -20,6 +20,7 @@ rm -rf $TEST_WORKING_DIR
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $COPY_PROJECT_DIR
+sleep 5
 title 'TEST - check web application'
 wget http://pythontest.local/
 printf 'Checking index page contents ... '
