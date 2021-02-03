@@ -32,7 +32,7 @@ fi
 export KUBECONFIG="$HOME/.kube/dev.yaml"
 kubectl delete service "python-deploy-test-default"
 kubectl delete deployment "python-deploy-test-default"
-rm -rf $HOME/.kube/sites/letsencrypt-staging/*deploy-scripts.finology.com.my
-rm -rf $HOME/.kube/sites/*deploy-scripts.finology.com.my
+rm -rf $HOME/.kube/sites/dev/letsencrypt-staging/*deploy-scripts.finology.com.my
+rm -rf $HOME/.kube/sites/dev/*deploy-scripts.finology.com.my
 cd $SCRIPT_PATH/../
 rm -rf /tmp/deploy-scripts
