@@ -4,6 +4,9 @@ ds_kube_ingress_nginx() {
 	fi
 
 	NGINX_SITES="$KUBERNETES_HOME/sites/$KUBERNETES_CLUSTER"
+	if [ "$KUBERNETES_CERT_MANAGER" != "" ] && [ "$KUBERNETES_TLS" = "true" ]; then
+		NGINX_SITES="$NGINX_SITES/$KUBERNETES_CERT_MANAGER"
+	fi
 	if [ ! -d "$NGINX_SITES" ]; then
 		mkdir -p "$NGINX_SITES"
 	fi
