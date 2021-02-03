@@ -102,8 +102,6 @@ steps:
         path: /var/run/docker.sock
     commands:
       - service ssh start
-      # Test on existing development cluster
-      - echo '172.104.38.26        pythontest.local' >> /etc/hosts
       - sh ./tests/kubernetes.sh
 
 
