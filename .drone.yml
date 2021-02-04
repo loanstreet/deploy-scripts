@@ -1,13 +1,13 @@
 ---
 kind: pipeline
-name: test-java-mvnw
+name: java
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  - name: test-java-mvnw
+  - name: test
     image: loanstreet-ubuntu-19.04/java:8
     volumes:
       - name: ssh
@@ -28,14 +28,14 @@ volumes:
 
 ---
 kind: pipeline
-name: test-rails
+name: rails
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  - name: test-rails
+  - name: test
     image: loanstreet-ubuntu-19.04/ruby:2.5
     volumes:
       - name: ssh
@@ -58,14 +58,14 @@ volumes:
 
 ---
 kind: pipeline
-name: test-django
+name: django
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  - name: test-django
+  - name: test
     image: loanstreet-ubuntu-20.04/python:3.7
     volumes:
       - name: ssh
@@ -82,14 +82,14 @@ volumes:
 
 ---
 kind: pipeline
-name: test-kubernetes
+name: kubernetes
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  - name: test-kubernetes
+  - name: test
     image: loanstreet-ubuntu-20.04/kube:1.20
     volumes:
       - name: ssh

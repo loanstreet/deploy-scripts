@@ -99,7 +99,7 @@ ds_post_push() {
 	KUBE_SERVICE="$SRV_NAME-$PROJECT_ENVIRONMENT"
 
 	DOCKER_IMAGE="$TAG"
-	if [ "$DOCKER_REGISTRY" = "" ]; then
+	if [ "$DOCKER_REGISTRY" != "" ]; then
 		DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F / '{print $3}')
 		DOCKER_IMAGE="$DOCKER_HOST/$TAG"
 	fi
