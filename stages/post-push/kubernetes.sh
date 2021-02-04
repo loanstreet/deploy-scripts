@@ -3,10 +3,13 @@ ds_kube_ingress_nginx() {
 		error "post-push: kubernetes: ingress-nginx: Too few arguments given to ds_kube_ingress_nginx"
 	fi
 
-	NGINX_SITES="$KUBERNETES_HOME/sites/$KUBERNETES_CLUSTER"
+	INGRESS_NAME="ingress-$KUBERNETES_CLUSTER"
 	if [ "$KUBERNETES_CERT_MANAGER" != "" ] && [ "$KUBERNETES_TLS" = "true" ]; then
-		NGINX_SITES="$NGINX_SITES/$KUBERNETES_CERT_MANAGER"
+		INGRESS_NAME="$INGRESS_NAME-$KUBERNETES-CERT_MANAGER"
 	fi
+
+	NGINX_SITES="$KUBERNETES_HOME/sites/$INGRESS_NAME"
+
 	if [ ! -d "$NGINX_SITES" ]; then
 		mkdir -p "$NGINX_SITES"
 	fi
@@ -14,6 +17,9 @@ ds_kube_ingress_nginx() {
 	TIMESTAMP=$(date '+%s')
 	KUBERNETES_NGINX_CONFIG="$KUBERNETES_HOME/$KUBERNETES_CLUSTER-ingress-nginx-$TIMESTAMP.yaml"
 	cp "$SCRIPT_PATH/../stages/post-push/kubernetes-resources/ingress-nginx.yaml" "$KUBERNETES_NGINX_CONFIG"
+
+	sed -i "s/name:.*$/name: $INGRESS_NAME/g" "$KUBERNETES_NGINX_CONFIG"
+
 	if [ "$KUBERNETES_CERT_MANAGER" != "" ] && [ "$KUBERNETES_TLS" = "true" ]; then
 		echo "    cert-manager.io/cluster-issuer: \"$KUBERNETES_CERT_MANAGER\"" >> "$KUBERNETES_NGINX_CONFIG"
 	fi

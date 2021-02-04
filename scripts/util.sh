@@ -153,7 +153,7 @@ copy_docker_files() {
 	PROJECT_ENVIRONMENT="$2"
 	DESTINATION_DIR="$3"
 
-	echo "$PROJECT_DIR/$PROJECT_ENVIRONMENT"
+	debug "$PROJECT_DIR/$PROJECT_ENVIRONMENT"
 	if [ ! -d "$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT" ]; then
 		error "Environment directory for $PROJECT_ENVIRONMENT not found"
 		structure_error_stop
