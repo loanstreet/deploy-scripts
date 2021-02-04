@@ -23,7 +23,7 @@ fi
 # Directory for project-specific pre and post build and post deploy scripts
 PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
 
-# Working direc\033[1;36mtory to build/prepare and push the deployment
+# Working directory to build/prepare and push the deployment
 WORK_DIR=$PROJECT_DEPLOY_DIR/.build
 # Directory into which project repo deployment branch is checked out
 BUILD_REPO=$WORK_DIR/repo
@@ -161,6 +161,7 @@ rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 
 # Copy all files under project environment-specific assets/ dir to the deployment
 if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
+	title "assets: copy"
 	cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/$INSTALL_DIR/"
 fi
 

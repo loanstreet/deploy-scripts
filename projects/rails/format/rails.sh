@@ -17,7 +17,6 @@ ds_format() {
 	echo "PID_PATH=\"$PID_PATH\"" >> deploy-config.sh
 	echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> deploy-config.sh
 	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
-	cp -r $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets/* ./
 
 	cat deploy-config.sh >> ./$INSTALL_DIR/config.sh
 	success 'done'
