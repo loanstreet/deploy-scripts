@@ -98,6 +98,12 @@ ds_post_push() {
 	SRV_NAME=$(echo $SERVICE_NAME | cut -d"." -f1)
 	KUBE_SERVICE="$SRV_NAME-$PROJECT_ENVIRONMENT"
 
+	DOCKER_IMAGE="$TAG"
+	if [ "$DOCKER_REGISTRY" = "" ]; then
+		DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F / '{print $3}')
+		DOCKER_IMAGE="$DOCKER_HOST/$TAG"
+	fi
+
 	EXISTING_SERVICE=$(kubectl get services | grep "$KUBE_SERVICE" | wc -l)
 	if [ $EXISTING_SERVICE -eq 0 ]; then
 		KUBE_SERVICE_CFG="$1/../repo/$INSTALL_DIR/environments/$PROJECT_ENVIRONMENT/kubernetes/service.yaml"
@@ -108,7 +114,6 @@ ds_post_push() {
 				error "post-push: kubernetes: Auto k8s service generation currently depends on DOCKER_REGISTRY being set"
 			fi
 
-			DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F / '{print $3}')
 			KUBE_MANIFESTS_DIR="$1/kube-manifests"
 			mkdir -p "$KUBE_MANIFESTS_DIR"
 			cp "$DEPLOY_SCRIPTS_DIR/stages/post-push/kubernetes-resources/service.yaml" "$KUBE_MANIFESTS_DIR"
@@ -118,7 +123,7 @@ ds_post_push() {
 
 			sed -i "s/name:.*$/name: $KUBE_SERVICE/g" "$KUBE_SVC_FILE"
 			sed -i "s/app:.*$/app: $KUBE_SERVICE/g" "$KUBE_SVC_FILE"
-			sed -i "s/image:.*$/image: $DOCKER_HOST\/$TAG/g" "$KUBE_SVC_FILE"
+			sed -i "s/image:.*$/image: $DOCKER_IMAGE/g" "$KUBE_SVC_FILE"
 
 			if [ "$KUBERNETES_REPLICAS" != "" ]; then
 				sed -i "s/replicas:.*$/replicas: $KUBERNETES_REPLICAS/g" "$KUBE_SVC_FILE"
@@ -139,7 +144,7 @@ ds_post_push() {
 	else
 		info "Kubernetes service $KUBE_SERVICE exists. Applying new image"
 		debug "Setting new image for kube deployment"
-		kubectl set image deployment $KUBE_SERVICE $KUBE_SERVICE=$TAG
+		kubectl set image deployment $KUBE_SERVICE "$KUBE_SERVICE=$DOCKER_IMAGE"
 	fi
 
 	if [ "$KUBERNETES_NGINX_SERVICE_HOST" = "" ]; then
