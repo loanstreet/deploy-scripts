@@ -145,8 +145,7 @@ ds_post_push() {
 
 		kubectl create -f "$KUBE_SERVICE_CFG"
 	else
-		info "Kubernetes service $KUBE_SERVICE exists. Applying new image"
-		debug "Setting new image for kube deployment"
+		info "Kubernetes service $KUBE_SERVICE exists. Applying new image $DOCKER_IMAGE"
 		kubectl set image deployment $KUBE_SERVICE "$KUBE_SERVICE=$DOCKER_IMAGE"
 	fi
 
