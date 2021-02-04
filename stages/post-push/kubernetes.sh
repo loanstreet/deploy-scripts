@@ -99,9 +99,11 @@ ds_post_push() {
 	KUBE_SERVICE="$SRV_NAME-$PROJECT_ENVIRONMENT"
 
 	DOCKER_IMAGE="$TAG"
+	DOCKER_IMAGE_SED="$TAG"
 	if [ "$DOCKER_REGISTRY" != "" ]; then
 		DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F / '{print $3}')
 		DOCKER_IMAGE="$DOCKER_HOST/$TAG"
+		DOCKER_IMAGE_SED="$DOCKER_HOST\\/$TAG"
 	fi
 
 	EXISTING_SERVICE=$(kubectl get services | grep "$KUBE_SERVICE" | wc -l)
@@ -123,7 +125,7 @@ ds_post_push() {
 
 			sed -i "s/name:.*$/name: $KUBE_SERVICE/g" "$KUBE_SVC_FILE"
 			sed -i "s/app:.*$/app: $KUBE_SERVICE/g" "$KUBE_SVC_FILE"
-			sed -i "s/image:.*$/image: $DOCKER_IMAGE/g" "$KUBE_SVC_FILE"
+			sed -i "s/image:.*$/image: $DOCKER_IMAGE_SED/g" "$KUBE_SVC_FILE"
 
 			if [ "$KUBERNETES_REPLICAS" != "" ]; then
 				sed -i "s/replicas:.*$/replicas: $KUBERNETES_REPLICAS/g" "$KUBE_SVC_FILE"
