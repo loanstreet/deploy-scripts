@@ -125,6 +125,7 @@ ds_post_push() {
 
 			sed -i "s/name:.*$/name: $KUBE_SERVICE/g" "$KUBE_SVC_FILE"
 			sed -i "s/app:.*$/app: $KUBE_SERVICE/g" "$KUBE_SVC_FILE"
+			debug "s/image:.*$/image: $DOCKER_IMAGE_SED/g"
 			sed -i "s/image:.*$/image: $DOCKER_IMAGE_SED/g" "$KUBE_SVC_FILE"
 
 			if [ "$KUBERNETES_REPLICAS" != "" ]; then
