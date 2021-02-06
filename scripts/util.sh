@@ -19,6 +19,10 @@ info() {
 	printf "\033[0m$1\n"
 }
 
+infof() {
+	printf "\033[0m$1"
+}
+
 success() {
 	printf "\033[1;32m$1\033[0m\n"
 }

@@ -11,7 +11,7 @@ title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/python-project
 PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/python-project/deploy"
 echo "\nKUBERNETES_NGINX_SERVICE_HOST=\"deploy-scripts.finology.com.my\"\nDS_DEBUG=true\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/python-project\nSERVICE_NAME=python-deploy-test\nLINKED_FILES=\nLINKED_DIRS=\"\"" >> deploy/app-config.sh
-echo "PROJECT_ENVIRONMENT=default\nGIT_BRANCH=master\nPACKAGE=docker\nPUSH=docker\nPOST_PUSH=kubernetes\n" >> deploy/environments/default/config.sh
+echo "PROJECT_ENVIRONMENT=default\nGIT_BRANCH=master\nPACKAGE=docker\nPUSH=\nPOST_PUSH=kubernetes\nKUBERNETES_INGRESS=ingress-dev" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh
 cat deploy/environments/default/config.sh
 #sed -i 's/    image\: django_project\:latest//g' deploy/environments/default/docker/docker-compose.yml
