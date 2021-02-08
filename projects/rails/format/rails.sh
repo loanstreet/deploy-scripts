@@ -18,6 +18,6 @@ ds_format() {
 	echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> deploy-config.sh
 	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
 
-	cat deploy-config.sh >> ./$INSTALL_DIR/config.sh
+	cat deploy-config.sh >> ./$DS_DIR/config.sh
 	success 'done'
 }

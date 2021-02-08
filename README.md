@@ -77,7 +77,7 @@ Variables:
 BUILD=mvnw
 ```
 
-### Format
+### Format (optional)
 
 The files to be deployed are assembled in the required structure to be sent to the target server. By default it's done in the deploy/.build/package directory.
 

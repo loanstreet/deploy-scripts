@@ -31,8 +31,8 @@ DEPLOY_DIR="$2/deploy"
 
 if [ -f "$SCRIPT_PATH/../projects/$1/installer/config.sh" ]; then
 	. $SCRIPT_PATH/../projects/$1/installer/config.sh
-	if [ "$INSTALL_DIR" != "" ]; then
-		DEPLOY_DIR="$2/$INSTALL_DIR"
+	if [ "$DS_DIR" != "" ]; then
+		DEPLOY_DIR="$2/$DS_DIR"
 	fi
 fi
 

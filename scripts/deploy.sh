@@ -90,7 +90,7 @@ fi
 # Directory holding scripts for the type of project to be deployed (configured by var TYPE)
 PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"
 
-INSTALL_DIR="deploy"
+DS_DIR="deploy"
 
 # Include any project type config if supplied
 PROJECT_TYPE_CONFIG="$PROJECT_TYPE_DIR/installer/config.sh"
@@ -135,20 +135,20 @@ if [ "$BUILD" != "" ]; then
 fi
 
 # Compile all the env vars into a config.sh to be added to the deployment files
-mkdir -p "$DEPLOY_PACKAGE_DIR/$INSTALL_DIR"
-DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/$INSTALL_DIR/config.sh"
+mkdir -p "$DEPLOY_PACKAGE_DIR/$DS_DIR"
+DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/$DS_DIR/config.sh"
 ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
 # Include deployment files location in the deployment config
-echo "DS_DIR=$INSTALL_DIR" >> "$DEPLOY_CONFIG_SH"
+echo "DS_DIR=$DS_DIR" >> "$DEPLOY_CONFIG_SH"
 
 INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
 # If restart command used run.sh script, include it in the deployment
 if [ $INCLUDE_RUN_SH -gt 0 ]; then
-	cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/$INSTALL_DIR"
-	echo "RESTART_COMMAND=\"sh ./$INSTALL_DIR/run.sh restart\"" >> "$DEPLOY_CONFIG_SH"
+	cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/$DS_DIR"
+	echo "RESTART_COMMAND=\"sh ./$DS_DIR/run.sh restart\"" >> "$DEPLOY_CONFIG_SH"
 fi
 
 # Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
@@ -162,7 +162,7 @@ rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 # Copy all files under project environment-specific assets/ dir to the deployment
 if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
 	info "Copying assets"
-	cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/$INSTALL_DIR/"
+	cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
 	success "done"
 fi
 

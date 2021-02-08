@@ -8,7 +8,7 @@ ds_push() {
 	BARE_REPO_SCRIPT_DIR=/tmp/deployer-$TIMESTAMP
 
 	mkdir -p $BARE_REPO_SCRIPT_DIR
-	cp "$1/$INSTALL_DIR/config.sh" $BARE_REPO_SCRIPT_DIR/config.sh
+	cp "$1/$DS_DIR/config.sh" $BARE_REPO_SCRIPT_DIR/config.sh
 	cp $SCRIPT_PATH/../stages/push/post-deploy/post-deploy-utils.sh $BARE_REPO_SCRIPT_DIR/
 	cp $SCRIPT_PATH/../stages/push/git-bare-resources/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
 	cp $SCRIPT_PATH/util.sh $BARE_REPO_SCRIPT_DIR/

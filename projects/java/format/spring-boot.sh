@@ -4,7 +4,7 @@ ds_format() {
 	fi
 
 	cd "$1"
-	. "./$INSTALL_DIR/config.sh"
+	. "./$DS_DIR/config.sh"
 
 	if [ "$SERVICE_PORT" = "" ]; then
 		error "package: java: config.sh must specify a SERVICE_PORT"
@@ -18,6 +18,6 @@ ds_format() {
 	COMMAND='nohup java -Dspring.profiles.active=$PROJECT_ENVIRONMENT -jar $PATH_TO_JAR --server.port=$SERVICE_PORT /tmp 2>> $LOG_DIR/stderr.log >> $LOG_DIR/stdout.log'
 	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
 
-	cat deploy-config.sh >> ./$INSTALL_DIR/config.sh
+	cat deploy-config.sh >> ./$DS_DIR/config.sh
 	success 'done'
 }

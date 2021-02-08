@@ -128,7 +128,7 @@ ds_post_push() {
 
 	EXISTING_SERVICE=$(kubectl get services | grep "$KUBE_SERVICE" | wc -l)
 	if [ $EXISTING_SERVICE -eq 0 ]; then
-		KUBE_SERVICE_CFG="$1/../repo/$INSTALL_DIR/environments/$PROJECT_ENVIRONMENT/kubernetes/service.yaml"
+		KUBE_SERVICE_CFG="$1/../repo/$DS_DIR/environments/$PROJECT_ENVIRONMENT/kubernetes/service.yaml"
 
 		if [ ! -f "$KUBE_SERVICE_CFG" ]; then
 			warning "post-push: kubernetes: No service config found at $KUBE_SERVICE_CFG. Generating from template"
