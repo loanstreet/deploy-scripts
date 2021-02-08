@@ -5,6 +5,7 @@ set -e
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 . $SCRIPT_PATH/common.sh
 
+DS_DIR="config/deploy-scripts"
 
 PUMA_PID=$(ps -elf | grep ':37566' | grep -v grep | awk '{print $4}')
 if [ "$PUMA_PID" != "" ]; then
@@ -16,12 +17,12 @@ copy_deployment_files 'rails' $SCRIPT_PATH/resources/rails-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/rails-project
-PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/rails-project/config/deploy"
-mv config/deploy/environments/default config/deploy/environments/production
-echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/rails-project\nSERVICE_NAME=rails-deploy-test\nBUNDLE_PATH=/tmp/bundle\nLINKED_FILES=\nLINKED_DIRS=\"log tmp/pids tmp/cache tmp/sockets public/system\"" >> config/deploy/app-config.sh
-echo "PROJECT_ENVIRONMENT=production\nGIT_BRANCH=master\nSERVICE_PORT=37566" >> config/deploy/environments/production/config.sh
-cat config/deploy/app-config.sh
-cat config/deploy/environments/production/config.sh
+PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/rails-project/$DS_DIR"
+mv $DS_DIR/environments/default $DS_DIR/environments/production
+echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/rails-project\nSERVICE_NAME=rails-deploy-test\nBUNDLE_PATH=/tmp/bundle\nLINKED_FILES=\nLINKED_DIRS=\"log tmp/pids tmp/cache tmp/sockets public/system\"" >> $DS_DIR/app-config.sh
+echo "PROJECT_ENVIRONMENT=production\nGIT_BRANCH=master\nSERVICE_PORT=37566" >> $DS_DIR/environments/production/config.sh
+cat $DS_DIR/app-config.sh
+cat $DS_DIR/environments/production/config.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
 #sh config/deploy/deploy.sh production

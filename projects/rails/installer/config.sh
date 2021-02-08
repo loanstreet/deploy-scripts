@@ -1,1 +1,1 @@
-DS_DIR="config/deploy"
+DS_DIR="config/deploy-scripts"
