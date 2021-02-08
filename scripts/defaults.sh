@@ -7,6 +7,7 @@ PUSH=git-bare
 PACKAGE=git
 RESTART_COMMAND="sh deploy/run.sh restart"
 DEPLOYMENT_DIR='$HOME/sites'
+RELEASE_COUNT=5
 DOCKER_COMPOSE_OPTS=""
 KUBERNETES_CRED="fincred"
 DOCKER_REGISTRY=https://dockerhub.finology.com.my

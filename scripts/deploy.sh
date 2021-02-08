@@ -71,7 +71,7 @@ ds_set_push_type() {
 	fi
 }
 
-# Check if the deploy/ directory in the project has the required files
+# Check if the DS_DIR in the project has the required files
 title "check-files"
 check_structure_ver_03 $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT
 # Path to the environment specific config.sh
@@ -191,7 +191,7 @@ fi
 if [ -f "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh" ]; then
 	cd $DEPLOY_PACKAGE_DIR
 	title 'build - post build script'
-	sh deploy/scripts/post_build.sh
+	sh "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh"
 fi
 
 
