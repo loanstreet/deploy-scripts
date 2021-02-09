@@ -21,7 +21,7 @@ PREFIX="deploy"
 if [ "$BUILD" = "" ]; then
 	error "Corrupt app-config.sh, no BUILD variable found"
 elif [ "$BUILD" = "rails" ]; then
-	PREFIX='config/deploy'
+	PREFIX='config/deploy-scripts'
 fi
 
 TYPE=""
@@ -68,10 +68,11 @@ do
 	CHECK=$(echo $line | grep "BUILD" | wc -l)
 	CHECK_REPO=$(echo $line | grep "GIT_REPO" | wc -l)
 	CHECK_SSH_PRM=$(echo $line | grep "SSH_" | wc -l)
+	CHECK_DEPLOYMENT_DIR=$(echo $line | grep "DEPLOYMENT_DIR" | wc -l)
 	if [ $CHECK -eq 0 ]; then
 		if [ $CHECK_REPO -eq 1 ]; then
 			echo "REPO=$GIT_REPO" >> $NEW_CFG_PATH
-		elif [ $CHECK_SSH_PRM -eq 1 ]; then
+		elif [ $CHECK_SSH_PRM -eq 1 ] || [ $CHECK_DEPLOYMENT_DIR -eq 1 ]; then
 			:
 		else
 			echo $line >> $NEW_CFG_PATH
@@ -84,6 +85,10 @@ if [ "$DEPLOYMENT_SSH_USER" != "" ]; then
 fi
 if [ "$DEPLOYMENT_SSH_PORT" != "" ]; then
 	echo "DEPLOYMENT_SERVER_PORT=$DEPLOYMENT_SSH_PORT" >> $NEW_CFG_PATH
+fi
+if [ "$DEPLOYMENT_DIR" != "" ]; then
+	NEW_DEPLOYMENT_DIR=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT'
+	echo "DEPLOYMENT_DIR='$NEW_DEPLOYMENT_DIR'" >> $NEW_CFG_PATH
 fi
 
 mv $NEW_CFG_PATH "$TMP_DEPLOY/$PREFIX/app-config.sh"

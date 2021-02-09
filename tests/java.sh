@@ -16,9 +16,13 @@ copy_deployment_files 'java' $SCRIPT_PATH/resources/java-mvnw-project
 
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/java-project
+SERVICE_NAME="java-deploy-test"
+PROJECT_ENVIRONMENT="default"
+DEPLOYMENT_DIR="$TEST_WORKING_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT"
+
 PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/java-project/deploy"
 DEPLOY_SCRIPTS_HOME="$SCRIPT_PATH/../"
-echo "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/java-project\nSERVICE_NAME=java-deploy-test\nLINKED_FILES=\n" >> deploy/app-config.sh
+echo "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/java-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\n" >> deploy/app-config.sh
 echo "GIT_BRANCH=master\nSERVICE_PORT=37567" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh deploy/environments/default/config.sh
 # hack for hardcoded nginx conf copying. to be made configurable later.

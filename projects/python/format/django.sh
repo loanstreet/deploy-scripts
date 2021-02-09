@@ -7,10 +7,10 @@ ds_format() {
 
 	info "Preparing deployment files for packaging ... "
 	git --work-tree=./ --git-dir=../repo/.git checkout -f 2>&1 | indent
-	PID_PATH=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/pids/$SERVICE_NAME.pid'
-	SOCKET_PATH=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/tmp/sockets/$PROJECT_ENVIRONMENT.sock'
-	UWSGI_LOG_PATH=$DEPLOYMENT_DIR'/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current/logs/uwsgi.log'
-	COMMAND='cd $DEPLOYMENT_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT/current'
+	PID_PATH=$DEPLOYMENT_DIR'/current/tmp/pids/$SERVICE_NAME.pid'
+	SOCKET_PATH=$DEPLOYMENT_DIR'/current/tmp/sockets/$PROJECT_ENVIRONMENT.sock'
+	UWSGI_LOG_PATH=$DEPLOYMENT_DIR'/current/logs/uwsgi.log'
+	COMMAND='cd $DEPLOYMENT_DIR/current'
 	echo "PID_PATH=\"$PID_PATH\"" >> deploy-config.sh
 	echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> deploy-config.sh
 	echo "UWSGI_LOG_PATH=\"$UWSGI_LOG_PATH\"" >> deploy-config.sh
