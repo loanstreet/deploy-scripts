@@ -1,11 +1,13 @@
 # Overview
 
 deploy-scripts is a collection of shell scripts to automate the packaging and deployment of projects.
-It is still under heavy development and is being updated to include support for other tools
+It is still under heavy development and is being updated to include support for other tools.
+
+As much as possible, any new code added to this project should be able to run on a POSIX shell. Exceptions can be made depending on the project you are deploying (eg. bash is ok to use with rails specific parts because a lot of rails related tools need bash anyway).
 
 The following stacks are currently supported
 
-- Java with Maven Wrapper used for building the jar file
+- Java lib projects and Spring Boot (with Maven Wrapper used for building the jar file)
 - Ruby on Rails
 - Django
 - React JS
@@ -21,12 +23,12 @@ The basic way it works is as follows.
 
 ```bash
 - / 	# project root
-	- /deploy	# the directory where deploy-scripts config files are added
+	- /deploy	# the directory where deploy-scripts config files are added (/config/deploy-scripts in rails)
 		- app-config.sh	# Project-wide varibles for deployment configuration
 		- /environments # multiple environments for the project
 			- /default  # an example environment called default, this can be replaced with your own project environments
 				- config.sh # environment specific config, values in which can override the ones in app-config.sh
-				- /assets # files from here are copied to the server side deployment, dir structure is maintained
+				- /assets # files placed here are copied to the server side deployment, dir structure is maintained
 #				 - /docker # (optional) environment specific docker files, can override project-wide files
 #					- Dockerfile # (optional) if present, will override the one in deploy/docker
 #					- docker-compose.yml # (optional) if present, will override the one in deploy/docker
@@ -34,7 +36,7 @@ The basic way it works is as follows.
 #					- service.yaml # (optional) config for kubernetes service and deployment for the project
 #		/docker # (optional) project-wide docker files
 #			- Dockerfile # (optional) if present, will be used to build the docker image
-#			- docker-compose.yml # (optional) if present, will be used to start the container
+#			- docker-compose.yml # (optional) if present, will be used to build/start the container
 ```
 
 It can also use the commented out optional files that are listed, but will work without them for non-containerized deployments.
@@ -46,10 +48,18 @@ All projects must have the following vars defined (in app-config.sh or config.sh
 ```bash
 # The project type. Currently supported options are: java, rails, python, and reactjs
 TYPE=rails
-# The name that will be used to label the app that is being deployed, commonly the host where the service is made available is used
-SERVICE_NAME=service
+# The name that will be used to label the app that is being deployed, commonly the hostname where the service is made available is used
+SERVICE_NAME=service.com
 ```
 A typical deployment then proceeds in a number of steps, as follows. Some steps are optional. The expectation is that each of these steps should support several options which can be combined for different types of deployments.
+
+### List of steps
+1. [Repo Checkout](#repo-checkout)
+2. [Build (optional)](#build)
+3. [Format (optional)](#format)
+4. [Package](#package)
+5. [Push (optional)](#push)
+6. [Post-push (optional)](#post-push)
 
 ### Repo Checkout
 
@@ -66,9 +76,9 @@ REPO=git@github.com:namespace/repo.git
 GIT_BRANCH=default
 ```
 
-### Build (optional)
+### Build
 
-In this step, the code may be compiled if needed to produce the files that will be deployed.
+Optional. In this step, the code may be compiled if needed to produce the files that will be deployed.
 
 Variables:
 
@@ -77,9 +87,9 @@ Variables:
 BUILD=mvnw
 ```
 
-### Format (optional)
+### Format
 
-The files to be deployed are assembled in the required structure to be sent to the target server. By default it's done in the deploy/.build/package directory.
+Optional. The files to be deployed are assembled in the required structure to be sent to the target server. By default it's done in the deploy/.build/package directory.
 
 Variables:
 
@@ -99,9 +109,9 @@ Variables:
 PACKAGE=git
 ```
 
-### Push (optional)
+### Push
 
-The packaged files can then be sent to the deployment server in a number of ways. The default one is a bare git repo on the server that will receive the files and run a **post-receive** hook to deliver it to the deployment directory.
+Optional. The packaged files can then be sent to the deployment server in a number of ways. The default one is a bare git repo on the server that will receive the files and run a **post-receive** hook to deliver it to the deployment directory.
 
 ```bash
 # The method used to push the packaged files
@@ -114,9 +124,9 @@ DEPLOYMENT_SERVER_USER=user
 DEPLOYMENT_SERVER_PORT=22
 ```
 
-### Post-Push (optional)
+### Post-Push
 
-Somtimes (currently only in the case of kubernetes), you need to perform some actions to update the deployment with the new version from the machine you are deploying from. Those can be performed in this step
+Optional. Sometimes (currently only in the case of kubernetes), you need to perform some actions to update the deployment with the new version from the machine you are deploying from. Those can be performed in this step
 
 ```bash
 # The steps that will be executed in the post push stage
@@ -130,7 +140,7 @@ To add deployment capabilities to a project, run the following commands
 ```bash
 git clone --single-branch --branch 0.5.0 --depth=1 git@git.loansreet.com.my:loanstreet/deploy-scripts.git $HOME/.deploy-scripts
 
-cd $HOME/.deploy-scripts/installer
+cd $HOME/.deploy-scripts/0.5.0/installer
 
 # For a Java Maven (mvnw) Project
 sh install.sh java /path/to/java/project
@@ -145,18 +155,18 @@ sh install.sh python /path/to/django/project
 sh install.sh reactjs /path/to/reactjs/project
 ```
 
-Follow the instructions from the installer
+Follow the instructions given by the installer
 
 # Automated Testing
 The project contains automated testing to verify that deployments don't break when new changes are made to deploy-scripts.
 
-Since deployments work over ssh, running the test requires you to add your own SSH public key to the $HOME/.ssh/authorized_keys file in your home directory.
+**Since deployments work over ssh, running the tests requires you to add your own SSH public key to the $HOME/.ssh/authorized_keys file in your home directory.**
 
 ```bash
 cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
 ```
 
-Currently, deployments for the following project-types can be tested
+Currently, deployments for the following project types can be tested
 
 ```bash
 # Java

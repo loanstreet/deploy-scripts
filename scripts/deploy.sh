@@ -23,21 +23,40 @@ fi
 # Directory for project-specific pre and post build and post deploy scripts
 PROJECT_SCRIPTS_DIR=$PROJECT_DEPLOY_DIR/scripts
 
-# Working directory to build/prepare and push the deployment
-WORK_DIR=$PROJECT_DEPLOY_DIR/.build
-# Directory into which project repo deployment branch is checked out
-BUILD_REPO=$WORK_DIR/repo
-# Directory where files will be assembled for deployment
-DEPLOY_PACKAGE_DIR=$WORK_DIR/package
-
 # Make sure the project environment is set
 if [ "$1" = "" ]; then
 	error "No environment set"
 fi
 PROJECT_ENVIRONMENT="$1"
 
+# Check if the DS_DIR in the project has the required files
+title "check-files"
+check_structure_ver_03 $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT
+# Path to the environment specific config.sh
+CONFIG_SH_PATH="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh"
+if [ ! -f "$CONFIG_SH_PATH" ]; then
+	error "Please initialize $CONFIG_SH_PATH"
+fi
+# Include vars from environment specific config.sh
+. "$CONFIG_SH_PATH"
+
+# Ensure that the minimal no. of vars are set
+if [ "$TYPE" = "" ] || [ "$REPO" = "" ] || [ "$DEPLOYMENT_SERVER" = "" ] || [ "PROJECT_NAME" = "" ]; then
+	error "Please set the variables TYPE, REPO, PROJECT_NAME, and DEPLOYMENT_SERVER in $CONFIG_SH_PATH"
+fi
+
 # Project environment specific directory from which to copy files as-is to be added to the deployment
 DEPLOYMENT_ASSETS_DIR="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/assets"
+
+# Working directory to build/prepare and push the deployment
+WORK_DIR=$PROJECT_DEPLOY_DIR/.build
+if [ "$DS_BUILD_DIR" != "" ]; then
+	WORK_DIR="$DS_BUILD_DIR"
+fi
+# Directory into which project repo deployment branch is checked out
+BUILD_REPO=$WORK_DIR/repo
+# Directory where files will be assembled for deployment
+DEPLOY_PACKAGE_DIR=$WORK_DIR/package
 
 # Clean working directory (WORK_DIR)
 ds_clean_dirs() {
@@ -70,22 +89,6 @@ ds_set_push_type() {
 		fi
 	fi
 }
-
-# Check if the DS_DIR in the project has the required files
-title "check-files"
-check_structure_ver_03 $PROJECT_DEPLOY_DIR $PROJECT_ENVIRONMENT
-# Path to the environment specific config.sh
-CONFIG_SH_PATH="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/config.sh"
-if [ ! -f "$CONFIG_SH_PATH" ]; then
-	error "Please initialize $CONFIG_SH_PATH"
-fi
-# Include vars from environment specific config.sh
-. "$CONFIG_SH_PATH"
-
-# Ensure that the minimal no. of vars are set
-if [ "$TYPE" = "" ] || [ "$REPO" = "" ] || [ "$DEPLOYMENT_SERVER" = "" ] || [ "PROJECT_NAME" = "" ]; then
-	error "Please set the variables TYPE, REPO, PROJECT_NAME, and DEPLOYMENT_SERVER in $CONFIG_SH_PATH"
-fi
 
 # Directory holding scripts for the type of project to be deployed (configured by var TYPE)
 PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"

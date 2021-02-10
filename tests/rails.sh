@@ -24,7 +24,7 @@ cd $COPY_PROJECT_DIR/rails-project
 PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/rails-project/$DS_DIR"
 mv $DS_DIR/environments/default $DS_DIR/environments/production
 echo "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/rails-project\nSERVICE_NAME=$SERVICE_NAME\nBUNDLE_PATH=/tmp/bundle\nLINKED_FILES=\nLINKED_DIRS=\"log tmp/pids tmp/cache tmp/sockets public/system\"" >> $DS_DIR/app-config.sh
-echo "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master\nSERVICE_PORT=37566" >> $DS_DIR/environments/production/config.sh
+echo "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master\nSERVICE_PORT=37566\n" >> $DS_DIR/environments/production/config.sh
 cat $DS_DIR/app-config.sh
 cat $DS_DIR/environments/production/config.sh
 title 'TEST - deploying default environment'
