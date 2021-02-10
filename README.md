@@ -78,7 +78,7 @@ GIT_BRANCH=default
 
 ### Build
 
-Optional. In this step, the code may be compiled if needed to produce the files that will be deployed.
+Optional. In this step, the code may be compiled if needed, to produce the files that will be deployed.
 
 Variables:
 
@@ -94,7 +94,7 @@ Optional. The files to be deployed are assembled in the required structure to be
 Variables:
 
 ```bash
-# The tool that will build the project. It varies by the project type (set by the TYPE variable)
+# The tool that will assemble the files for deployment. It varies by the project type (set by the TYPE variable)
 FORMAT=rails
 ```
 
@@ -117,7 +117,7 @@ Optional. The packaged files can then be sent to the deployment server in a numb
 # The method used to push the packaged files
 PUSH=git-bare
 # The target server (can also be a git repo URL)
-DEPLOYMENT_SERVER=example.com
+DEPLOYMENT_SERVER=service.com
 # Credentials used when pushing with git
 DEPLOYMENT_SERVER_USER=user
 # The SSH port being used in case of a git push
