@@ -136,6 +136,32 @@ check_structure_ver_03() {
 	# fi
 }
 
+ds_pre_step() {
+	if [ "$1" = "" ] || [ "$2" = "" ]; then
+		return
+	fi
+	PRE_STEP_SCRIPT="$2/$1.sh"
+	if [ -f "$PRE_STEP_SCRIPT" ]; then
+		. "$PRE_STEP_SCRIPT"
+		info "Pre-$1 script:"
+		ds_pre
+		info "End pre-$1 script:"
+	fi
+}
+
+ds_post_step() {
+	if [ "$1" = "" ] || [ "$2" = "" ]; then
+		return
+	fi
+	POST_STEP_SCRIPT="$2/$1.sh"
+	if [ -f "$POST_STEP_SCRIPT" ]; then
+		. "$POST_STEP_SCRIPT"
+		info "Post-$1 script:"
+		ds_post
+		info "End post-$1 script:"
+	fi
+}
+
 ds_debug_cat() {
 	if [ "$1" = "" ]; then
 		return

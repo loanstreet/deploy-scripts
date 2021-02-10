@@ -105,12 +105,15 @@ mkdir -p $WORK_DIR
 # Checkout branch to be deployed into repo/ inside working dir
 ds_set_repo_type
 title "repo: checkout: $REPO_TYPE"
+ds_pre_step 'repo' "$PROJECT_SCRIPTS_DIR"
 info "Creating repo to build program at $BUILD_REPO"
 # Get and run ds_repo_fetch() function for project repo type
 . "$SCRIPT_PATH/../stages/repo/$REPO_TYPE.sh"
 ds_repo_fetch $REPO $BUILD_REPO
+ds_post_step 'repo' "$PROJECT_SCRIPTS_DIR"
 
 # Execute any custom pre-build scripts
+# pre_build.sh to be deprecated in favour of pre and post step scripts
 if [ -f $PROJECT_SCRIPTS_DIR/pre_build.sh ]; then
 	title 'build: pre build script'
 	sh $PROJECT_SCRIPTS_DIR/pre_build.sh
@@ -122,6 +125,7 @@ mkdir -p $DEPLOY_PACKAGE_DIR
 # Find and execute ds_build() function to build the files for deployment (configured by var BUILD)
 if [ "$BUILD" != "" ]; then
 	title "build: $BUILD"
+	ds_pre_step 'build' "$PROJECT_SCRIPTS_DIR"
 	info "Building the project in $BUILD_REPO"
 	BUILD_SCRIPTS_PATH="$PROJECT_TYPE_DIR/build/$BUILD.sh"
 	if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
@@ -132,6 +136,7 @@ if [ "$BUILD" != "" ]; then
 	fi
 	. $BUILD_SCRIPTS_PATH
 	ds_build $BUILD_REPO $DEPLOY_PACKAGE_DIR
+	ds_post_step 'build' "$PROJECT_SCRIPTS_DIR"
 fi
 
 # Compile all the env vars into a config.sh to be added to the deployment files
@@ -154,8 +159,10 @@ fi
 # Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
 if [ "$FORMAT" != "" ]; then
 	title "format: $FORMAT"
+	ds_pre_step 'format' "$PROJECT_SCRIPTS_DIR"
 	. "$SCRIPT_PATH/../projects/$TYPE/format/$FORMAT.sh"
 	ds_format $DEPLOY_PACKAGE_DIR
+	ds_post_step 'format' "$PROJECT_SCRIPTS_DIR"
 fi
 rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 
@@ -169,8 +176,10 @@ fi
 if [ "$PACKAGE" != "" ]; then
 	# Package the deployment files in the desired format using ds_package() to be ready for delivery to deployment target
 	title "package: $PACKAGE"
+	ds_pre_step 'package' "$PROJECT_SCRIPTS_DIR"
 	. "$SCRIPT_PATH/../stages/package/$PACKAGE.sh"
 	ds_package $DEPLOY_PACKAGE_DIR
+	ds_post_step 'package' "$PROJECT_SCRIPTS_DIR"
 fi
 
 # if [ "$RESOURCE_DIRS" != "" ]; then
@@ -188,6 +197,7 @@ fi
 # fi
 
 # Run any post-build scripts if they were supplied
+# to be deprecated in favour of pre and post step scripts
 if [ -f "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh" ]; then
 	cd $DEPLOY_PACKAGE_DIR
 	title 'build - post build script'
@@ -206,15 +216,19 @@ fi
 ds_set_push_type
 if [ "$PUSH" != "" ]; then
 	title "push: $PUSH"
+	ds_pre_step 'push' "$PROJECT_SCRIPTS_DIR"
 	. "$SCRIPT_PATH/../stages/push/$PUSH.sh"
 	ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
+	ds_post_step 'push' "$PROJECT_SCRIPTS_DIR"
 fi
 
 # Run post push tasks using ds_post_push()
 if [ "$POST_PUSH" != "" ]; then
 	title "post-push: $POST_PUSH"
+	ds_pre_step 'post-push' "$PROJECT_SCRIPTS_DIR"
 	. "$SCRIPT_PATH/../stages/post-push/$POST_PUSH.sh"
 	ds_post_push $DEPLOY_PACKAGE_DIR
+	ds_post_step 'post-push' "$PROJECT_SCRIPTS_DIR"
 fi
 
 ds_clean_dirs
