@@ -150,6 +150,8 @@ ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
 # Include deployment files location in the deployment config
 echo "DS_DIR=$DS_DIR" >> "$DEPLOY_CONFIG_SH"
+# Include project environment in the deployment config
+echo "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT" >> "$DEPLOY_CONFIG_SH"
 
 INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
