@@ -22,8 +22,8 @@ DEPLOYMENT_DIR="$TEST_WORKING_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT"
 
 cd $COPY_PROJECT_DIR/$PROJECT_FILES_DIR
 PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/reactjs-project/deploy"
-echo "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/$PROJECT_FILES_DIR\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\nLINKED_DIRS=\n" >> deploy/app-config.sh
-echo "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master" >> deploy/environments/default/config.sh
+printf "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/$PROJECT_FILES_DIR\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\nLINKED_DIRS=\n" >> deploy/app-config.sh
+printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master\n" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh
 cat deploy/environments/default/config.sh
 title 'TEST - deploying default environment'

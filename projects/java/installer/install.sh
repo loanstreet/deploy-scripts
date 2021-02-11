@@ -5,8 +5,8 @@ ds_install () {
 
 	ds_create_dir_structure "$1" "$DS_DIR" "java"
 	infof "Adding java vars to app-config.sh ... "
-	echo "BUILD=mvnw\nFORMAT=spring-boot" >> "$1/$DS_DIR/app-config.sh"
-	echo 'LINKED_FILES=""' >> "$1/$DS_DIR/app-config.sh"
-	echo 'LINKED_DIRS="logs"' >> "$1/$DS_DIR/app-config.sh"
+	printf "BUILD=mvnw\nFORMAT=spring-boot\n" >> "$1/$DS_DIR/app-config.sh"
+	printf "LINKED_FILES=\"\"\n" >> "$1/$DS_DIR/app-config.sh"
+	printf "LINKED_DIRS=\"logs\"\n" >> "$1/$DS_DIR/app-config.sh"
 	success "done"
 }

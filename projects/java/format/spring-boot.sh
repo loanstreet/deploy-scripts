@@ -12,11 +12,11 @@ ds_format() {
 
 	printf "Preparing spring boot deployment ... "
 	PATH_TO_JAR=$DEPLOYMENT_DIR'/current/$WARFILE'
-	echo "PATH_TO_JAR=\"$PATH_TO_JAR\"" >> deploy-config.sh
+	printf "PATH_TO_JAR=\"$PATH_TO_JAR\"\n" >> deploy-config.sh
 	LOG_DIR=$DEPLOYMENT_DIR'/current/logs'
-	echo "LOG_DIR=\"$LOG_DIR\"" >> deploy-config.sh
+	printf "LOG_DIR=\"$LOG_DIR\"\n" >> deploy-config.sh
 	COMMAND='nohup java -Dspring.profiles.active=$PROJECT_ENVIRONMENT -jar $PATH_TO_JAR --server.port=$SERVICE_PORT /tmp 2>> $LOG_DIR/stderr.log >> $LOG_DIR/stdout.log'
-	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
+	printf "START_COMMAND=\"$COMMAND\"\n" >> deploy-config.sh
 
 	cat deploy-config.sh >> ./$DS_DIR/config.sh
 	success 'done'

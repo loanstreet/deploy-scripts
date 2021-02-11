@@ -9,6 +9,7 @@ line() {
 	fi
 	printf "\033[0m\n"
 }
+
 title() {
 	line
 	printf "\033[1;36m  $1\033[0m\n"
@@ -51,7 +52,7 @@ ds_cat_file() {
 		error "ds_cat_file: Need a source and a destination file"
 	fi
 	cat "$1" >> "$2"
-	echo "\n" >> "$2"
+	printf "\n" >> "$2"
 }
 
 check_structure() {

@@ -24,11 +24,11 @@ ds_create_dir_structure() {
 
 	APP_CONFIG="$DEPLOY_DIR/app-config.sh"
 	infof "Creating $APP_CONFIG ... "
-	echo "TYPE=$3\nSERVICE_NAME=example.com\nREPO=git@github.com:namespace/app.git\nDEPLOYMENT_SERVER=example.com\nDEPLOYMENT_SERVER_USER=deploy\nRESTART_COMMAND=\"sh $DS_DIR/run.sh restart\"" >> "$APP_CONFIG"
+	printf "TYPE=$3\nSERVICE_NAME=example.com\nREPO=git@github.com:namespace/app.git\nDEPLOYMENT_SERVER=example.com\nDEPLOYMENT_SERVER_USER=deploy\nRESTART_COMMAND=\"sh $DS_DIR/run.sh restart\"\n" >> "$APP_CONFIG"
 	success "done"
 	ENV_CONFIG="$ENV_DIR/config.sh"
 	infof "Creating $ENV_CONFIG ... "
-	echo "GIT_BRANCH=master" >> "$ENV_CONFIG"
+	printf "GIT_BRANCH=master\n" >> "$ENV_CONFIG"
 	success "done"
 }
 
@@ -46,7 +46,7 @@ ds_install_docker() {
 	fi
 	DOCKERFILE_PATH="$DOCKER_PROJECT/Dockerfile"
 	infof "Creating $DOCKERFILE_PATH ... "
-	echo "FROM $FROM_IMAGE\n\nEXPOSE 80" > "$DOCKERFILE_PATH"
+	printf "FROM $FROM_IMAGE\n\nEXPOSE 80\n" > "$DOCKERFILE_PATH"
 	success "done"
 
 	DOCKER_COMPOSE=$(cat <<-END
@@ -68,12 +68,12 @@ END
 
 	DOCKER_COMPOSE_PATH="$DOCKER_PROJECT/docker-compose.yml"
 	infof "Creating $DOCKER_COMPOSE_PATH ... "
-	echo "$DOCKER_COMPOSE" > "$DOCKER_COMPOSE_PATH"
+	printf "$DOCKER_COMPOSE" > "$DOCKER_COMPOSE_PATH"
 	success "done"
 
 	infof "Adding docker vars to app-config.sh and $INSTALL_ENV/config.sh ... "
-	echo "DOCKER_REGISTRY=https://index.docker.io" >> "$1/$DS_DIR/app-config.sh"
-	echo "PACKAGE=docker\nPUSH=\"\"" >> "$1/$DS_DIR/environments/$INSTALL_ENV/config.sh"
+	printf "DOCKER_REGISTRY=https://index.docker.io\n" >> "$1/$DS_DIR/app-config.sh"
+	printf "PACKAGE=docker\nPUSH=\"\"\n" >> "$1/$DS_DIR/environments/$INSTALL_ENV/config.sh"
 	success "done"
 }
 
@@ -84,6 +84,6 @@ ds_install_kubernetes() {
 
 	infof "Adding kubernetes vars to $INSTALL_ENV/config.sh ... "
 	TLS_SECRET="$INSTALL_ENV-$(date '+%s')"
-	echo "# POST_PUSH=kubernetes\n# KUBERNETES_CLUSTER=''\n# KUBERNETES_INGRESS='ingress-dev'\n# KUBERNETES_TLS=false\n# KUBERNETES_TLS_SECRET=$TLS_SECRET\n# KUBERNETES_CERT_MANAGER=letsencrypt-staging" >> "$1/$DS_DIR/environments/$INSTALL_ENV/config.sh"
+	printf "# POST_PUSH=kubernetes\n# KUBERNETES_CLUSTER=''\n# KUBERNETES_INGRESS='ingress-dev'\n# KUBERNETES_TLS=false\n# KUBERNETES_TLS_SECRET=$TLS_SECRET\n# KUBERNETES_CERT_MANAGER=letsencrypt-staging\n" >> "$1/$DS_DIR/environments/$INSTALL_ENV/config.sh"
 	success "done"
 }

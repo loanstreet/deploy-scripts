@@ -149,16 +149,16 @@ ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
 
 # Include deployment files location in the deployment config
-echo "DS_DIR=$DS_DIR" >> "$DEPLOY_CONFIG_SH"
+printf "DS_DIR=$DS_DIR\n" >> "$DEPLOY_CONFIG_SH"
 # Include project environment in the deployment config
-echo "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT" >> "$DEPLOY_CONFIG_SH"
+printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\n" >> "$DEPLOY_CONFIG_SH"
 
 INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
 # If restart command used run.sh script, include it in the deployment
 if [ $INCLUDE_RUN_SH -gt 0 ]; then
 	cp $SCRIPT_PATH/run.sh "$DEPLOY_PACKAGE_DIR/$DS_DIR"
-	echo "RESTART_COMMAND=\"sh ./$DS_DIR/run.sh restart\"" >> "$DEPLOY_CONFIG_SH"
+	printf "RESTART_COMMAND=\"sh ./$DS_DIR/run.sh restart\"\n" >> "$DEPLOY_CONFIG_SH"
 fi
 
 # Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
@@ -189,20 +189,6 @@ if [ "$PACKAGE" != "" ]; then
 	ds_package $DEPLOY_PACKAGE_DIR
 	ds_post_step 'package' "$PROJECT_SCRIPTS_DIR"
 fi
-
-# if [ "$RESOURCE_DIRS" != "" ]; then
-# 	RES_DIRS=$(echo "$RESOURCE_DIRS" | cut -d";" -f1)
-# 	for i in $RES_DIRS; do
-# 		echo "$BUILD_REPO/$i"
-# 		echo "$DEPLOY_REPO/$i"
-# 		mkdir -p "$DEPLOY_REPO/$i"
-# 		cp -r $BUILD_REPO/$i/* $DEPLOY_REPO/$i/
-# 	done
-# 	cd $DEPLOY_REPO
-# 	git add . 2>&1 | indent
-# 	git commit . -m "Added resource directories to deployment" 2>&1 | indent
-# 	info "Copied resource files to deployment"
-# fi
 
 # Run any post-build scripts if they were supplied
 # to be deprecated in favour of pre and post step scripts

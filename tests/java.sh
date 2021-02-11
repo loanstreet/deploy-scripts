@@ -22,8 +22,8 @@ DEPLOYMENT_DIR="$TEST_WORKING_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT"
 
 PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/java-project/deploy"
 DEPLOY_SCRIPTS_HOME="$SCRIPT_PATH/../"
-echo "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/java-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\n" >> deploy/app-config.sh
-echo "GIT_BRANCH=master\nSERVICE_PORT=37567" >> deploy/environments/default/config.sh
+printf "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/java-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\n" >> deploy/app-config.sh
+printf "GIT_BRANCH=master\nSERVICE_PORT=37567\n" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh deploy/environments/default/config.sh
 # hack for hardcoded nginx conf copying. to be made configurable later.
 touch deploy/environments/default/assets/nginx.conf

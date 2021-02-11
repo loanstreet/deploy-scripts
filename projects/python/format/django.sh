@@ -11,13 +11,13 @@ ds_format() {
 	SOCKET_PATH=$DEPLOYMENT_DIR'/current/tmp/sockets/$PROJECT_ENVIRONMENT.sock'
 	UWSGI_LOG_PATH=$DEPLOYMENT_DIR'/current/logs/uwsgi.log'
 	COMMAND='cd $DEPLOYMENT_DIR/current'
-	echo "PID_PATH=\"$PID_PATH\"" >> deploy-config.sh
-	echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> deploy-config.sh
-	echo "UWSGI_LOG_PATH=\"$UWSGI_LOG_PATH\"" >> deploy-config.sh
+	printf "PID_PATH=\"$PID_PATH\"\n" >> deploy-config.sh
+	printf "SOCKET_PATH=\"$SOCKET_PATH\"\n" >> deploy-config.sh
+	printf "UWSGI_LOG_PATH=\"$UWSGI_LOG_PATH\"\n" >> deploy-config.sh
 	if [ "$SERVICE_PORT" = "" ]; then
-		echo "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"" >> deploy-config.sh
+		printf "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/uwsgi.ini -s $SOCKET_PATH --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"\n" >> deploy-config.sh
 	else
-		echo "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/uwsgi.ini --http :$SERVICE_PORT --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"" >> deploy-config.sh
+		printf "START_COMMAND=\"$COMMAND && /bin/bash -c 'source venv/bin/activate && uwsgi --ini deploy/uwsgi.ini --http :$SERVICE_PORT --pidfile $PID_PATH -d $UWSGI_LOG_PATH' && sleep 5\"\n" >> deploy-config.sh
 	fi
 
 	cat deploy-config.sh >> ./$DS_DIR/config.sh

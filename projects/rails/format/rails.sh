@@ -14,9 +14,9 @@ ds_format() {
 	else
 		COMMAND='$HOME/.rbenv/bin/rbenv exec bundle exec puma -C $DEPLOYMENT_DIR/current/config/puma.rb --environment=$PROJECT_ENVIRONMENT -p $SERVICE_PORT --pidfile=$PID_PATH --daemon && sleep 3'
 	fi
-	echo "PID_PATH=\"$PID_PATH\"" >> deploy-config.sh
-	echo "SOCKET_PATH=\"$SOCKET_PATH\"" >> deploy-config.sh
-	echo "START_COMMAND=\"$COMMAND\"" >> deploy-config.sh
+	printf "PID_PATH=\"$PID_PATH\"\n" >> deploy-config.sh
+	printf "SOCKET_PATH=\"$SOCKET_PATH\"\n" >> deploy-config.sh
+	printf "START_COMMAND=\"$COMMAND\"\n" >> deploy-config.sh
 
 	cat deploy-config.sh >> ./$DS_DIR/config.sh
 	success 'done'

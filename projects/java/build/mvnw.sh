@@ -16,5 +16,5 @@ ds_build() {
 		error "build: mvnw: No package directory available to place warfile"
 	fi
 	cp "$WARFILE" "$2/"
-	echo "WARFILE=$WARFILE" >> "$2/deploy-config.sh"
+	printf "WARFILE=$WARFILE\n" >> "$2/deploy-config.sh"
 }

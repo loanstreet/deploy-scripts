@@ -81,7 +81,7 @@ END
 
 	TIMESTAMP=$(date '+%s')
 	INGRESS_PATCH_FILE="$KUBERNETES_HOME/ingress-patch-$TIMESTAMP.json"
-	echo "$INGRESS_PATCH" > "$INGRESS_PATCH_FILE"
+	printf "$INGRESS_PATCH" > "$INGRESS_PATCH_FILE"
 
 	ds_debug_cat "$INGRESS_PATCH_FILE"
 	# yamllint "$KUBERNETES_NGINX_CONFIG"
@@ -153,7 +153,7 @@ ds_post_push() {
 			fi
 
 			if [ "$KUBERNETES_CRED" != "" ]; then
-				echo "      imagePullSecrets:\n        - name: $KUBERNETES_CRED" >> "$KUBE_SVC_FILE"
+				printf "      imagePullSecrets:\n        - name: $KUBERNETES_CRED" >> "$KUBE_SVC_FILE"
 			fi
 
 			ds_debug_cat "$KUBE_SVC_FILE"
