@@ -34,7 +34,9 @@ The basic way it works is as follows.
 #					- docker-compose.yml # (optional) if present, will override the one in deploy/docker
 #				 - /kubernetes # (optional) kubernetes configs
 #					- service.yaml # (optional) config for kubernetes service and deployment for the project
-#		/docker # (optional) project-wide docker files
+#		- /scripts # (optional) Hook scripts that can be used for pre and post build hooks of each deployment step
+#			- repo.sh # (optional) example of a pre and post repo checkout hook file
+#		- /docker # (optional) project-wide docker files
 #			- Dockerfile # (optional) if present, will be used to build the docker image
 #			- docker-compose.yml # (optional) if present, will be used to build/start the container
 ```

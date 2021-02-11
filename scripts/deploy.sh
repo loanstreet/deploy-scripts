@@ -173,9 +173,12 @@ rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
 
 # Copy all files under project environment-specific assets/ dir to the deployment
 if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
-	info "Copying assets"
-	cp -rL "$DEPLOYMENT_ASSETS_DIR"/* "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
-	success "done"
+	EMPTY_CHECK=$(ls $DEPLOYMENT_ASSETS_DIR/ | wc -l)
+	if [ $EMPTY_CHECK -gt 0 ]; then
+		info "Copying assets ... "
+		cp -vrL "$DEPLOYMENT_ASSETS_DIR/"* "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
+		success "done"
+	fi
 fi
 
 if [ "$PACKAGE" != "" ]; then

@@ -28,6 +28,7 @@ cat deploy/app-config.sh deploy/environments/default/config.sh
 # hack for hardcoded nginx conf copying. to be made configurable later.
 touch deploy/environments/default/assets/nginx.conf
 # add some hook scripts
+mkdir -p deploy/scripts
 echo 'echo "Running post deployment scripts"' >> deploy/scripts/post_deploy.sh
 echo 'echo "Running pre build scripts"' >> deploy/scripts/pre_build.sh
 echo 'echo "Running post build scripts"' >> deploy/scripts/post_build.sh

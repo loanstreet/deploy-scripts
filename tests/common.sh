@@ -30,5 +30,33 @@ copy_deployment_files() {
 	git config user.name "Loanstreet Tech"
 	git commit . -m "test commit"
 	cd $SCRIPT_PATH/../
+	IENV="default"
+	if [ "$3" != "" ]; then
+		IENV="$3"
+	fi
+	if [ "$3" = "docker" ] || [ "$4" = "docker" ]; then
+		INSTALL_ENV="$IENV" sh installer/install.sh "$1" "$COPY_PROJECT_DIR/$1-project" --docker
+	elif [ "$3" = "kubernetes" ] || [ "$4" = "kubernetes" ]; then
+		INSTALL_ENV="$IENV" sh installer/install.sh "$1" "$COPY_PROJECT_DIR/$1-project" --docker --kubernetes
+	else
+		INSTALL_ENV="$IENV" sh installer/install.sh "$1" "$COPY_PROJECT_DIR/$1-project"
+	fi
+}
+
+copy_deployment_files_template() {
+	title "TEST - copy $1 project"
+	rm -rf $COPY_PROJECT_DIR
+	mkdir -p $COPY_PROJECT_DIR
+	printf "Copying project to $COPY_PROJECT_DIR/ ... "
+	cp -r "$2" "$COPY_PROJECT_DIR/$1-project"
+	success 'done'
+	echo "Initializing git repo in $COPY_PROJECT_DIR/$1-project"
+	cd $COPY_PROJECT_DIR/$1-project
+	git init
+	git add .
+	git config user.email "techgroup@loanstreet.com.my"
+	git config user.name "Loanstreet Tech"
+	git commit . -m "test commit"
+	cd $SCRIPT_PATH/../
 	sh installer/install.sh "$1" "$COPY_PROJECT_DIR/$1-project"
 }

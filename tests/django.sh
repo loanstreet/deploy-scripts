@@ -26,6 +26,7 @@ cat deploy/app-config.sh
 cat deploy/environments/default/config.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
+sed -i "s/module.*$/module = django_project.wsgi:application/g" deploy/environments/$PROJECT_ENVIRONMENT/assets/uwsgi.ini
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $TEST_WORKING_DIR/python-deploy-test/default/current
 title 'TEST - check web application'
