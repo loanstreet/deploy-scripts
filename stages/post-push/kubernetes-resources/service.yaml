@@ -2,32 +2,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: coverapi-stg
+  name: app-name
 spec:
   type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app: coverapi-stg
+    app: app-name
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coverapi-stg
+  name: app-name
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: coverapi-stg
+      app: app-name
   template:
     metadata:
       labels:
-        app: coverapi-stg
+        app: app-name
     spec:
       containers:
-        - name: coverapi-stg
-          image: dockerhub.finology.com.my/coverapi_staging:latest
+        - name: app-name
+          image: docker-registry/image:tag
           imagePullPolicy: Always
           ports:
             - containerPort: 80
