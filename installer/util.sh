@@ -84,6 +84,6 @@ ds_install_kubernetes() {
 
 	infof "Adding kubernetes vars to $INSTALL_ENV/config.sh ... "
 	TLS_SECRET="$INSTALL_ENV-$(date '+%s')"
-	printf "# POST_PUSH=kubernetes\n# KUBERNETES_CLUSTER=''\n# KUBERNETES_INGRESS='ingress-dev'\n# KUBERNETES_TLS=false\n# KUBERNETES_TLS_SECRET=$TLS_SECRET\n# KUBERNETES_CERT_MANAGER=letsencrypt-staging\n" >> "$1/$DS_DIR/environments/$INSTALL_ENV/config.sh"
+	printf "# POST_PUSH=kubernetes\n# KUBERNETES_CLUSTER='dev'\n# KUBERNETES_INGRESS='ingress-dev'\n# KUBERNETES_TLS=false\n# KUBERNETES_CERT_MANAGER=letsencrypt-prod\n" >> "$1/$DS_DIR/environments/$INSTALL_ENV/config.sh"
 	success "done"
 }
