@@ -1,6 +1,4 @@
-FROM python:3.8.2
-
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev python3-venv
+FROM python:3.8-alpine
 
 ARG APP_ENV
 ENV APP_ENV ${APP_ENV}
@@ -8,13 +6,21 @@ ENV APP_HOME /app
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
-ADD . $APP_HOME
-# ADD deploy/environments/${APP_ENV}/assets/local_settings.py $APP_HOME/cover_api
-RUN rm -rf Dockerfile docker-compose.yml
+COPY requirements.txt ${APP_HOME}/
+RUN apk update && apk add --no-cache libpq libstdc++ \
+	&& apk add --no-cache --virtual .build-deps \
+	postgresql-dev \
+	gcc \
+	musl-dev \
+	linux-headers \
+	alpine-sdk \
+	&& pip install -U pip \
+	&& pip install --no-cache-dir -r requirements.txt \
+	&& apk del --no-cache .build-deps
 
-RUN python3 -m venv venv
-RUN . venv/bin/activate && pip install -U pip && pip install -r requirements.txt
-RUN echo 'cd /app\n. venv/bin/activate\npython manage.py runserver 0.0.0.0:80' > start.sh
+ADD . $APP_HOME
+
+RUN rm -rf Dockerfile docker-compose.yml && echo $'cd /app\npython manage.py runserver 0.0.0.0:80' > start.sh
 
 EXPOSE 80
 

@@ -14,7 +14,7 @@ ds_check_dns() {
 }
 
 ds_kube_ingress_nginx() {
-	if [ "$1" = "" ] || [ "$2" = "" ] || [ "$3" = "" ]; then
+	if [ "$1" = "" ] || [ "$2" = "" ] || [ "$3" = "" ] || [ "$4" = "" ]; then
 		error "post-push: kubernetes: ingress-nginx: Too few arguments given to ds_kube_ingress_nginx"
 	fi
 
@@ -114,7 +114,7 @@ END
 	# yamllint "$KUBERNETES_NGINX_CONFIG"
 
 	infof "Applying ingress patch for $1 to $KUBERNETES_INGRESS ... "
-	kubectl patch ingress "$KUBERNETES_INGRESS" --type json --patch "$(cat $INGRESS_PATCH_FILE)"
+	kubectl patch ingress "$KUBERNETES_INGRESS" --namespace=$4 --type json --patch "$(cat $INGRESS_PATCH_FILE)"
 	success "done"
 	rm -f "$INGRESS_PATCH_FILE"
 }
@@ -151,6 +151,10 @@ ds_post_push() {
 		DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F / '{print $3}')
 		DOCKER_IMAGE="$DOCKER_HOST/$TAG"
 		DOCKER_IMAGE_SED="$DOCKER_HOST\\/$TAG"
+	fi
+
+	if [ "$KUBERNETES_NAMESPACE" = "" ]; then
+		KUBERNETES_NAMESPACE="default"
 	fi
 
 	EXISTING_SERVICE=$(kubectl get services | grep "$KUBE_SERVICE" | wc -l)
@@ -190,10 +194,10 @@ ds_post_push() {
 			KUBE_SERVICE_CFG="$KUBE_SVC_FILE"
 		fi
 
-		kubectl create -f "$KUBE_SERVICE_CFG"
+		kubectl create -f "$KUBE_SERVICE_CFG" --namespace=$KUBERNETES_NAMESPACE
 	else
 		infof "Kubernetes service $KUBE_SERVICE exists. Applying new image $DOCKER_IMAGE ... "
-		kubectl set image deployment $KUBE_SERVICE "$KUBE_SERVICE=$DOCKER_IMAGE"
+		kubectl set image deployment $KUBE_SERVICE "$KUBE_SERVICE=$DOCKER_IMAGE" --namespace=$KUBERNETES_NAMESPACE
 		success "done"
 	fi
 
@@ -206,6 +210,6 @@ ds_post_push() {
 		if [ "$KUBERNETES_NGINX_SERVICE_PORT" = "" ]; then
 			KUBERNETES_NGINX_SERVICE_PORT="80"
 		fi
-		ds_kube_ingress_nginx "$KUBERNETES_NGINX_SERVICE_HOST" "$KUBE_SERVICE" "$KUBERNETES_NGINX_SERVICE_PORT"
+		ds_kube_ingress_nginx "$KUBERNETES_NGINX_SERVICE_HOST" "$KUBE_SERVICE" "$KUBERNETES_NGINX_SERVICE_PORT" "$KUBERNETES_NAMESPACE"
 	fi
 }
