@@ -1,3 +1,30 @@
+ds_create_bootstrap_script() {
+	if [ "$1" = "" ]; then
+		error "installer: create bootstrap script: Insufficient args given to ds_create_bootstrap_script"
+	fi
+
+	BOOTSTRAP_SCRIPT="$1/deploy.sh"
+
+	infof "Creating bootstrap script at $BOOTSTRAP_SCRIPT ... "
+	VERSION=$(cat $SCRIPT_PATH/../.VERSION)
+	echo "#!/bin/sh\n\nVERSION=$VERSION" > "$BOOTSTRAP_SCRIPT"
+	cat << 'EOF' >> $DEPLOY_DIR/deploy.sh
+DEPLOY_SCRIPTS_GIT_REPO=git@git.finology.com.my:loanstreet/deploy-scripts.git
+DEPLOY_SCRIPTS_GIT_BRANCH="$VERSION"
+DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts/$DEPLOY_SCRIPTS_GIT_BRANCH"
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+
+if [ ! -d $DEPLOY_SCRIPTS_HOME ]; then
+	mkdir -p $DEPLOY_SCRIPTS_HOME
+	echo "Downloading deploy-scripts"
+	GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone $DEPLOY_SCRIPTS_GIT_REPO $DEPLOY_SCRIPTS_HOME
+fi
+cd $DEPLOY_SCRIPTS_HOME && GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git fetch origin +refs/heads/$DEPLOY_SCRIPTS_GIT_BRANCH && git checkout $DEPLOY_SCRIPTS_GIT_BRANCH && cd $SCRIPT_PATH
+PROJECT_DEPLOY_DIR=$SCRIPT_PATH sh $DEPLOY_SCRIPTS_HOME/deploy.sh $1
+EOF
+	success "done"
+}
+
 ds_create_dir_structure() {
 	if [ "$1" = "" ] || [ "$2" = "" ] || [ "$3" = "" ]; then
 		error "installer: create dirs: Insufficient args given to ds_create_dir_structure"
@@ -17,6 +44,8 @@ ds_create_dir_structure() {
 	infof "Creating $DEPLOY_DIR ... "
 	mkdir -p $DEPLOY_DIR
 	success "done"
+
+	ds_create_bootstrap_script "$DEPLOY_DIR"
 
 	infof "Creating $ENV_DIR/assets ... "
 	mkdir -p "$ENV_DIR/assets"
