@@ -228,8 +228,8 @@ copy_docker_files() {
 			info "Copying keys ... "
 			info "\t$DOCKER_ADD_SSH_KEY"
 			info "\t$DOCKER_ADD_SSH_PUBLIC_KEY"
-			cp "$DOCKER_ADD_SSH_KEY" $DESTINATION_DIR
-			cp "$DOCKER_ADD_SSH_PUBLIC_KEY" $DESTINATION_DIR
+			cp "$DOCKER_ADD_SSH_KEY" $DESTINATION_DIR/id_rsa
+			cp "$DOCKER_ADD_SSH_PUBLIC_KEY" $DESTINATION_DIR/id_rsa.pub
 			success "done"
 		fi
 	fi
