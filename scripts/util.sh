@@ -237,12 +237,15 @@ copy_docker_files() {
 			structure_error_stop
 	fi
 
+	KEY_DESTINATION_DIR="$DESTINATION_DIR/$DS_DIR/files"
+	mkdir -p "$KEY_DESTINATION_DIR"
+
 	if [ "$DOCKER_ADD_SSH_KEY" != "" ]; then
 		DOCKER_ADD_SSH_PUBLIC_KEY="$DOCKER_ADD_SSH_KEY.pub"
 		if [ -f "$DOCKER_ADD_SSH_KEY" ] && [ -f "$DOCKER_ADD_SSH_KEY.pub" ]; then
 			info "Copying keys ... "
-			cp -v "$DOCKER_ADD_SSH_KEY" $DESTINATION_DIR/id_rsa
-			cp -v "$DOCKER_ADD_SSH_PUBLIC_KEY" $DESTINATION_DIR/id_rsa.pub
+			cp -v "$DOCKER_ADD_SSH_KEY" $KEY_DESTINATION_DIR/id_rsa
+			cp -v "$DOCKER_ADD_SSH_PUBLIC_KEY" $KEY_DESTINATION_DIR/id_rsa.pub
 			success "done"
 		fi
 	fi
