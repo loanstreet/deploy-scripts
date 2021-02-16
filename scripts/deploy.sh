@@ -162,7 +162,7 @@ INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
 # If restart command used run.sh script, include it in the deployment
 if [ $INCLUDE_RUN_SH -gt 0 ]; then
-	cp $SCRIPT_PATH/../stages/push/post-deploy/run.sh "$DEPLOY_PACKAGE_DIR/$DS_DIR"
+	cp -v $SCRIPT_PATH/../stages/push/post-deploy/run.sh "$DEPLOY_PACKAGE_DIR/$DS_DIR"
 	printf "RESTART_COMMAND=\"sh ./$DS_DIR/run.sh restart\"\n" >> "$DEPLOY_CONFIG_SH"
 fi
 
