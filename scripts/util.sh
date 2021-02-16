@@ -226,10 +226,8 @@ copy_docker_files() {
 		DOCKER_ADD_SSH_PUBLIC_KEY="$DOCKER_ADD_SSH_KEY.pub"
 		if [ -f "$DOCKER_ADD_SSH_KEY" ] && [ -f "$DOCKER_ADD_SSH_KEY.pub" ]; then
 			info "Copying keys ... "
-			info "\t$DOCKER_ADD_SSH_KEY"
-			info "\t$DOCKER_ADD_SSH_PUBLIC_KEY"
-			cp "$DOCKER_ADD_SSH_KEY" $DESTINATION_DIR/id_rsa
-			cp "$DOCKER_ADD_SSH_PUBLIC_KEY" $DESTINATION_DIR/id_rsa.pub
+			cp -v "$DOCKER_ADD_SSH_KEY" $DESTINATION_DIR/id_rsa
+			cp -v "$DOCKER_ADD_SSH_PUBLIC_KEY" $DESTINATION_DIR/id_rsa.pub
 			success "done"
 		fi
 	fi
