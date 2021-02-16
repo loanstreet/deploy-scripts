@@ -3,8 +3,8 @@ ds_check_dns() {
 		error "post-push: kubernetes: ingress-nginx: Too few arguments given to ds_check_dns"
 	fi
 
-	NSLOOKUP_COMMAND="nslookup -type=a $1 8.8.8.8 | grep -E \"Address: [[:digit:]].*$\" | awk '{print \$2}'"
-	debug "$NSLOOKUP_COMMAND"
+	# NSLOOKUP_COMMAND="nslookup -type=a $1 8.8.8.8 | grep -E \"Address: [[:digit:]].*$\" | awk '{print \$2}'"
+	# debug "$NSLOOKUP_COMMAND"
 	ADDR=$(nslookup -type=a $1 8.8.8.8 | grep -E "Address: [[:digit:]].*$" | awk '{print $2}')
 	if [ "$ADDR" = "" ]; then
 		error "No DNS found for $1. Please configure DNS for $1 before using it for deployment"
