@@ -1,5 +1,6 @@
 DS_DIR="deploy"
 DS_USER_DEFAULTS="$HOME/.config/deploy-scripts-defaults.sh"
+DS_UPDATE=true
 DEPLOYMENT_SERVER_PORT=22
 DEPLOYMENT_SERVER_PROTOCOL=ssh
 DEPLOYMENT_SERVER_USER=deploy
@@ -18,3 +19,8 @@ KUBERNETES_INGRESS="ingress-dev"
 KUBERNETES_TLS="false"
 KUBERNETES_REPLICAS="1"
 KUBERNETES_CERT_MANAGER="letsencrypt-staging"
+
+# Load vars to override from deploy-scripts-defaults.sh if available
+if [ -f "$DS_USER_DEFAULTS" ]; then
+	. "$DS_USER_DEFAULTS"
+fi

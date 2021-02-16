@@ -9,8 +9,11 @@ cd $SCRIPT_PATH
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 . $SCRIPT_PATH/scripts/util.sh
-title "deploy-scripts $(cat $SCRIPT_PATH/.VERSION) - update"
-git pull origin $CURRENT_BRANCH | indent
+. $SCRIPT_PATH/scripts/defaults.sh
+if [ "$DS_UPDATE" = "true" ]; then
+	title "deploy-scripts $(cat $SCRIPT_PATH/.VERSION) - update"
+	git pull origin $CURRENT_BRANCH | indent
+fi
 
 if [ "$PROJECT_DEPLOY_DIR" = "" ]; then
 	error "No project directory specified through PROJECT_DEPLOY_DIR variable"

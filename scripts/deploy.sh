@@ -17,10 +17,6 @@ fi
 
 # Include default env vars
 . $SCRIPT_PATH/defaults.sh
-# Include user-level default overrides, if available
-if [ -f "$DS_USER_DEFAULTS" ]; then
-	. "$DS_USER_DEFAULTS"
-fi
 # Include env vars for project
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
