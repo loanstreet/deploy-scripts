@@ -21,7 +21,7 @@ PROJECT_ENVIRONMENT="default"
 DEPLOYMENT_DIR="$TEST_WORKING_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT"
 PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/python-project/deploy"
 printf "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/python-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\nLINKED_DIRS=\"venv uploads logs tmp/sockets tmp/pids\"\n" >> deploy/app-config.sh
-printf "GIT_BRANCH=master\nSERVICE_PORT=37569\n" >> deploy/environments/default/config.sh
+printf "GIT_BRANCH=master\nSERVICE_PORT=37569\nCOPY_FILES=\"$HOME/.ssh/id_rsa_auto $HOME/.ssh/id_rsa_auto.pub\"" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh
 cat deploy/environments/default/config.sh
 title 'TEST - deploying default environment'

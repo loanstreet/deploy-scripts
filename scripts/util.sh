@@ -179,6 +179,21 @@ ds_debug_exec() {
 	debug "$CONT"
 }
 
+ds_copy_local_files() {
+	if [ "$1" = "" ] || [ "$2" = "" ]; then
+		return
+	fi
+
+	LOCAL_FILES_COPY_DIR="$1/files"
+	mkdir -p "$LOCAL_FILES_COPY_DIR"
+	if [ "$2" != "" ]; then
+			COPY_FILE_LIST=$(echo "$2" | cut -d";" -f1)
+			for i in $COPY_FILE_LIST; do
+				cp -rv $i $LOCAL_FILES_COPY_DIR/
+			done
+	fi
+}
+
 copy_docker_files() {
 	PROJECT_DIR="$1"
 	PROJECT_ENVIRONMENT="$2"

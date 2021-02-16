@@ -143,10 +143,15 @@ if [ "$BUILD" != "" ]; then
 fi
 
 # Compile all the env vars into a config.sh to be added to the deployment files
-mkdir -p "$DEPLOY_PACKAGE_DIR/$DS_DIR"
-DEPLOY_CONFIG_SH="$DEPLOY_PACKAGE_DIR/$DS_DIR/config.sh"
+title "repo: files: copy"
+DEPLOY_FILES_DIR="$DEPLOY_PACKAGE_DIR/$DS_DIR"
+mkdir -p "$DEPLOY_FILES_DIR"
+DEPLOY_CONFIG_SH="$DEPLOY_FILES_DIR/config.sh"
 ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
 ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
+
+# Copy other files from local system
+ds_copy_local_files "$DEPLOY_FILES_DIR" "$COPY_FILES"
 
 # Include deployment files location in the deployment config
 printf "DS_DIR=$DS_DIR\n" >> "$DEPLOY_CONFIG_SH"
