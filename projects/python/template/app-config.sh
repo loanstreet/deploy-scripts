@@ -1,6 +1,6 @@
 TYPE=python
 FORMAT=django
-REPO=git@github.com-loanstreet:loanstreet/app-name.git
+REPO=git@github.com:loanstreet/app-name.git
 
 DEPLOYMENT_SERVER=fincon-dev.finology.com.my
 DEPLOYMENT_SERVER_USER=deploy

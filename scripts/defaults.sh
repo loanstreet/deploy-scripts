@@ -1,3 +1,4 @@
+DS_REPO="git@github.com:loanstreet/deploy-scripts.git"
 DS_DIR="deploy"
 DS_USER_DEFAULTS="$HOME/.config/deploy-scripts-defaults.sh"
 DS_UPDATE=true

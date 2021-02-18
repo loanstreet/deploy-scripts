@@ -1,6 +1,6 @@
 TYPE=rails
 FORMAT=rails
-REPO=git@github.com-loanstreet:loanstreet/app-name.git
+REPO=git@github.com:loanstreet/app-name.git
 
 DEPLOYMENT_SERVER=dev-partners.loanstreet.com.my
 DEPLOYMENT_SERVER_USER=deploy

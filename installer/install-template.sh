@@ -41,7 +41,7 @@ mkdir -p $DEPLOY_DIR
 VERSION=$(cat $SCRIPT_PATH/../.VERSION)
 echo "#!/bin/sh\n\nVERSION=$VERSION" > "$DEPLOY_DIR/deploy.sh"
 cat << 'EOF' >> $DEPLOY_DIR/deploy.sh
-DEPLOY_SCRIPTS_GIT_REPO=git@git.finology.com.my:loanstreet/deploy-scripts.git
+DEPLOY_SCRIPTS_GIT_REPO=git@github.com:loanstreet/deploy-scripts.git
 DEPLOY_SCRIPTS_GIT_BRANCH="$VERSION"
 DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts/$DEPLOY_SCRIPTS_GIT_BRANCH"
 SCRIPT_PATH=$(dirname $(readlink -f $0))
