@@ -15,9 +15,9 @@ It works similarly to capistrano, but has fewer dependencies. Apart from the bui
 - git               # Currently only works with git repos
 - /bin/sh           # A Bourne-like shell found on most unix-like systems
 - openssh-client    # An SSH client to connect with remote machines where the software will be deployed
-- docker			# (Optional) The docker command line tools in case the project uses docker
+- docker            # (Optional) The docker command line tools in case the project uses docker
 - docker-compose	# (Optional) The docker-compose tool to build images in case the project uses docker
-- kubectl			# (Optional) The kubectl command line tool in case the project works with kubernetes
+- kubectl           # (Optional) The kubectl command line tool in case the project works with kubernetes
 ```
 
 The project is still under heavy development and is being updated to include support for other tools.
