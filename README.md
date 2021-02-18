@@ -16,7 +16,7 @@ It works similarly to capistrano, but has fewer dependencies. Apart from the bui
 - /bin/sh           # A Bourne-like shell found on most unix-like systems
 - openssh-client    # An SSH client to connect with remote machines where the software will be deployed
 - docker            # (Optional) The docker command line tools in case the project uses docker
-- docker-compose	# (Optional) The docker-compose tool to build images in case the project uses docker
+- docker-compose    # (Optional) The docker-compose tool to build images in case the project uses docker
 - kubectl           # (Optional) The kubectl command line tool in case the project works with kubernetes
 ```
 
@@ -161,7 +161,7 @@ PUST_PUSH=kubernetes
 To add deployment capabilities to a project, run the following commands
 
 ```bash
-git clone --single-branch --branch 0.5.0 --depth=1 git@git.loansreet.com.my:loanstreet/deploy-scripts.git $HOME/.deploy-scripts
+git clone --single-branch --branch 0.5.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts
 
 cd $HOME/.deploy-scripts/0.5.0/installer
 
