@@ -35,7 +35,7 @@ ds_kube_ingress_nginx() {
 		return
 	fi
 
-	HOST_EXISTS_NON_ING=$(kubectl get ingress | grep "$1" | awk '{print $1}')
+	HOST_EXISTS_NON_ING=$(kubectl get ingress -o yaml | grep -E "\- host:.*$" | grep "$1" | awk '{print $3}')
 	if [ "$HOST_EXISTS_NON_ING" != "" ] && [ "$HOST_EXISTS_NON_ING" != "$KUBERNETES_INGRESS" ]; then
 		error "Host $1 already configured under $HOST_EXISTS_NON_ING"
 	fi

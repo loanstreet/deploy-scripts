@@ -1,9 +1,28 @@
+# deploy-scripts
+
+1. [Overview](#overview)
+2. [Deployment Steps](#deployment-steps)
+3. [Adding deployment to a project](#adding-deployment-to-a-project)
+4. [Automated Testing](#automated-testing)
+5. [Licence](#licence)
+
 # Overview
 
 deploy-scripts is a collection of shell scripts to automate the packaging and deployment of projects.
-It is still under heavy development and is being updated to include support for other tools.
+It works similarly to capistrano, but has fewer dependencies. Apart from the build dependencies of the project you are tying to deploy, it should only need the following dependencies:
 
-As much as possible, any new code added to this project should be able to run on a POSIX shell. Exceptions can be made depending on the project you are deploying (eg. bash is ok to use with rails specific parts because a lot of rails related tools need bash anyway).
+```bash
+- git               # Currently only works with git repos
+- /bin/sh           # A Bourne-like shell found on most unix-like systems
+- openssh-client    # An SSH client to connect with remote machines where the software will be deployed
+- docker			# (Optional) The docker command line tools in case the project uses docker
+- docker-compose	# (Optional) The docker-compose tool to build images in case the project uses docker
+- kubectl			# (Optional) The kubectl command line tool in case the project works with kubernetes
+```
+
+The project is still under heavy development and is being updated to include support for other tools.
+
+As much as possible, any new code added to this project should be able to run in a POSIX shell. Exceptions can be made depending on the project you are deploying (eg. bash is ok to use with rails specific parts because a lot of rails related tools need bash anyway).
 
 The following stacks are currently supported
 
@@ -16,6 +35,8 @@ Support has also been added to containerize and deploy projects built on the abo
 
 - Docker
 - Kubernetes
+
+Containerization has currently only been tested and confirmed to work with Django and Ruby on Rails projects, but it shouldn't be difficult to add it to the other supported stacks.
 
 The basic way it works is as follows.
 
@@ -160,7 +181,7 @@ sh install.sh reactjs /path/to/reactjs/project
 Follow the instructions given by the installer
 
 # Automated Testing
-The project contains automated testing to verify that deployments don't break when new changes are made to deploy-scripts.
+The project contains automated tests to verify that deployments don't break when new changes are made to deploy-scripts.
 
 **Since deployments work over ssh, running the tests requires you to add your own SSH public key to the $HOME/.ssh/authorized_keys file in your home directory.**
 
@@ -181,6 +202,8 @@ sh tests/reactjs.sh
 sh tests/django.sh
 # Docker
 sh tests/docker.sh
-# Kubernetes
-sh tests/kubernetes.sh
 ```
+
+# Licence
+
+The code is distributed under the MIT License, a copy of which is included in the project repository.
