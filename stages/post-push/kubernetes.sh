@@ -20,22 +20,19 @@ ds_kube_ingress_nginx() {
 
 	ds_check_dns "$1"
 
-	INGRESS_EXISTS=$(kubectl get ingress | grep "$KUBERNETES_INGRESS" | awk '{print $1}' | head -n1)
+	INGRESS_EXISTS=$(kubectl get ingress $KUBERNETES_INGRESS | grep "$KUBERNETES_INGRESS" | awk '{print $1}' | head -n1)
+	debug $INGRESS_EXISTS
 
 	if [ "$INGRESS_EXISTS" = "" ]; then
 		error "Specified ingress $KUBERNETES_INGRESS not found on $KUBERNETES_CLUSTER"
 	fi
 
-	HOST_EXISTS=$(kubectl get ingress | grep "$KUBERNETES_INGRESS" | awk '{print $3}' | head -n1)
+	HOST_EXISTS=$(kubectl get ingress $KUBERNETES_INGRESS -o yaml | grep -E "\- host:.*$" | grep "$1" | awk '{print $3}')
+	debug $HOST_EXISTS
 
 	if [ "$HOST_EXISTS" != "" ]; then
-		HOST_LIST=$(echo $HOST_EXISTS | tr ',' '\n')
-		for i in $HOST_LIST; do
-			if [ "$1" = "$i" ]; then
-				info "Host $i already configured in $KUBERNETES_INGRESS. Skipping patch"
-				return
-			fi
-		done
+		info "Host $1 already configured in $KUBERNETES_INGRESS. Skipping patch"
+		return
 	fi
 
 	HOST_EXISTS_NON_ING=$(kubectl get ingress | grep "$1" | awk '{print $1}')
