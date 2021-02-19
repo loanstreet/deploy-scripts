@@ -157,6 +157,8 @@ ds_copy_local_files "$DEPLOY_FILES_DIR" "$COPY_FILES"
 printf "DS_DIR=$DS_DIR\n" >> "$DEPLOY_CONFIG_SH"
 # Include project environment in the deployment config
 printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\n" >> "$DEPLOY_CONFIG_SH"
+# Include deployment directory in the deployment config
+printf "DEPLOYMENT_DIR=$DEPLOYMENT_DIR\n" >> "$DEPLOY_CONFIG_SH"
 
 INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
 
