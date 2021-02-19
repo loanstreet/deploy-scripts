@@ -25,7 +25,9 @@ else
 	cd $DEPLOY_DIR/current
 	source venv/bin/activate
 	pip install -U pip
-	pip3 install -r requirements.txt
+	if [ -f "./requirements.txt" ]; then
+		pip install -r requirements.txt
+	fi
 
 	if [ "$FORMAT" = "django" ]; then
 		title 'remote: django: run migrations'
