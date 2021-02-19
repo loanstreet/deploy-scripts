@@ -12,5 +12,11 @@ ds_push() {
 	DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F/ '{print $3}')
 	docker tag $DOCKER_IMAGE "$DOCKER_HOST/$DOCKER_IMAGE"
 	info "Pushing $DOCKER_IMAGE to $DOCKER_HOST"
-	docker push "$DOCKER_HOST/$DOCKER_IMAGE"
+	IMAGE_TAG="$DOCKER_HOST/$DOCKER_IMAGE"
+	docker push $IMAGE_TAG
+
+	if [ "$DOCKER_DELETE_LOCAL_IMAGE" = "true" ]; then
+		info "Deleting $IMAGE_TAG from local repository"
+		docker image rm -f "$IMAGE_TAG"
+	fi
 }
