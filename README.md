@@ -9,7 +9,10 @@
 # Overview
 
 deploy-scripts is a collection of shell scripts to automate the packaging and deployment of projects.
-It works similarly to capistrano, but has fewer dependencies. Apart from the build dependencies of the project you are tying to deploy, it should only need the following dependencies:
+
+It works similarly to capistrano, but has fewer dependencies.
+
+Apart from the build dependencies of the project you are tying to deploy, it should only need the following dependencies:
 
 ```bash
 - git               # Currently only works with git repos
@@ -21,6 +24,8 @@ It works similarly to capistrano, but has fewer dependencies. Apart from the bui
 ```
 
 The project is still under heavy development and is being updated to include support for other tools.
+
+For a step-by-step understanding of how a deployment happens, and how to add deployment support to a project, please check the [Sample Django Deployment](https://github.com/loanstreet/deploy-scripts/wiki/Sample-Django-Deployment) wiki page.
 
 As much as possible, any new code added to this project should be able to run in a POSIX shell. Exceptions can be made depending on the project you are deploying (eg. bash is ok to use with rails specific parts because a lot of rails related tools need bash anyway).
 
@@ -161,7 +166,7 @@ PUST_PUSH=kubernetes
 To add deployment capabilities to a project, run the following commands
 
 ```bash
-git clone --single-branch --branch 0.5.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts
+git clone --single-branch --branch 0.5.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts/0.5.0
 
 cd $HOME/.deploy-scripts/0.5.0/installer
 
