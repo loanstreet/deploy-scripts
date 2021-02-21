@@ -141,17 +141,22 @@ ds_pre_step() {
 	if [ "$1" = "" ] || [ "$2" = "" ]; then
 		return
 	fi
+	CUR=$(pwd)
 	PRE_STEP_SCRIPT="$2/$1.sh"
+	HOOK_SCRIPT_DIR="$2"
 	if [ "$3" != "" ] && [ -f "$3/$1.sh" ]; then
 		PRE_STEP_SCRIPT="$3/$1.sh"
+		HOOK_SCRIPT_DIR="$3"
 	fi
 	if [ -f "$PRE_STEP_SCRIPT" ]; then
 		. "$PRE_STEP_SCRIPT"
 		DEFINED=$(grep 'ds_pre' $PRE_STEP_SCRIPT | awk '{print $1}')
 		if [ "$DEFINED" != "" ]; then
+			cd $HOOK_SCRIPT_DIR
 			info "Pre-$1 script:"
 			ds_pre
 			info "End pre-$1 script:"
+			cd $CUR
 		fi
 	fi
 }
@@ -160,17 +165,22 @@ ds_post_step() {
 	if [ "$1" = "" ] || [ "$2" = "" ]; then
 		return
 	fi
+	CUR=$(pwd)
 	POST_STEP_SCRIPT="$2/$1.sh"
+	HOOK_SCRIPT_DIR="$2"
 	if [ "$3" != "" ] && [ -f "$3/$1.sh" ]; then
 		POST_STEP_SCRIPT="$3/$1.sh"
+		HOOK_SCRIPT_DIR="$3"
 	fi
 	if [ -f "$POST_STEP_SCRIPT" ]; then
 		. "$POST_STEP_SCRIPT"
 		DEFINED=$(grep 'ds_post' $PRE_STEP_SCRIPT | awk '{print $1}')
 		if [ "$DEFINED" != "" ]; then
+			cd $HOOK_SCRIPT_DIR
 			info "Post-$1 script:"
 			ds_post
 			info "End post-$1 script:"
+			cd $CUR
 		fi
 	fi
 }
