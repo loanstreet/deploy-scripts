@@ -16,7 +16,7 @@ ds_push() {
 	docker push $IMAGE_TAG
 
 	if [ "$DOCKER_DELETE_LOCAL_IMAGE" = "true" ]; then
-		info "Deleting $IMAGE_TAG from local repository"
-		docker image rm -f "$IMAGE_TAG"
+		info "Deleting $DOCKER_IMAGE from local repository"
+		docker image rm -f "$IMAGE_TAG" "$DOCKER_IMAGE"
 	fi
 }
