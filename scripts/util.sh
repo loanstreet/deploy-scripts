@@ -142,11 +142,17 @@ ds_pre_step() {
 		return
 	fi
 	PRE_STEP_SCRIPT="$2/$1.sh"
+	if [ "$3" != "" ] && [ -f "$3/$1.sh" ]; then
+		PRE_STEP_SCRIPT="$3/$1.sh"
+	fi
 	if [ -f "$PRE_STEP_SCRIPT" ]; then
 		. "$PRE_STEP_SCRIPT"
-		info "Pre-$1 script:"
-		ds_pre
-		info "End pre-$1 script:"
+		DEFINED=$(grep 'ds_pre' $PRE_STEP_SCRIPT | awk '{print $1}')
+		if [ "$DEFINED" != "" ]; then
+			info "Pre-$1 script:"
+			ds_pre
+			info "End pre-$1 script:"
+		fi
 	fi
 }
 
@@ -155,11 +161,17 @@ ds_post_step() {
 		return
 	fi
 	POST_STEP_SCRIPT="$2/$1.sh"
+	if [ "$3" != "" ] && [ -f "$3/$1.sh" ]; then
+		POST_STEP_SCRIPT="$3/$1.sh"
+	fi
 	if [ -f "$POST_STEP_SCRIPT" ]; then
 		. "$POST_STEP_SCRIPT"
-		info "Post-$1 script:"
-		ds_post
-		info "End post-$1 script:"
+		DEFINED=$(grep 'ds_post' $PRE_STEP_SCRIPT | awk '{print $1}')
+		if [ "$DEFINED" != "" ]; then
+			info "Post-$1 script:"
+			ds_post
+			info "End post-$1 script:"
+		fi
 	fi
 }
 
