@@ -1,10 +1,11 @@
 # deploy-scripts
 
 1. [Overview](#overview)
-2. [Deployment Steps](#deployment-steps)
-3. [Adding deployment to a project](#adding-deployment-to-a-project)
-4. [Automated Testing](#automated-testing)
-5. [Licence](#licence)
+2. [Sample Deployment](#sample-deployment)
+3. [Deployment Steps](#deployment-steps)
+4. [Adding deployment to a project](#adding-deployment-to-a-project)
+5. [Automated Testing](#automated-testing)
+6. [Licence](#licence)
 
 # Overview
 
@@ -24,8 +25,6 @@ Apart from the build dependencies of the project you are tying to deploy, it sho
 ```
 
 The project is still under heavy development and is being updated to include support for other tools.
-
-For a step-by-step understanding of how a deployment happens, and how to add deployment support to a project, please check the [Sample Django Deployment](https://github.com/loanstreet/deploy-scripts/wiki/Sample-Django-Deployment) wiki page.
 
 As much as possible, any new code added to this project should be able to run in a POSIX shell. Exceptions can be made depending on the project you are deploying (eg. bash is ok to use with rails specific parts because a lot of rails related tools need bash anyway).
 
@@ -68,6 +67,10 @@ The basic way it works is as follows.
 ```
 
 It can also use the commented out optional files that are listed, but will work without them for non-containerized deployments.
+
+## Sample Deployment
+
+For a step-by-step understanding of how a deployment happens, and how to add deployment support to a project, please check the [Sample Django Deployment](https://github.com/loanstreet/deploy-scripts/wiki/Sample-Django-Deployment) wiki page.
 
 ## Deployment Steps
 
