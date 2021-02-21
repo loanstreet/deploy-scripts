@@ -105,6 +105,9 @@ fi
 ds_clean_dirs
 mkdir -p $WORK_DIR
 
+DS_DIR_EXPR=$(echo $DS_DIR | sed 's/\//\\\//g')
+PROJECT_DIR=$(echo $PROJECT_DEPLOY_DIR | sed -e "s/\/$DS_DIR_EXPR$//")
+
 # Checkout branch to be deployed into repo/ inside working dir
 ds_set_repo_type
 title "repo: checkout: $REPO_TYPE"

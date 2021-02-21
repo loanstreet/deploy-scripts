@@ -250,3 +250,13 @@ copy_docker_files() {
 		fi
 	fi
 }
+
+copy_local_project_for_build() {
+	if [ "$1" = "" ] || [ "$2" = "" ] || [ "$3" = "" ]; then
+		error "Insufficient args supplied to copy_local_project_for_build"
+	fi
+	mkdir -p $2
+	cd $1 && tar -cf "$3/project.tar" . && cd $3
+	tar -xf project.tar -C $2/
+	cd $1
+}
