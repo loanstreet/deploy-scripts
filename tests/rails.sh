@@ -21,7 +21,7 @@ PROJECT_ENVIRONMENT="production"
 DEPLOYMENT_DIR="$TEST_WORKING_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT"
 
 cd $COPY_PROJECT_DIR/rails-project
-SECRET_KEY_BASE=$(rake secret)
+SECRET_KEY_BASE="MY_PRODUCTION_SECRET_KEY_HERE"
 printf "production:\n    secret_key_base: $SECRET_KEY_BASE" > config/secrets.yml
 git add config/secrets.yml && git commit config/secrets.yml -m "add secrets file"
 
