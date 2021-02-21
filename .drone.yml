@@ -36,7 +36,7 @@ platform:
 
 steps:
   - name: test
-    image: loanstreet-ubuntu-19.04/ruby:2.6.3
+    image: loanstreet-ubuntu-20.04/ruby:2.6.3
     volumes:
       - name: ssh
         path: /root/.ssh
