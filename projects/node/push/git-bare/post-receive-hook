@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/post-receive-utils.sh
+
+. $HOME/.profile
+
+deploy
+
+title 'deploy - build'
+cd $DEPLOY_DIR/current
+npm install
+npm run build
+
+post_startup
+
+restart_application
