@@ -82,6 +82,30 @@ volumes:
 
 ---
 kind: pipeline
+name: node
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: test
+    image: loanstreet-ubuntu-20.04/python:3.7
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+    commands:
+      - service ssh start
+      - sh ./tests/node.sh
+
+
+volumes:
+  - name: ssh
+    host:
+      path: /root/.ssh
+
+---
+kind: pipeline
 name: kubernetes
 
 platform:
