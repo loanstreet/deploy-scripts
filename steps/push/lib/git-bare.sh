@@ -9,10 +9,10 @@ ds_push() {
 
 	mkdir -p $BARE_REPO_SCRIPT_DIR
 	cp "$1/$DS_DIR/config.sh" $BARE_REPO_SCRIPT_DIR/config.sh
-	cp $SCRIPT_PATH/../stages/push/post-deploy/post-deploy-utils.sh $BARE_REPO_SCRIPT_DIR/
-	cp $SCRIPT_PATH/../stages/push/git-bare-resources/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
+	cp $SCRIPT_PATH/../steps/push/lib/post-deploy/post-deploy-utils.sh $BARE_REPO_SCRIPT_DIR/
+	cp $SCRIPT_PATH/../steps/push/lib/git-bare-resources/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
 	cp $SCRIPT_PATH/util.sh $BARE_REPO_SCRIPT_DIR/
-	cp $SCRIPT_PATH/../stages/push/git-bare-resources/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
+	cp $SCRIPT_PATH/../steps/push/lib/git-bare-resources/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
 	# CUSTOM_POST_RECEIVE_HOOK=$
 	# if [ -f "$CUSTOM_POST_RECEIVE_HOOK" ]; then
 	# 	info "Copying custom post-receive hook $CUSTOM_POST_RECEIVE_HOOK"

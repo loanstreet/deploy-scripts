@@ -68,18 +68,6 @@ ds_clean_dirs() {
 	fi
 }
 
-# If REPO_TYPE is unset, determine repo type from which to check out by repo url assigned to var REPO
-ds_set_repo_type() {
-	if [ "$REPO_TYPE" = "" ]; then
-		REPO_STR=$(echo $REPO | cut -c -4)
-		if [ "$REPO_STR" = "git@" ]; then
-			REPO_TYPE="git"
-		else
-			error "Failed to determine REPO_TYPE for project checkout"
-		fi
-	fi
-}
-
 # If PUSH is unset, determine how to push from var DEPLOYMENT_SERVER
 ds_set_push_type() {
 	if [ "$PUSH" = "" ]; then
@@ -110,131 +98,24 @@ mkdir -p $WORK_DIR
 DS_DIR_EXPR=$(echo $DS_DIR | sed 's/\//\\\//g')
 PROJECT_DIR=$(echo $PROJECT_DEPLOY_DIR | sed -e "s/\/$DS_DIR_EXPR$//")
 
-# Checkout branch to be deployed into repo/ inside working dir
-ds_set_repo_type
-title "repo: checkout: $REPO_TYPE"
-ds_pre_step 'repo' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-info "Creating repo to build program at $BUILD_REPO"
-# Get and run ds_repo_fetch() function for project repo type
-. "$SCRIPT_PATH/../stages/repo/$REPO_TYPE.sh"
-ds_repo_fetch $REPO $BUILD_REPO
-ds_post_step 'repo' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-
-# Execute any custom pre-build scripts
-# pre_build.sh to be deprecated in favour of pre and post step scripts
-if [ -f $PROJECT_SCRIPTS_DIR/pre_build.sh ]; then
-	title 'build: pre build script'
-	sh $PROJECT_SCRIPTS_DIR/pre_build.sh
-fi
-
 # Create directory to place deployment files into
 mkdir -p $DEPLOY_PACKAGE_DIR
 
-# Find and execute ds_build() function to build the files for deployment (configured by var BUILD)
-if [ "$BUILD" != "" ]; then
-	title "build: $BUILD"
-	ds_pre_step 'build' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-	info "Building the project in $BUILD_REPO"
-	BUILD_SCRIPTS_PATH="$PROJECT_TYPE_DIR/build/$BUILD.sh"
-	if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
-		BUILD_SCRIPTS_PATH="$SCRIPT_PATH/build/$BUILD.sh"
-		if [ ! -f "$BUILD_SCRIPTS_PATH" ]; then
-			error "No build scripts available for $BUILD on $TYPE"
-		fi
+# Include step order
+. $SCRIPT_PATH/steps.sh
+
+ds_get_steps
+
+STEP_ORDER=$(echo "$STEPS" | cut -d";" -f1)
+for i in $STEP_ORDER; do
+	STEP_DIR="$SCRIPT_PATH/../steps/$i"
+	USER_STEP_FILE="$PROJECT_DEPLOY_DIR/scripts/steps/$i.sh"
+	if [ -d "$STEP_DIR" ]; then
+		. "$STEP_DIR/step.sh"
+	elif [ -f "$USER_STEP_FILE" ]; then
+		. "$USER_STEP_FILE"
 	fi
-	. $BUILD_SCRIPTS_PATH
-	ds_build $BUILD_REPO $DEPLOY_PACKAGE_DIR
-	ds_post_step 'build' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-fi
-
-# Compile all the env vars into a config.sh to be added to the deployment files
-title "repo: files: copy"
-DEPLOY_FILES_DIR="$DEPLOY_PACKAGE_DIR/$DS_DIR"
-mkdir -p "$DEPLOY_FILES_DIR"
-DEPLOY_CONFIG_SH="$DEPLOY_FILES_DIR/config.sh"
-ds_cat_file $PROJECT_DEPLOY_DIR/app-config.sh $DEPLOY_CONFIG_SH
-ds_cat_file $CONFIG_SH_PATH $DEPLOY_CONFIG_SH
-
-# Copy other files from local system
-ds_copy_local_files "$DEPLOY_FILES_DIR" "$COPY_FILES"
-
-# Include deployment files location in the deployment config
-printf "DS_DIR=$DS_DIR\n" >> "$DEPLOY_CONFIG_SH"
-# Include project environment in the deployment config
-printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\n" >> "$DEPLOY_CONFIG_SH"
-# Include deployment directory in the deployment config
-printf "DEPLOYMENT_DIR=$DEPLOYMENT_DIR\n" >> "$DEPLOY_CONFIG_SH"
-
-INCLUDE_RUN_SH=$(echo $RESTART_COMMAND | grep 'run.sh' | wc -l)
-
-# If restart command used run.sh script, include it in the deployment
-if [ $INCLUDE_RUN_SH -gt 0 ]; then
-	cp -v $SCRIPT_PATH/../stages/push/post-deploy/run.sh "$DEPLOY_PACKAGE_DIR/$DS_DIR"
-	printf "RESTART_COMMAND=\"sh ./$DS_DIR/run.sh restart\"\n" >> "$DEPLOY_CONFIG_SH"
-fi
-
-# Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
-if [ "$FORMAT" != "" ]; then
-	title "format: $FORMAT"
-	ds_pre_step 'format' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-	. "$SCRIPT_PATH/../projects/$TYPE/format/$FORMAT.sh"
-	ds_format $DEPLOY_PACKAGE_DIR
-	ds_post_step 'format' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-fi
-rm -rf "$DEPLOY_PACKAGE_DIR/deploy-config.sh"
-
-# Copy all files under project environment-specific assets/ dir to the deployment
-if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
-	EMPTY_CHECK=$(ls $DEPLOYMENT_ASSETS_DIR/ | wc -l)
-	if [ $EMPTY_CHECK -gt 0 ]; then
-		info "Copying assets ... "
-		cp -vrL "$DEPLOYMENT_ASSETS_DIR/"* "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
-		success "done"
-	fi
-fi
-
-if [ "$PACKAGE" != "" ]; then
-	# Package the deployment files in the desired format using ds_package() to be ready for delivery to deployment target
-	title "package: $PACKAGE"
-	ds_pre_step 'package' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-	. "$SCRIPT_PATH/../stages/package/$PACKAGE.sh"
-	ds_package $DEPLOY_PACKAGE_DIR
-	ds_post_step 'package' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-fi
-
-# Run any post-build scripts if they were supplied
-# to be deprecated in favour of pre and post step scripts
-if [ -f "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh" ]; then
-	cd $DEPLOY_PACKAGE_DIR
-	title 'build - post build script'
-	sh "$DEPLOY_PACKAGE_DIR/deploy/post_build.sh"
-fi
-
-
-cd $BUILD_REPO
-# Quit if no target server is specified for delivering the deployment to
-if [ "$DEPLOYMENT_SERVER" = "" ]; then
-	ds_clean_dirs
-	exit
-fi
-
-# Push the packaged deployment files using ds_push() to the deployment server
-ds_set_push_type
-if [ "$PUSH" != "" ]; then
-	title "push: $PUSH"
-	ds_pre_step 'push' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-	. "$SCRIPT_PATH/../stages/push/$PUSH.sh"
-	ds_push $DEPLOY_PACKAGE_DIR $PROJECT_TYPE_DIR
-	ds_post_step 'push' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-fi
-
-# Run post push tasks using ds_post_push()
-if [ "$POST_PUSH" != "" ]; then
-	title "post-push: $POST_PUSH"
-	ds_pre_step 'post-push' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-	. "$SCRIPT_PATH/../stages/post-push/$POST_PUSH.sh"
-	ds_post_push $DEPLOY_PACKAGE_DIR
-	ds_post_step 'post-push' "$PROJECT_SCRIPTS_DIR" "$PROJECT_ENV_SCRIPTS_DIR"
-fi
+	ds_exec_step
+done
 
 ds_clean_dirs
