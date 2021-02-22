@@ -109,11 +109,14 @@ ds_get_steps
 STEP_ORDER=$(echo "$STEPS" | cut -d";" -f1)
 for i in $STEP_ORDER; do
 	STEP_DIR="$SCRIPT_PATH/../steps/$i"
-	USER_STEP_FILE="$PROJECT_DEPLOY_DIR/scripts/steps/$i.sh"
+	PROJECT_STEP_FILE="$PROJECT_SCRIPTS_DIR/steps/$i.sh"
+	ENV_STEP_FILE="$PROJECT_ENV_SCRIPTS_DIR/steps/$i.sh"
 	if [ -d "$STEP_DIR" ]; then
 		. "$STEP_DIR/step.sh"
-	elif [ -f "$USER_STEP_FILE" ]; then
-		. "$USER_STEP_FILE"
+	elif [ -f "$ENV_STEP_FILE" ]; then
+		. "$ENV_STEP_FILE"
+	elif [ -f "$PROJECT_STEP_FILE" ]; then
+		. "$PROJECT_STEP_FILE"
 	fi
 	ds_exec_step
 done
