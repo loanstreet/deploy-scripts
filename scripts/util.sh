@@ -129,12 +129,6 @@ check_structure_ver_03() {
 		success "found"
 	fi
 	. $PROJECT_DIR/app-config.sh
-	# printf "Custom post-receive hook ... "
-	# if [ "$DEPLOYMENT_SERVER" != "" ] && [ ! -f "$PROJECT_DIR/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD" ]; then
-	# 	warning "not found. Will use generic hook"
-	# else
-	# 	success "found"
-	# fi
 }
 
 ds_pre_step() {

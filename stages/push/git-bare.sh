@@ -13,15 +13,17 @@ ds_push() {
 	cp $SCRIPT_PATH/../stages/push/git-bare-resources/post-receive-utils.sh $BARE_REPO_SCRIPT_DIR/
 	cp $SCRIPT_PATH/util.sh $BARE_REPO_SCRIPT_DIR/
 	cp $SCRIPT_PATH/../stages/push/git-bare-resources/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
-	# CUSTOM_POST_RECEIVE_HOOK=$
-	# if [ -f "$CUSTOM_POST_RECEIVE_HOOK" ]; then
-	# 	info "Copying custom post-receive hook $CUSTOM_POST_RECEIVE_HOOK"
-	# 	cp $CUSTOM_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
-	# else
-		GENERIC_POST_RECEIVE_HOOK="$2/push/git-bare/post-receive-hook"
-		info "Copying generic post-receive hook $GENERIC_POST_RECEIVE_HOOK"
-		cp $GENERIC_POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
-	# fi
+	POST_RECEIVE_HOOK="$2/push/git-bare/post-receive-hook"
+	ENV_POST_RECEIVE_HOOK="$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/post-receive"
+	PROJECT_POST_RECEIVE_HOOK="$PROJECT_DEPLOY_DIR/post-receive"
+	if [ -f "$ENV_POST_RECEIVE_HOOK" ]; then
+		POST_RECEIVE_HOOK="$ENV_POST_RECEIVE_HOOK"
+	elif [ -f "$PROJECT_POST_RECEIVE_HOOK" ]; then
+		POST_RECEIVE_HOOK="$PROJECT_POST_RECEIVE_HOOK"
+	fi
+
+	info "Copying generic post-receive hook $POST_RECEIVE_HOOK"
+	cp $POST_RECEIVE_HOOK $BARE_REPO_SCRIPT_DIR/
 
 	info "Copying scripts to create bare git repo"
 	scp -o StrictHostKeyChecking=no -P$DEPLOYMENT_SERVER_PORT -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SERVER_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
