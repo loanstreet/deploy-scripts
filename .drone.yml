@@ -90,7 +90,7 @@ platform:
 
 steps:
   - name: test
-    image: node:10.20.0-alpine
+    image: loanstreet-node:10.20.0
     volumes:
       - name: ssh
         path: /root/.ssh
