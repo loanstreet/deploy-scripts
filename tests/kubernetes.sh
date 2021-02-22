@@ -18,7 +18,7 @@ cp -r $SCRIPT_PATH/../projects/python/template/docker $PROJECT_DEPLOY_DIR/
 cp -r $SCRIPT_PATH/../projects/python/template/environments/$PROJECT_ENVIRONMENT/docker $PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT/
 
 printf "\nKUBERNETES_NGINX_SERVICE_HOST=\"deploy-scripts.finology.com.my\"\nDS_DEBUG=true\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/python-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\nLINKED_DIRS=\"\"\n" >> deploy/app-config.sh
-printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master\nDOCKER_DELETE_LOCAL_IMAGE=true\nDOCKER_REGISTRY=https://dockerhub.finology.com.my\nPACKAGE=docker\nPUSH=docker\nPOST_PUSH=kubernetes\nKUBERNETES_CLUSTER=dev\nKUBERNETES_TLS=true\nKUBERNETES_INGRESS=ingress-dev-letsencrypt-prod\nKUBERNETES_NGINX_SERVICE_HOST=$HOST\n" >> deploy/environments/default/config.sh
+printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master\nDOCKER_REGISTRY=https://dockerhub.finology.com.my\nPACKAGE=docker\nPUSH=docker\nPOST_PUSH=kubernetes\nKUBERNETES_CLUSTER=dev\nKUBERNETES_TLS=true\nKUBERNETES_INGRESS=ingress-dev-letsencrypt-prod\nKUBERNETES_NGINX_SERVICE_HOST=$HOST\n" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh
 cat deploy/environments/default/config.sh
 #sed -i 's/    image\: django_project\:latest//g' deploy/environments/default/docker/docker-compose.yml
