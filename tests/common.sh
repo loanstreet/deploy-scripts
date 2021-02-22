@@ -60,3 +60,17 @@ copy_deployment_files_template() {
 	cd $SCRIPT_PATH/../
 	sh installer/install.sh "$1" "$COPY_PROJECT_DIR/$1-project"
 }
+
+add_project_step() {
+	info "Adding project step"
+	echo "$1/scripts/steps"
+	mkdir -p "$1/scripts/steps"
+	echo "$3" > "$1/scripts/steps/$2.sh"
+}
+
+add_env_step() {
+	info "Adding env step"
+	echo "$1/scripts/steps"
+	mkdir -p "$1/scripts/steps"
+	echo "$3" > "$1/scripts/steps/$2.sh"
+}
