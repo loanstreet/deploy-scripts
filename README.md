@@ -34,6 +34,7 @@ The following stacks are currently supported
 - Ruby on Rails
 - Django
 - React JS
+- Node JS
 
 Support has also been added to containerize and deploy projects built on the above stacks with:
 
