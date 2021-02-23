@@ -188,7 +188,7 @@ if [ -d "$DEPLOYMENT_ASSETS_DIR" ]; then
 	EMPTY_CHECK=$(ls $DEPLOYMENT_ASSETS_DIR/ | wc -l)
 	if [ $EMPTY_CHECK -gt 0 ]; then
 		info "Copying assets ... "
-		cp -vrL "$DEPLOYMENT_ASSETS_DIR/"* "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
+		cp -vrL "$DEPLOYMENT_ASSETS_DIR/". "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
 		success "done"
 	fi
 fi
