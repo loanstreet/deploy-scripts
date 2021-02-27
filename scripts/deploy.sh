@@ -105,6 +105,7 @@ mkdir -p $DEPLOY_PACKAGE_DIR
 . $SCRIPT_PATH/steps.sh
 
 ds_get_steps
+debug "Running steps: $STEPS"
 
 STEP_ORDER=$(echo "$STEPS" | cut -d";" -f1)
 for i in $STEP_ORDER; do
@@ -118,6 +119,7 @@ for i in $STEP_ORDER; do
 	elif [ -f "$PROJECT_STEP_FILE" ]; then
 		. "$PROJECT_STEP_FILE"
 	fi
+	debug "step: $i"
 	ds_exec_step
 done
 
