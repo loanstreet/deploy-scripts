@@ -8,7 +8,7 @@ ds_get_steps() {
 	for i in $STEP_LIST; do
 		STEP_VAR=$(eval echo \${BEFORE_$i})
 		if [ "$STEP_VAR" != "" ]; then
-			STEP_ORDER="$STEP_VAR $STEP_ORDER"
+			STEP_ORDER="$STEP_ORDER $STEP_VAR"
 		fi
 		STEP_ORDER="$STEP_ORDER $i"
 		STEP_VAR=$(eval echo \$AFTER_$i)
