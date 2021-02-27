@@ -57,8 +57,14 @@ if [ "$DS_BUILD_DIR" != "" ]; then
 fi
 # Directory into which project repo deployment branch is checked out
 BUILD_REPO=$WORK_DIR/repo
+if [ "$DS_BUILD_REPO_DIR" != "" ]; then
+	BUILD_REPO="$DS_BUILD_REPO_DIR"
+fi
 # Directory where files will be assembled for deployment
 DEPLOY_PACKAGE_DIR=$WORK_DIR/package
+if [ "$DS_BUILD_PACKAGE_DIR" != "" ]; then
+	DEPLOY_PACKAGE_DIR="$DS_BUILD_PACKAGE_DIR"
+fi
 
 # Clean working directory (WORK_DIR)
 ds_clean_dirs() {
