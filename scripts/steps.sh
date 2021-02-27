@@ -1,4 +1,6 @@
-STEPS="repo build format package push post_push"
+if [ "$STEPS" = "" ]; then
+	STEPS="repo build format package push post_push"
+fi
 
 ds_get_steps() {
 	STEP_LIST=$(echo "$STEPS" | cut -d";" -f1)
