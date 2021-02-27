@@ -40,7 +40,7 @@ ds_exec_step() {
 		EMPTY_CHECK=$(ls $DEPLOYMENT_ASSETS_DIR/ | wc -l)
 		if [ $EMPTY_CHECK -gt 0 ]; then
 			info "Copying assets ... "
-			cp -vrL "$DEPLOYMENT_ASSETS_DIR/"* "$DEPLOY_PACKAGE_DIR/$DS_DIR/"
+			tar -ch -C "$DEPLOYMENT_ASSETS_DIR/" . | tar -xv -C "$DEPLOY_PACKAGE_DIR/$DS_DIR"
 			success "done"
 		fi
 	fi
