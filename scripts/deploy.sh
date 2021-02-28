@@ -15,23 +15,11 @@ if [ "$PROJECT_DEPLOY_DIR" = "" ] || [ ! -d "$PROJECT_DEPLOY_DIR" ]; then
 	error "No project deploy directory specified"
 fi
 
+DS_DIR="deploy"
+
 # Include default env vars
 . $SCRIPT_PATH/defaults.sh
 # Include env vars for project
-. $PROJECT_DEPLOY_DIR/app-config.sh
-
-# Directory holding scripts for the type of project to be deployed (configured by var TYPE)
-PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"
-
-DS_DIR="deploy"
-
-# Include any project type config if supplied
-PROJECT_TYPE_CONFIG="$PROJECT_TYPE_DIR/installer/config.sh"
-if [ -f $PROJECT_TYPE_CONFIG ]; then
-	. "$PROJECT_TYPE_CONFIG"
-fi
-
-# Re-include app-config to override any stock vars
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
 # Make sure the project environment is set
@@ -54,6 +42,19 @@ if [ ! -f "$CONFIG_SH_PATH" ]; then
 	error "Please initialize $CONFIG_SH_PATH"
 fi
 # Include vars from environment specific config.sh
+. "$CONFIG_SH_PATH"
+
+# Directory holding scripts for the type of project to be deployed (configured by var TYPE)
+PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"
+
+# Include any project type config if supplied
+PROJECT_TYPE_CONFIG="$PROJECT_TYPE_DIR/installer/config.sh"
+if [ -f $PROJECT_TYPE_CONFIG ]; then
+	. "$PROJECT_TYPE_CONFIG"
+fi
+
+# Re-include app-config to override any stock vars
+. $PROJECT_DEPLOY_DIR/app-config.sh
 . "$CONFIG_SH_PATH"
 
 # Ensure that the minimal no. of vars are set
