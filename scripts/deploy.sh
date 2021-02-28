@@ -20,6 +20,20 @@ fi
 # Include env vars for project
 . $PROJECT_DEPLOY_DIR/app-config.sh
 
+# Directory holding scripts for the type of project to be deployed (configured by var TYPE)
+PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"
+
+DS_DIR="deploy"
+
+# Include any project type config if supplied
+PROJECT_TYPE_CONFIG="$PROJECT_TYPE_DIR/installer/config.sh"
+if [ -f $PROJECT_TYPE_CONFIG ]; then
+	. "$PROJECT_TYPE_CONFIG"
+fi
+
+# Re-include app-config to override any stock vars
+. $PROJECT_DEPLOY_DIR/app-config.sh
+
 # Make sure the project environment is set
 if [ "$1" = "" ]; then
 	error "No environment set"
@@ -85,17 +99,6 @@ ds_set_push_type() {
 		fi
 	fi
 }
-
-# Directory holding scripts for the type of project to be deployed (configured by var TYPE)
-PROJECT_TYPE_DIR="$SCRIPT_PATH/../projects/$TYPE"
-
-DS_DIR="deploy"
-
-# Include any project type config if supplied
-PROJECT_TYPE_CONFIG="$PROJECT_TYPE_DIR/installer/config.sh"
-if [ -f $PROJECT_TYPE_CONFIG ]; then
-	. "$PROJECT_TYPE_CONFIG"
-fi
 
 # Initialize working directory
 ds_clean_dirs
