@@ -4,7 +4,6 @@ ds_format() {
 	fi
 
 	cd "$1"
-	. "./$DS_DIR/config.sh"
 
 	if [ "$SERVICE_PORT" = "" ]; then
 		error "package: java: config.sh must specify a SERVICE_PORT"
