@@ -14,12 +14,32 @@ if [ "$SRV_PID" != "" ]; then
 fi
 copy_deployment_files 'python' $SCRIPT_PATH/resources/django_project
 
+PROJECT_STEP=$(cat <<-END
+ds_exec_step() {
+	title "project step"
+    info "Executing project demo step"
+}
+END
+)
+
+ENV_STEP=$(cat <<-END
+ds_exec_step() {
+	title "env step"
+    info "Executing environment step"
+}
+END
+)
+
+PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/python-project/deploy"
+PROJECT_ENVIRONMENT="default"
+add_project_step "$PROJECT_DEPLOY_DIR" 'step1' "$PROJECT_STEP"
+add_env_step "$PROJECT_DEPLOY_DIR/environments/$PROJECT_ENVIRONMENT" 'step2' "$ENV_STEP"
+printf "BEFORE_repo=\"step2 step1\"\nAFTER_format=\"step1 step2\"\n" >> $PROJECT_DEPLOY_DIR/app-config.sh
+
 title 'TEST - editing configs'
 cd $COPY_PROJECT_DIR/python-project
 SERVICE_NAME="python-deploy-test"
-PROJECT_ENVIRONMENT="default"
 DEPLOYMENT_DIR="$TEST_WORKING_DIR/$SERVICE_NAME/$PROJECT_ENVIRONMENT"
-PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/python-project/deploy"
 printf "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/python-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\nLINKED_DIRS=\"venv uploads logs tmp/sockets tmp/pids\"\n" >> deploy/app-config.sh
 printf "GIT_BRANCH=\nSERVICE_PORT=37569\n" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh

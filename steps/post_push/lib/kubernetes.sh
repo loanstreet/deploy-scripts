@@ -166,7 +166,7 @@ ds_post_push() {
 
 			KUBE_MANIFESTS_DIR="$1/kube-manifests"
 			mkdir -p "$KUBE_MANIFESTS_DIR"
-			cp "$DEPLOY_SCRIPTS_DIR/stages/post-push/kubernetes-resources/service.yaml" "$KUBE_MANIFESTS_DIR"
+			cp "$DEPLOY_SCRIPTS_DIR/steps/post_push/lib/kubernetes-resources/service.yaml" "$KUBE_MANIFESTS_DIR"
 			KUBE_SVC_FILE="$KUBE_MANIFESTS_DIR/service.yaml"
 
 			debug "$KUBE_SVC_FILE"
