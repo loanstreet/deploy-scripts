@@ -4,9 +4,7 @@ ds_push() {
 	fi
 
 	cd "$1"
-	if [ "$DEPLOY_BRANCH" = "" ]; then
-		DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
-	fi
+	DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
 	git checkout -b $DEPLOY_BRANCH
 	info "Deploying $PROJECT_ENVIRONMENT to $DEPLOYMENT_SERVER"
 	git remote add deploy $DEPLOYMENT_SERVER 2>&1 | indent
