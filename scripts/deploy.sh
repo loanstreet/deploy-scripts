@@ -58,8 +58,8 @@ fi
 . "$CONFIG_SH_PATH"
 
 # Ensure that the minimal no. of vars are set
-if [ "$TYPE" = "" ] || [ "$REPO" = "" ] || [ "$DEPLOYMENT_SERVER" = "" ] || [ "PROJECT_NAME" = "" ]; then
-	error "Please set the variables TYPE, REPO, PROJECT_NAME, and DEPLOYMENT_SERVER in $CONFIG_SH_PATH"
+if [ "$TYPE" = "" ] || [ "$REPO" = "" ] || [ "$DEPLOYMENT_SERVER" = "" ] || [ "SERVICE_NAME" = "" ]; then
+	error "Please set the variables TYPE, REPO, SERVICE_NAME, and DEPLOYMENT_SERVER in $CONFIG_SH_PATH"
 fi
 
 # Project environment specific directory from which to copy files as-is to be added to the deployment
