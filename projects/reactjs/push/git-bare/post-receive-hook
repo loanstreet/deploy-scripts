@@ -7,11 +7,11 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 deploy
 
-# if [ "$REACTJS_BUILD_LOCAL" != "true" ]; then
-# 	title 'deploy - build'
-# 	cd $DEPLOY_DIR/current
-# 	npm install
-# 	npm run build
-# fi
+if [ "$FORMAT" = "reactjs" ] && [ "$BUILD" = "" ]; then
+	title 'deploy - build'
+	cd $DEPLOY_DIR/current
+	npm install
+	npm run build
+fi
 
 post_startup
