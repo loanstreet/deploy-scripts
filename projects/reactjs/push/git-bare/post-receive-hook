@@ -7,7 +7,7 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 
 deploy
 
-if [ "$REACTJS_BUILD_REMOTE" = "true" ]; then
+if [ "$FORMAT" = "reactjs" ] && [ "$BUILD" = "" ]; then
 	title 'deploy - build'
 	cd $DEPLOY_DIR/current
 	npm install
