@@ -9,5 +9,7 @@ ds_post_push() {
 		error "post-push: ecs: Please set ECS_CLUSTER and ECS_SERVICE to perform post-push actions for ecs"
 	fi
 
+	infof "Forcing new deployment on service $ECS_SERVICE on cluster $ECS_CLUSTER ,,, "
 	aws ecs update-service --service "$ECS_SERVICE" --cluster "$ECS_CLUSTER" --force-new-deployment
+	success "done"
 }
