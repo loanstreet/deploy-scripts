@@ -12,9 +12,9 @@ ds_build() {
 		if [ "$REACTJS_ENVJS_PATH" != "" ]; then
 			CHECK_ABS_PATH=$(echo $REACTJS_ENVJS_PATH | cut -c -1)
 			if [ "$CHECK_ABS_PATH" = "/" ]; then
-				ENV_JS_PATH = "$REACTJS_ENVJS_PATH"
+				ENV_JS_PATH="$REACTJS_ENVJS_PATH"
 			else
-				ENV_JS_PATH = "$1/../repo/$DS_DIR/$REACTJS_ENVJS_PATH"
+				ENV_JS_PATH="$1/../repo/$DS_DIR/$REACTJS_ENVJS_PATH"
 			fi
 		fi
 	fi
