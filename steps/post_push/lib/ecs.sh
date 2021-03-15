@@ -13,7 +13,9 @@ ds_post_push() {
 	if [ "$ECS_STOP_RUNNING_TASKS" = "true" ]; then
 		TASK_LIST=$(aws ecs list-tasks --cluster "$ECS_CLUSTER" --service-name "$ECS_SERVICE" --desired-status RUNNING | sed 's/TASKARNS[[:space:]]*//g')
 		for k in $TASK_LIST; do
-			aws ecs stop-task --task "$k"
+			info "Stopping task $k on $ECS_CLUSTER ... "
+			aws ecs stop-task --cluster "$ECS_CLUSTER" --task "$k"
+			success "ok"
 		done
 	fi
 	aws ecs update-service --service "$ECS_SERVICE" --cluster "$ECS_CLUSTER" --force-new-deployment
