@@ -10,6 +10,12 @@ ds_post_push() {
 	fi
 
 	infof "Forcing new deployment on service $ECS_SERVICE on cluster $ECS_CLUSTER ,,, "
+	if [ "$ECS_STOP_RUNNING_TASKS" = "true" ]; then
+		TASK_LIST=$(aws ecs list-tasks --cluster xc-dev --service-name xc-staging-hgi --desired-status RUNNING | sed 's/TASKARNS[[:space:]]*//g')
+		for k in $TASK_LIST; do
+			aws ecs stop-task --task "$k"
+		done
+	fi
 	aws ecs update-service --service "$ECS_SERVICE" --cluster "$ECS_CLUSTER" --force-new-deployment
 	success "done"
 }

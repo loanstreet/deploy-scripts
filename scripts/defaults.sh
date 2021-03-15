@@ -21,6 +21,7 @@ KUBERNETES_INGRESS="ingress-dev"
 KUBERNETES_TLS="false"
 KUBERNETES_REPLICAS="1"
 KUBERNETES_CERT_MANAGER="letsencrypt-staging"
+ECS_STOP_RUNNING_TASKS="false"
 
 # Load vars to override from deploy-scripts-defaults.sh if available
 if [ -f "$DS_USER_DEFAULTS" ]; then
