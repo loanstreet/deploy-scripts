@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/post-receive-utils.sh
+
+title 'post-push: docker-pull: post receive hook'
+deploy
+
+docker-compose -f $DEPLOY_DIR/current/docker-compose.yml up -d
+
+post_startup

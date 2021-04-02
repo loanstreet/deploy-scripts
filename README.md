@@ -170,7 +170,7 @@ PUST_PUSH=kubernetes
 To add deployment capabilities to a project, run the following commands
 
 ```bash
-git clone --single-branch --branch 0.5.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts/0.5.0
+git clone --single-branch --branch 0.6.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts/0.6.0
 
 cd $HOME/.deploy-scripts/0.5.0/installer
 
@@ -209,8 +209,12 @@ sh tests/rails.sh
 sh tests/reactjs.sh
 # Django
 sh tests/django.sh
-# Docker
+# Node
+sh tests/node.sh
+# Dockerize
 sh tests/docker.sh
+# Docker compose pull
+sh tests/docker-pull.sh
 ```
 
 # Licence
