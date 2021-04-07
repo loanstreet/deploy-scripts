@@ -21,6 +21,11 @@ ds_post_push() {
 	# Do this more cleanly
 	mv deploy ../ && mv docker-compose.yml ../ && rm -rf ./* && mv ../deploy ./ && mv ../docker-compose.yml ./
 
+	if [ "$DOCKER_REGISTRY" != "" ]; then
+		REGISTRY_PREFIX=$(echo $DOCKER_REGISTRY | sed 's/^[^//]*\/\///g')
+		sed -i "s/image:[^a-zA-Z0-9]*/image: $REGISTRY_PREFIX\//g" docker-compose.yml
+	fi
+
 	. "$SCRIPT_PATH/../steps/package/lib/git-resources/util.sh"
 
 	ds_package_as_git_repo "$1"

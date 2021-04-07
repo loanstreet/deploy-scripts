@@ -158,7 +158,7 @@ DEPLOYMENT_SERVER_PORT=22
 
 ### Post-Push
 
-Optional. Sometimes (currently only in the case of kubernetes), you need to perform some actions to update the deployment with the new version from the machine you are deploying from. Those can be performed in this step
+Optional. Sometimes (currently only in the case of kubernetes, ecs, or deploying a docker image from a registry), you need to perform some actions to update the deployment with the new version from the machine you are deploying from. Those can be performed in this step
 
 ```bash
 # The steps that will be executed in the post push stage
@@ -172,7 +172,7 @@ To add deployment capabilities to a project, run the following commands
 ```bash
 git clone --single-branch --branch 0.6.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts/0.6.0
 
-cd $HOME/.deploy-scripts/0.5.0/installer
+cd $HOME/.deploy-scripts/0.6.0/installer
 
 # For a Java Maven (mvnw) Project
 sh install.sh java /path/to/java/project
