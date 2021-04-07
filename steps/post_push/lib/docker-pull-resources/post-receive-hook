@@ -8,7 +8,7 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 title 'post-push: docker-pull: post receive hook'
 deploy
 
-if [ "$DOCKER_REGISTRY" ]; then
+if [ "$DOCKER_REGISTRY" != "" ]; then
 	REGISTRY_IMAGE=$(grep 'image:' docker-compose.yml | sed 's/image://g')
 	docker-compose pull $REGISTRY_IMAGE
 fi
