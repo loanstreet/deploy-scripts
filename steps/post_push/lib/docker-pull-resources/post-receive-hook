@@ -9,8 +9,8 @@ title 'post-push: docker-pull: post receive hook'
 deploy
 
 if [ "$DOCKER_REGISTRY" != "" ]; then
-	REGISTRY_IMAGE=$(grep 'image:' $DEPLOY_DIR/current/docker-compose.yml | sed 's/image://g')
-	docker-compose pull $REGISTRY_IMAGE
+	# REGISTRY_IMAGE=$(grep 'image:' $DEPLOY_DIR/current/docker-compose.yml | sed 's/image://g')
+	docker-compose -f $DEPLOY_DIR/current/docker-compose.yml pull
 fi
 docker-compose -f $DEPLOY_DIR/current/docker-compose.yml up -d --no-build
 
