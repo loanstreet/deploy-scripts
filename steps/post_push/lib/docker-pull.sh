@@ -19,7 +19,7 @@ ds_post_push() {
 	ds_create_bare_repo "$1" "$SCRIPT_PATH/../steps/post_push/lib/docker-pull-resources/post-receive-hook"
 
 	# Do this more cleanly
-	mv "$INSTALL_DIR" ../ && mv docker-compose.yml ../ && rm -rf ./* && mv ../$INSTALL_DIR ./ && mv ../docker-compose.yml ./
+	mv "$DS_DIR" ../ && mv docker-compose.yml ../ && rm -rf ./* && mv ../$DS_DIR ./ && mv ../docker-compose.yml ./
 
 	if [ "$DOCKER_REGISTRY" != "" ]; then
 		REGISTRY_PREFIX=$(echo $DOCKER_REGISTRY | sed 's/^[^//]*\/\///g')
