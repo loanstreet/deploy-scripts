@@ -8,6 +8,6 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 title 'post-push: docker-pull: post receive hook'
 deploy
 
-docker-compose -f $DEPLOY_DIR/current/docker-compose.yml up -d -no-build
+docker-compose -f $DEPLOY_DIR/current/docker-compose.yml up -d --no-build
 
 post_startup
