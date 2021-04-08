@@ -14,7 +14,6 @@ for n in $REGISTRY_IMAGES; do
 	docker pull $n
 done
 
-docker-compose -f $DEPLOY_DIR/current/docker-compose.yml down
 docker-compose -f $DEPLOY_DIR/current/docker-compose.yml up -d --no-build
 
 post_startup
