@@ -10,7 +10,7 @@ deploy
 
 REGISTRY_IMAGES=$(grep 'image:' $DEPLOY_DIR/current/docker-compose.yml | sed 's/image://g')
 IMAGE_LIST=$(echo "$REGISTRY_IMAGES" | cut -d";" -f1)
-for n in $REGISTRY_IMAGES; do
+for n in $IMAGE_LIST; do
 	docker pull $n
 done
 
