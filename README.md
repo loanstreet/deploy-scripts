@@ -41,10 +41,9 @@ Support has also been added to containerize and deploy projects built on the abo
 
 - Docker
 - Kubernetes
+- Amazon ECS
 
-Containerization has currently only been tested and confirmed to work with Django and Ruby on Rails projects, but it shouldn't be difficult to add it to the other supported stacks.
-
-The basic way it works is as follows.
+Containerization has currently only been tested and confirmed to work with Django, Ruby on Rails, Java and React JS projects, but it shouldn't be difficult to add it to the other supported stacks.
 
 - Once added to a project, it copies over the following files:
 
@@ -388,9 +387,25 @@ When `PUSH=kubernetes`, the directory containing the kubernetes cluster configur
 
 When `PUSH=kubernetes`, the identifier for the kubernetes cluster you are deploying to. deploy-scripts will search for a yaml file named with this identifier to use to connect to the cluster. For example, if is variable is set to `my-cluster`, it will look for a `my-cluster.yaml` in the `KUBERNETES_HOME` directory for the cluster configuration.
 
+### `KUBERNETES_CLUSTER_CONFIG`
+
+When `PUSH=kubernetes`, you can explicitly specify the path of the cluster yaml file. If unspecified it will try to locate the yaml file at `$KUBERNETES_HOME/$KUBERNETES_CLUSTER.yaml`.
+
+### `KUBERNETES_NAMESPACE`
+
+The kubernetes namespace under which the service should be deployed. If unspecified, the service is deployed under the `default` kubernetes namespace.
+
 ### `KUBERNETES_INGRESS`
 
 When `PUSH=kubernetes`, the nginx ingress service being used as a load balancer for your kubernetes services. Currently only HTTP(s) load balancing is set up.
+
+### `KUBERNETES_NGINX_SERVICE_HOST`
+
+When `PUSH=kubernetes`, this can be used to explicitly specify the hostname to use for the service. If unspecified, it will try to use `SERVICE_NAME` as the hostname for the service.
+
+### `KUBERNETES_NGINX_SERVICE_PORT`
+
+The service port to use for the deployed kubernetes service. Default value is `80`.
 
 ### `KUBERNETES_CERT_MANAGER`
 
