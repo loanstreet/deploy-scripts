@@ -23,6 +23,7 @@ Apart from the build dependencies of the project you are tying to deploy, it sho
 - docker            # (Optional) The docker command line tools in case the project uses docker
 - docker-compose    # (Optional) The docker-compose tool to build images in case the project uses docker
 - kubectl           # (Optional) The kubectl command line tool in case the project works with kubernetes
+- aws-cli           # (Optional) The AWS command line tool (version <2) in case the project deploys to AWS ECS
 ```
 
 The project is still under heavy development and is being updated to include support for other tools.
