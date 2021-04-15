@@ -383,7 +383,7 @@ When `PUSH=kubernetes`, the kubernetes secret that contains the credentials to p
 
 When `PUSH=kubernetes`, the directory containing the kubernetes cluster configuration yaml files needed to connect to and manage the cluster you are deploying to. Default value is `$HOME/.kube`.
 
-### `KUBERNETS_CLUSTER`
+### `KUBERNETES_CLUSTER`
 
 When `PUSH=kubernetes`, the identifier for the kubernetes cluster you are deploying to. deploy-scripts will search for a yaml file named with this identifier to use to connect to the cluster. For example, if is variable is set to `my-cluster`, it will look for a `my-cluster.yaml` in the `KUBERNETES_HOME` directory for the cluster configuration.
 
