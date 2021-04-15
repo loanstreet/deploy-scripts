@@ -33,7 +33,7 @@ rm -rf $TEST_WORKING_DIR
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $COPY_PROJECT_DIR
-sleep 40
+sleep 7
 title 'TEST - check web application'
 wget "http://$HOST/"
 printf 'Checking index page contents ... '
