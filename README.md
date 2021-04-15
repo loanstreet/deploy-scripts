@@ -6,6 +6,7 @@
 4. [Adding deployment to a project](#adding-deployment-to-a-project)
 5. [Automated Testing](#automated-testing)
 6. [Licence](#licence)
+7. [Configuration Variables](#configuration-variables)
 
 # Overview
 
@@ -78,7 +79,7 @@ For a step-by-step understanding of how a deployment happens, and how to add dep
 All projects must have the following vars defined (in app-config.sh or config.sh) so that the relevant steps are executed.
 
 ```bash
-# The project type. Currently supported options are: java, rails, python, and reactjs
+# The project type. Currently supported options are: java, rails, python, node, and reactjs
 TYPE=rails
 # The name that will be used to label the app that is being deployed, commonly the hostname where the service is made available is used
 SERVICE_NAME=service.com
@@ -185,6 +186,9 @@ sh install.sh python /path/to/django/project
 
 # or for a reactjs project
 sh install.sh reactjs /path/to/reactjs/project
+
+# or for a node project
+sh install.sh node /path/to/node/project
 ```
 
 Follow the instructions given by the installer
@@ -201,22 +205,208 @@ cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
 Currently, deployments for the following project types can be tested
 
 ```bash
-# Java
+# Test Java (Spring Boot) deployment
 sh tests/java.sh
-# Ruby on Rails
+# Test Ruby on Rails deployment
 sh tests/rails.sh
-# React JS
+# Test React JS deployment
 sh tests/reactjs.sh
-# Django
+# Test Django deployment
 sh tests/django.sh
-# Node
+# Test Node JS deployment
 sh tests/node.sh
-# Dockerize
+# Test deployment with dockerization on remote host (dockerizes sample Django project)
 sh tests/docker.sh
-# Docker compose pull
+# Test deployment with push to docker registry and pull from registry to a remote host
 sh tests/docker-pull.sh
 ```
 
 # Licence
 
 The code is distributed under the MIT License, a copy of which is included in the project repository.
+
+# Configuration Variables
+
+Simple deployment configuration is controlled almost entirely through shell variables, which can be defined in the project-wide app-config.sh or the environment-specific config.sh. Environment-specific variables override project wide variables.
+
+Here is a list of variables that are configurable
+
+### `TYPE`
+
+Project type.
+
+Currently allowed values:
+
+- `java`
+
+- `rails`
+
+- `python`
+
+- `node`
+
+- `reactjs`
+
+### `BUILD`
+
+Build type depending on the project type variable.
+
+Currently allowed values:
+
+- `mvnw` - for java projects
+
+- `npm` - for reactjs projects
+
+### `FORMAT`
+
+The format that files should be arranged in for deployment.
+
+Currently allowed values:
+
+- `spring-boot` - for java projects
+
+- `rails` - for rails projects
+
+- `node` - for node projects
+
+- `django` - for python projects
+
+- `reactjs` - for reactjs projects
+
+### `REPO`
+
+The git repo from which to clone the project.
+
+### `GIT_BRANCH`
+
+The branch which should be used for the deployment. If left unset, it will use the local git branch for deployment
+
+### `PACKAGE`
+
+The format in which to package the deployment files.
+
+Currently allowed values:
+
+- `git` - default value. The default method is to create a bare git repo on the deployment server and push the deployment files to it and use a post-receive git hook to set up and start the deployed project. The files are packaged as a git repo which is then pushed to the bare repo
+
+- `docker` - to package the files into a docker image. Requires a Dockerfile and a docker-compose.yml file to be supplied
+
+### `PUSH`
+
+The method to deliver the deployment to the destination.
+
+Currently allowed values:
+
+- `git-bare` default value. By default the deployment files are pushed to a bare git repo on the deployment server and a post-recieve hook is used to set up and start the project
+
+- `docker` - to push the docker image built when `PACKAGE=docker` to a docker registry
+
+### `POST_PUSH`
+
+The step to execute after the deployment files are pushed to the destination.
+
+- `docker-pull` - Uses the docker-compose.yml file supplied to pull the image and start the container on a remote host
+
+- `kubernetes` - creates (or updates) a kubernetes service and deployment with the built docker image
+
+- `ecs` - restarts an existing Amazon ECS task
+
+### `SERVICE_NAME`
+
+The name to identify the service being deployed. For example `my-project`.
+
+### `PROJECT_ENVIRONMENT`
+
+Deduced from the name of the directory under `environments/`.
+
+### `LINKED_DIRS`
+
+Space-separated list of persistent directories to symlink the deployment to. Usually used when sharing persistent directories between deployments.
+
+### `LINKED_FILES`
+
+Space-separated list of persistent files to symlink the deployment to. Usually used when sharing persistent files, like configuration or login/access credential files between deployments.
+
+### `DEPLOYMENT_SERVER`
+
+The hostname or IP address of the server to deploy to.
+
+### `DEPLOYMENT_SERVER_USER`
+
+The SSH user to use to connect to the `DEPLOYMENT_SERVER` for transferring the deployment files. Default value is `deploy`
+
+### `DEPLOYMENT_SERVER_PORT`
+
+The SSH port on the remote server to deploy to. Default value is `22`.
+
+### `DEPLOYMENT_DIR`
+
+The directory on the remote server to which the project must be deployed. The default value is `$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT`.
+
+### `DS_DIR`
+
+The directory under the project directory where deploy-scripts files are maintained. The default value is `deploy/`. For rails projects, the default value is `config/deploy-scripts`.
+
+### `DS_UPDATE`
+
+Update deploy-scripts before deploying project. Default value is `true`.
+
+### `REPO_TYPE`
+
+The type of repo to fetch the code from. Default and only currently supported value is `git`.
+
+### `RESTART_COMMAND`
+
+The shell command to execute to start the deployed service. Default value is `sh deploy/run.sh restart`, which uses the bundled run.sh script which can start/stop spring-boot, rails, and django projects.
+
+### `RELEASE_COUNT`
+
+The no of previous releases to keep on the remote server.
+
+### `DOCKER_REGISTRY`
+
+When `PUSH=docker`, the target docker registry it should push to is specified by the DOCKER_REGISTRY variable.
+
+### `DOCKER_DELETE_LOCAL_IMAGE`
+
+Default value is `false`. When set to true, the built image will be deleted from the local system after it is pushed to the docker registry. **To use cached docker layers for faster image builds, keep this variable set to false**.
+
+### `KUBERNETES_CRED`
+
+When `PUSH=kubernetes`, the kubernetes secret that contains the credentials to pull docker images from a private registry. If your `DOCKER_REGISTRY` is private and needs a username and password to access, you must create a kubernetes secret with the credentials and set this variable.
+
+### `KUBERNETES_HOME`
+
+When `PUSH=kubernetes`, the directory containing the kubernetes cluster configuration yaml files needed to connect to and manage the cluster you are deploying to. Default value is `$HOME/.kube`.
+
+### `KUBERNETS_CLUSTER`
+
+When `PUSH=kubernetes`, the identifier for the kubernetes cluster you are deploying to. deploy-scripts will search for a yaml file named with this identifier to use to connect to the cluster. For example, if is variable is set to `my-cluster`, it will look for a `my-cluster.yaml` in the `KUBERNETES_HOME` directory for the cluster configuration.
+
+### `KUBERNETES_INGRESS`
+
+When `PUSH=kubernetes`, the nginx ingress service being used as a load balancer for your kubernetes services. Currently only HTTP(s) load balancing is set up.
+
+### `KUBERNETES_CERT_MANAGER`
+
+When `PUSH=kubernetes`, the certificate manager that has been configured for certificate issue and renewal on your kubernetes cluster, if you want to enable HTTPS for your deployment.
+
+### `KUBERNETES_TLS`
+
+When `PUSH=kubernetes`, whether to enable HTTPS for your deployment. Default value is `false`. If set to true, you must also set the `KUBERNETES_CERT_MANAGER` variable.
+
+### `KUBERNETES_REPLICAS`
+
+When `PUSH=kubernetes`, the number of replicas to enable for your kubernetes service. Default value is `1`.
+
+### `ECS_CLUSTER`
+
+When `PUSH=ecs`, the name of your Amazon ECS cluster where your task is running.
+
+### `ECS_SERVICE`
+
+When `PUSH=ecs`, the name of your Amazon ECS task that you need to restart after the deployment.
+
+### `ECS_STOP_RUNNING_TASKS`
+
+When `PUSH=ecs`, whether to kill the currently running task before starting a new one. Default value is `false`
