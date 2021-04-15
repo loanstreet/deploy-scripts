@@ -20,7 +20,7 @@ ds_post_push() {
 
 	# Do this more cleanly
 	DS_DIR_NAME=$(echo $DS_DIR | sed 's/\/.*$//g')
-	mv "$DS_DIR_NAME" ../ && mv docker-compose.yml ../ && rm -rf ./* && mv ../$DS_DIR_NAME ./ && mv ../docker-compose.yml ./
+	mv "$DS_DIR_NAME" ../deploy-dir && mv docker-compose.yml ../ && rm -rf ./* && mv ../deploy-dir ./deploy && mv ../docker-compose.yml ./
 
 	if [ "$DOCKER_REGISTRY" != "" ]; then
 		REGISTRY_PREFIX=$(echo $DOCKER_REGISTRY | sed 's/^[^//]*\/\///g')
