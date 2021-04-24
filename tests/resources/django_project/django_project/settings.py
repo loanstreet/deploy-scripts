@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-ga_8ybidlyq3gcfwvwfbrvliig@$f(*mkgcjjoe9g7s@7^15v$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'deploy-scripts.dev.finology.com.my',
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
