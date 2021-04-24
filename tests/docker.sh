@@ -30,7 +30,7 @@ sleep 5
 title 'TEST - check web application'
 wget 127.0.0.1:8000
 printf 'Checking index page contents ... '
-if [ $(grep -c 'The install worked successfully! Congratulations!' index.html) -eq 1 ]; then
+if [ $(grep -c 'The install worked successfully! Congratulations!' index.html) -eq 2 ]; then
 	success 'success!'
 else
 	error 'fail! :('
