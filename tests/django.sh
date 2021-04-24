@@ -54,7 +54,7 @@ cd $TEST_WORKING_DIR/python-deploy-test/default/current
 title 'TEST - check web application'
 wget localhost:37569
 printf 'Checking index page contents ... '
-if [ $(grep -c 'The install worked successfully! Congratulations!' index.html) -eq 1 ]; then
+if [ $(grep -c 'The install worked successfully! Congratulations!' index.html) -eq 2 ]; then
 	success 'success!'
 else
 	error 'fail! :('

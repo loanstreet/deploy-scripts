@@ -1,4 +1,4 @@
 wheel
 uwsgi
-django<3
+django
 tornado
