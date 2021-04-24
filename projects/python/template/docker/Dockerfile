@@ -20,7 +20,7 @@ RUN apk update && apk add --no-cache libpq libstdc++ \
 
 ADD . $APP_HOME
 
-RUN rm -rf Dockerfile docker-compose.yml && echo $'cd /app\npython manage.py runserver 0.0.0.0:80' > start.sh
+RUN rm -rf Dockerfile docker-compose.yml && echo $'cd /app\npython manage.py migrate\npython manage.py runserver 0.0.0.0:80' > start.sh
 
 EXPOSE 80
 
