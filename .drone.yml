@@ -80,29 +80,29 @@ volumes:
     host:
       path: /root/.ssh
 
----
-kind: pipeline
-name: php-html
+# ---
+# kind: pipeline
+# name: php-html
 
-platform:
-  os: linux
-  arch: amd64
+# platform:
+#   os: linux
+#   arch: amd64
 
-steps:
-  - name: test
-    image: php:7.3-alpine-ci
-    volumes:
-      - name: ssh
-        path: /root/.ssh
-    commands:
-      - /usr/sbin/sshd -e
-      - sh ./tests/php.sh
+# steps:
+#   - name: test
+#     image: php:7.3-alpine-ci
+#     volumes:
+#       - name: ssh
+#         path: /root/.ssh
+#     commands:
+#       - /usr/sbin/sshd -e
+#       - sh ./tests/php.sh
 
 
-volumes:
-  - name: ssh
-    host:
-      path: /root/.ssh
+# volumes:
+#   - name: ssh
+#     host:
+#       path: /root/.ssh
 
 ---
 kind: pipeline
