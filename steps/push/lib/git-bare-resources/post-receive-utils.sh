@@ -17,8 +17,11 @@ WORK_TREE=$DEPLOY_DIR/releases/$(date +%s)
 
 stop_current_container() {
 	CURRENT_DOCKER_COMPOSE="$DEPLOYMENT_DIR/current/docker-compose.yml"
+	CURRENT_DIR=$(pwd)
 	if [ -f "$CURRENT_DOCKER_COMPOSE" ]; then
-		docker-compose -f "$CURRENT_DOCKER_COMPOSE" down
+		cd "$DEPLOYMENT_DIR/current"
+		docker-compose down
+		cd "CURRENT_DIR"
 	fi
 }
 

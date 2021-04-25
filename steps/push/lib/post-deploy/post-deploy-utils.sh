@@ -112,6 +112,5 @@ dockerize() {
 		error "No Dockerfile supplied"
 	fi
 	title 'remote: dockerizing'
-	docker-compose down
 	docker-compose up --build -d
 }
