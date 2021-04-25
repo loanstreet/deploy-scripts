@@ -90,12 +90,12 @@ platform:
 
 steps:
   - name: test
-    image: php:7.3-alpine
+    image: php:7.3-alpine-ci
     volumes:
       - name: ssh
         path: /root/.ssh
     commands:
-      - service ssh start
+      - /usr/sbin/sshd -e
       - sh ./tests/php.sh
 
 
