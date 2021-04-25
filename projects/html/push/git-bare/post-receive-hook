@@ -1,0 +1,14 @@
+#!/bin/bash -l
+
+set -e
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/post-receive-utils.sh
+
+deploy
+
+if [ "$DOCKERIZE" = "true" ]; then
+	dockerize
+fi
+
+post_startup
