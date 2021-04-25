@@ -35,8 +35,15 @@ title 'TEST - check web application'
 php -S localhost:37590 &
 sleep 5
 wget localhost:37590
-printf 'Checking index page contents ... '
+printf 'Checking static site contents ... '
 if [ $(grep -c 'Example static HTML site!' index.html.1) -eq 1 ]; then
+	success 'success!'
+else
+	error 'fail! :('
+fi
+wget localhost:37590/test.php
+printf 'Checking PHP page contents ... '
+if [ $(grep -c 'phpinfo()' test.php) -eq 1 ]; then
 	success 'success!'
 else
 	error 'fail! :('
