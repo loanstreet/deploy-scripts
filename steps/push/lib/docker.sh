@@ -8,7 +8,7 @@ ds_push() {
 		error "No DOCKER_REGISTRY var set for PUSH=docker"
 	fi
 	DOCKER_IMAGE=$(grep 'image:' docker-compose.yml | awk '{print $2}')
-	docker login $DOCKER_REGISTRY
+	docker --config $DOCKER_HOME login $DOCKER_REGISTRY
 	DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F/ '{print $3}')
 	docker tag $DOCKER_IMAGE "$DOCKER_HOST/$DOCKER_IMAGE"
 	info "Pushing $DOCKER_IMAGE to $DOCKER_HOST"
