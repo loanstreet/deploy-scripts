@@ -21,7 +21,7 @@ stop_current_container() {
 	if [ -f "$CURRENT_DOCKER_COMPOSE" ]; then
 		cd "$DEPLOYMENT_DIR/current"
 		docker-compose down
-		cd "CURRENT_DIR"
+		cd "$CURRENT_DIR"
 	fi
 }
 
