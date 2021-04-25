@@ -10,9 +10,10 @@ ds_push() {
 	DOCKER_IMAGE=$(grep 'image:' docker-compose.yml | awk '{print $2}')
 	docker --config $DOCKER_HOME login $DOCKER_REGISTRY
 	DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F/ '{print $3}')
-	docker tag $DOCKER_IMAGE "$DOCKER_HOST/$DOCKER_IMAGE"
+	DOCKER_LABEL=$(echo "$DOCKER_REGISTRY" | sed -e 's/^http:\/\///g' -e 's/^https:\/\///g')
+	IMAGE_TAG="$DOCKER_LABEL/$DOCKER_IMAGE"
+	docker tag $DOCKER_IMAGE "IMAGE_TAG"
 	info "Pushing $DOCKER_IMAGE to $DOCKER_HOST"
-	IMAGE_TAG="$DOCKER_HOST/$DOCKER_IMAGE"
 	docker push $IMAGE_TAG
 
 	if [ "$DOCKER_DELETE_LOCAL_IMAGE" = "true" ]; then
