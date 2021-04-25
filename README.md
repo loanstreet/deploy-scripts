@@ -37,6 +37,8 @@ The following stacks are currently supported
 - Django
 - React JS
 - Node JS
+- PHP
+- Static HTML
 
 Support has also been added to containerize and deploy projects built on the above stacks with:
 
@@ -189,6 +191,9 @@ sh install.sh reactjs /path/to/reactjs/project
 
 # or for a node project
 sh install.sh node /path/to/node/project
+
+# or for a simple PHP or static HTML site
+sh install.sh html /path/to/project
 ```
 
 Follow the instructions given by the installer
@@ -213,6 +218,8 @@ sh tests/rails.sh
 sh tests/reactjs.sh
 # Test Django deployment
 sh tests/django.sh
+# Test Static HTML and PHP website deployment
+sh tests/php.sh
 # Test Node JS deployment
 sh tests/node.sh
 # Test deployment with dockerization on remote host (dockerizes sample Django project)
@@ -247,6 +254,8 @@ Currently allowed values:
 
 - `reactjs`
 
+- `html` - for static HTML sites or simple PHP sites
+
 ### `BUILD`
 
 Build type depending on the project type variable.
@@ -272,6 +281,8 @@ Currently allowed values:
 - `django` - for python projects
 
 - `reactjs` - for reactjs projects
+
+- `static` - for static HTML sites or simple PHP sites
 
 ### `REPO`
 
