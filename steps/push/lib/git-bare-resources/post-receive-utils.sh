@@ -15,8 +15,20 @@ GIT_BARE_REPO=$HOME/.repos/$SERVICE_NAME/$PROJECT_ENVIRONMENT.git
 DEPLOY_DIR=$DEPLOYMENT_DIR
 WORK_TREE=$DEPLOY_DIR/releases/$(date +%s)
 
+stop_current_container() {
+	CURRENT_DOCKER_COMPOSE="$DEPLOYMENT_DIR/current/docker-compose.yml"
+	if [ -f "$CURRENT_DOCKER_COMPOSE" ]; then
+		docker-compose -f "$CURRENT_DOCKER_COMPOSE" down
+	fi
+}
+
 deploy() {
 	title 'remote: deploy'
+
+	if [ "$DOCKERIZE" = "true" ]; then
+		stop_current_container
+	fi
+
 	create_deploy_dir
 
 	echo "Checking out working copy"
