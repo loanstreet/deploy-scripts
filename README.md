@@ -354,11 +354,6 @@ The SSH port on the remote server to deploy to. Default value is `22`.
 
 The directory on the remote server to which the project must be deployed. The default value is `$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT`.
 
-### `DOCKERIZE`
-
-When set to `true`, it will use the supplied Dockerfile and docker-compose.yml on the remote server to build an image from the deployed files and start a container with it.
-**This is different from when the PACKAGE variable is set to docker, which will build the image on your local system before pushing it to a registry**
-
 ### `DS_DIR`
 
 The directory under the project directory where deploy-scripts files are maintained. The default value is `deploy/`. For rails projects, the default value is `config/deploy-scripts`.
@@ -379,9 +374,18 @@ The shell command to execute to start the deployed service. Default value is `sh
 
 The no of previous releases to keep on the remote server.
 
+### `DOCKERIZE`
+
+When set to `true`, it will use the supplied Dockerfile and docker-compose.yml on the remote server to build an image from the deployed files and start a container with it.
+**This is different from when the PACKAGE variable is set to docker, which will build the image on your local system before pushing it to a registry**
+
 ### `DOCKER_REGISTRY`
 
 When `PUSH=docker`, the target docker registry it should push to is specified by the DOCKER_REGISTRY variable.
+
+### `DOCKER_HOME`
+
+When `PUSH=docker`, the directory containing the config.json from which the docker registry login credentials are read.
 
 ### `DOCKER_DELETE_LOCAL_IMAGE`
 
