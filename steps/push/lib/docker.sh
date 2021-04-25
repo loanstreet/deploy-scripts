@@ -12,7 +12,7 @@ ds_push() {
 	DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F/ '{print $3}')
 	DOCKER_LABEL=$(echo "$DOCKER_REGISTRY" | sed -e 's/^http:\/\///g' -e 's/^https:\/\///g')
 	IMAGE_TAG="$DOCKER_LABEL/$DOCKER_IMAGE"
-	docker tag $DOCKER_IMAGE "IMAGE_TAG"
+	docker tag $DOCKER_IMAGE "$IMAGE_TAG"
 	info "Pushing $DOCKER_IMAGE to $DOCKER_HOST"
 	docker push $IMAGE_TAG
 
