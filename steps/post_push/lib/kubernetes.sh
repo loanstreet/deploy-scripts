@@ -144,6 +144,10 @@ ds_post_push() {
 
 	DOCKER_IMAGE="$TAG"
 	DOCKER_IMAGE_SED="$TAG"
+	SLASH_CHECK=$(echo $TAG | grep '/' | wc -l)
+	if [ $SLASH_CHECK -gt 0 ]; then
+		DOCKER_IMAGE_SED=$(echo $TAG | sed -e 's/\//\\\//g')
+	fi
 	if [ "$DOCKER_REGISTRY" != "" ]; then
 		DOCKER_HOST=$(echo "$DOCKER_REGISTRY" | awk -F / '{print $3}')
 		DOCKER_IMAGE="$DOCKER_HOST/$TAG"
@@ -160,9 +164,9 @@ ds_post_push() {
 
 		if [ ! -f "$KUBE_SERVICE_CFG" ]; then
 			warning "post-push: kubernetes: No service config found at $KUBE_SERVICE_CFG. Generating from template"
-			if [ "$DOCKER_REGISTRY" = "" ]; then
-				error "post-push: kubernetes: Auto k8s service generation currently depends on DOCKER_REGISTRY being set"
-			fi
+			# if [ "$DOCKER_REGISTRY" = "" ]; then
+			# 	error "post-push: kubernetes: Auto k8s service generation currently depends on DOCKER_REGISTRY being set"
+			# fi
 
 			KUBE_MANIFESTS_DIR="$1/kube-manifests"
 			mkdir -p "$KUBE_MANIFESTS_DIR"
