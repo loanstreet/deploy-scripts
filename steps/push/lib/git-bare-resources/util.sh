@@ -14,7 +14,7 @@ ds_create_bare_repo() {
 	cp $SCRIPT_PATH/../steps/push/lib/git-bare-resources/bare-repo.sh $BARE_REPO_SCRIPT_DIR/
 
 	info "Copying generic post-receive hook $2"
-	cp "$2" $BARE_REPO_SCRIPT_DIR/
+	cp "$2" $BARE_REPO_SCRIPT_DIR/post-receive-hook
 
 	info "Copying scripts to create bare git repo"
 	scp -o StrictHostKeyChecking=no -P$DEPLOYMENT_SERVER_PORT -r $BARE_REPO_SCRIPT_DIR $DEPLOYMENT_SERVER_USER@$DEPLOYMENT_SERVER:/tmp/ 2>&1 | indent
