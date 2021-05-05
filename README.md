@@ -6,7 +6,8 @@
 4. [Adding deployment to a project](#adding-deployment-to-a-project)
 5. [Automated Testing](#automated-testing)
 6. [Licence](#licence)
-7. [Configuration Variables](#configuration-variables)
+7. [Customizing build steps](#customizing-build-steps)
+8. [Configuration Variables](#configuration-variables)
 
 # Overview
 
@@ -86,7 +87,7 @@ TYPE=rails
 # The name that will be used to label the app that is being deployed, commonly the hostname where the service is made available is used
 SERVICE_NAME=service.com
 ```
-A typical deployment then proceeds in a number of steps, as follows. Some steps are optional. The expectation is that each of these steps should support several options which can be combined for different types of deployments.
+A typical deployment then proceeds in a number of steps, as follows. Some steps are optional. The expectation is that each of these steps should support several options which can be combined for different types of deployments. The number and order of steps can be varied and removal or addition of more steps to the build process can be done through [Customizing build steps](#customizing-build-steps)
 
 ### List of steps
 1. [Repo Checkout](#repo-checkout)
@@ -232,6 +233,35 @@ sh tests/docker-pull.sh
 
 The code is distributed under the MIT License, a copy of which is included in the project repository.
 
+# Customizing build steps
+
+The steps that are run during a deployment are set by the STEPS variable. Its is a shell variable with a space separated list of step names, whose default value is `STEPS="repo build format package push post_push"`. A normal deployment proceeds along these steps, provided the proper configuration variables are set correctly.
+
+### Adding an additional step
+
+Additional step(s) can be added to a deployment by defining shell variables with the `BEFORE_` or `AFTER_` prefixes in front of existing build step names to insert a step into the list of existing steps.
+
+For example, to add a custom step called `test` before build, you can add a variable `BEFORE_build="test"` to `config.sh` or `app-config.sh`.
+
+```bash
+BEFORE_build="test"
+```
+
+And define the logic to be executed during this step inside a `ds_exec_step()` function inside either the `deploy/scripts/steps/test.sh` file (for project wide step) or inside `deploy/environments/[environment name]/scripts/steps/test.sh` (for environment specific step).
+
+All the variables defined inside `app-config.sh` and `config.sh` are available in this function()
+
+```bash
+# deploy/scripts/steps/test.sh
+
+ds_exec_step() {
+	title 'test step'
+	printf "Running tests for $SERVICE_NAME ... "
+}
+```
+
+Complex builds and deployments can be configured containing dependencies from other projects, conditional logic while preparing the deployment, etc. with custom steps.
+
 # Configuration Variables
 
 Simple deployment configuration is controlled almost entirely through shell variables, which can be defined in the project-wide app-config.sh or the environment-specific config.sh. Environment-specific variables override project wide variables.
@@ -302,6 +332,8 @@ Currently allowed values:
 
 - `docker` - to package the files into a docker image. Requires a Dockerfile and a docker-compose.yml file to be supplied
 
+- `zip` - uses the zip program to archive the files to be packaged into a .zip archive
+
 ### `PUSH`
 
 The method to deliver the deployment to the destination.
@@ -311,6 +343,8 @@ Currently allowed values:
 - `git-bare` default value. By default the deployment files are pushed to a bare git repo on the deployment server and a post-recieve hook is used to set up and start the project
 
 - `docker` - to push the docker image built when `PACKAGE=docker` to a docker registry
+
+- `s3` - to push to AWS S3. Currently only works with `PACKAGE=zip`. See [S3_BUCKET_PATH](#s3_bucket_path) variable on how to set the target S3 bucket.
 
 ### `POST_PUSH`
 
@@ -328,7 +362,7 @@ The name to identify the service being deployed. For example `my-project`.
 
 ### `PROJECT_ENVIRONMENT`
 
-Deduced from the name of the directory under `environments/`.
+Deduced from the name of the directory under `environments/`. No need to explicitly set.
 
 ### `LINKED_DIRS`
 
@@ -374,6 +408,8 @@ The shell command to execute to start the deployed service. Default value is `sh
 
 The no of previous releases to keep on the remote server.
 
+## Docker Variables
+
 ### `DOCKERIZE`
 
 When set to `true`, it will use the supplied Dockerfile and docker-compose.yml on the remote server to build an image from the deployed files and start a container with it.
@@ -391,21 +427,23 @@ When `PUSH=docker`, the directory containing the config.json from which the dock
 
 Default value is `false`. When set to true, the built image will be deleted from the local system after it is pushed to the docker registry. **To use cached docker layers for faster image builds, keep this variable set to false**.
 
+## Kubernetes Variables
+
 ### `KUBERNETES_CRED`
 
-When `PUSH=kubernetes`, the kubernetes secret that contains the credentials to pull docker images from a private registry. If your `DOCKER_REGISTRY` is private and needs a username and password to access, you must create a kubernetes secret with the credentials and set this variable.
+When `POST_PUSH=kubernetes`, the kubernetes secret that contains the credentials to pull docker images from a private registry. If your `DOCKER_REGISTRY` is private and needs a username and password to access, you must create a kubernetes secret with the credentials and set this variable.
 
 ### `KUBERNETES_HOME`
 
-When `PUSH=kubernetes`, the directory containing the kubernetes cluster configuration yaml files needed to connect to and manage the cluster you are deploying to. Default value is `$HOME/.kube`.
+When `POST_PUSH=kubernetes`, the directory containing the kubernetes cluster configuration yaml files needed to connect to and manage the cluster you are deploying to. Default value is `$HOME/.kube`.
 
 ### `KUBERNETES_CLUSTER`
 
-When `PUSH=kubernetes`, the identifier for the kubernetes cluster you are deploying to. deploy-scripts will search for a yaml file named with this identifier to use to connect to the cluster. For example, if is variable is set to `my-cluster`, it will look for a `my-cluster.yaml` in the `KUBERNETES_HOME` directory for the cluster configuration.
+When `POST_PUSH=kubernetes`, the identifier for the kubernetes cluster you are deploying to. deploy-scripts will search for a yaml file named with this identifier to use to connect to the cluster. For example, if is variable is set to `my-cluster`, it will look for a `my-cluster.yaml` in the `KUBERNETES_HOME` directory for the cluster configuration.
 
 ### `KUBERNETES_CLUSTER_CONFIG`
 
-When `PUSH=kubernetes`, you can explicitly specify the path of the cluster yaml file. If unspecified it will try to locate the yaml file at `$KUBERNETES_HOME/$KUBERNETES_CLUSTER.yaml`.
+When `POST_PUSH=kubernetes`, you can explicitly specify the path of the cluster yaml file. If unspecified it will try to locate the yaml file at `$KUBERNETES_HOME/$KUBERNETES_CLUSTER.yaml`.
 
 ### `KUBERNETES_NAMESPACE`
 
@@ -413,11 +451,11 @@ The kubernetes namespace under which the service should be deployed. If unspecif
 
 ### `KUBERNETES_INGRESS`
 
-When `PUSH=kubernetes`, the nginx ingress service being used as a load balancer for your kubernetes services. Currently only HTTP(s) load balancing is set up.
+When `POST_PUSH=kubernetes`, the nginx ingress service being used as a load balancer for your kubernetes services. Currently only HTTP(s) load balancing is set up.
 
 ### `KUBERNETES_NGINX_SERVICE_HOST`
 
-When `PUSH=kubernetes`, this can be used to explicitly specify the hostname to use for the service. If unspecified, it will try to use `SERVICE_NAME` as the hostname for the service.
+When `POST_PUSH=kubernetes`, this can be used to explicitly specify the hostname to use for the service. If unspecified, it will try to use `SERVICE_NAME` as the hostname for the service.
 
 ### `KUBERNETES_NGINX_SERVICE_PORT`
 
@@ -425,24 +463,34 @@ The service port to use for the deployed kubernetes service. Default value is `8
 
 ### `KUBERNETES_CERT_MANAGER`
 
-When `PUSH=kubernetes`, the certificate manager that has been configured for certificate issue and renewal on your kubernetes cluster, if you want to enable HTTPS for your deployment.
+When `POST_PUSH=kubernetes`, the certificate manager that has been configured for certificate issue and renewal on your kubernetes cluster, if you want to enable HTTPS for your deployment.
 
 ### `KUBERNETES_TLS`
 
-When `PUSH=kubernetes`, whether to enable HTTPS for your deployment. Default value is `false`. If set to true, you must also set the `KUBERNETES_CERT_MANAGER` variable.
+When `POST_PUSH=kubernetes`, whether to enable HTTPS for your deployment. Default value is `false`. If set to true, you must also set the `KUBERNETES_CERT_MANAGER` variable.
 
 ### `KUBERNETES_REPLICAS`
 
-When `PUSH=kubernetes`, the number of replicas to enable for your kubernetes service. Default value is `1`.
+When `POST_PUSH=kubernetes`, the number of replicas to enable for your kubernetes service. Default value is `1`.
+
+## AWS Variables
 
 ### `ECS_CLUSTER`
 
-When `PUSH=ecs`, the name of your Amazon ECS cluster where your task is running.
+When `POST_PUSH=ecs`, the name of your Amazon ECS cluster where your task is running.
 
 ### `ECS_SERVICE`
 
-When `PUSH=ecs`, the name of your Amazon ECS task that you need to restart after the deployment.
+When `POST_PUSH=ecs`, the name of your Amazon ECS task that you need to restart after the deployment.
 
 ### `ECS_STOP_RUNNING_TASKS`
 
-When `PUSH=ecs`, whether to kill the currently running task before starting a new one. Default value is `false`
+When `POST_PUSH=ecs`, whether to kill the currently running task before starting a new one. Default value is `false`
+
+### `AWS_PROFILE`
+
+The value to use for the --profile argument for aws cli. The default value is `default`
+
+### `S3_BUCKET_PATH`
+
+When `PACKAGE=zip`, the resulting zip file can be pushed to an S3 bucket, if the proper set of credentials for aws cli are configured in your home directory. A sample path would look like `S3_BUCKET_PATH="my-bucket/prefix1/prefix2/etc"`. The path shouldn't contain the `s3://` protocol string.
