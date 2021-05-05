@@ -260,6 +260,8 @@ ds_exec_step() {
 }
 ```
 
+Complex builds and deployments can be configured containing dependencies from other projects, conditional logic while preparing the deployment, etc. with custom steps.
+
 # Configuration Variables
 
 Simple deployment configuration is controlled almost entirely through shell variables, which can be defined in the project-wide app-config.sh or the environment-specific config.sh. Environment-specific variables override project wide variables.
