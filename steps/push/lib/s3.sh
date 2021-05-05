@@ -7,10 +7,6 @@ ds_push() {
 		error "push: s3: S3 push currently only supported with PACKAGE=zip"
 	fi
 
-	if [ "$AWS_PROFILE" = "" ]; then
-		AWS_PROFILE="default"
-	fi
-
 	cd "$1"
 
 	aws s3 cp ./"$SERVICE_NAME-$PROJECT_ENVIRONMENT.zip" s3://$S3_BUCKET_PATH/ --profile "$AWS_PROFILE"

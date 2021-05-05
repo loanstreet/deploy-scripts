@@ -52,9 +52,6 @@ mkdir -p "deploy/environments/$PROJECT_ENVIRONMENT/scripts"
 printf "ds_post() {\n    echo 'running post-package step ... '\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/package.sh"
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 title 'TEST - check upload'
-if [ "$AWS_PROFILE" = "" ]; then
-	AWS_PROFILE="default"
-fi
 aws s3 ls "$S3_BUCKET_PATH/$SERVICE_NAME-$PROJECT_ENVIRONMENT.zip" --profile "$AWS_PROFILE"
 cd $SCRIPT_PATH/../
 rm -rf /tmp/deploy-scripts
