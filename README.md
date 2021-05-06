@@ -247,9 +247,9 @@ For example, to add a custom step called `test` before build, you can add a vari
 BEFORE_build="test"
 ```
 
-And define the logic to be executed during this step inside a `ds_exec_step()` function inside either the `deploy/scripts/steps/test.sh` file (for project wide step) or inside `deploy/environments/[environment name]/scripts/steps/test.sh` (for environment specific step).
+And define the logic to be executed during this step inside a `ds_exec_step()` function inside either the `deploy/scripts/steps/test.sh` file (for project wide step) or inside `deploy/environments/[environment name]/scripts/steps/test.sh` (for environment specific step). The environment specific logic, if present, will override the project-wide one.
 
-All the variables defined inside `app-config.sh` and `config.sh` are available in this function()
+All the variables defined inside `app-config.sh` and `config.sh` are available in this function.
 
 ```bash
 # deploy/scripts/steps/test.sh
