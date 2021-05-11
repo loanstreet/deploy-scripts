@@ -6,7 +6,11 @@ ds_push() {
 	cd "$1"
 	DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
 	git checkout -b $DEPLOY_BRANCH
-	info "Deploying $PROJECT_ENVIRONMENT to $DEPLOYMENT_SERVER"
-	git remote add deploy $DEPLOYMENT_SERVER 2>&1 | indent
-	GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push -u deploy $DEPLOY_BRANCH -f
+	SERVER_LIST=$(echo $DEPLOYMENT_SERVER | cut -d";" -f1)
+	for b in $SERVER_LIST; do
+		info "Deploying $PROJECT_ENVIRONMENT to $b"
+		git remote add deploy $b 2>&1 | indent
+		GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push -u deploy $DEPLOY_BRANCH -f
+		git remote remove deploy 2>&1 | indent
+	fi
 }
