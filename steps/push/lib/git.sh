@@ -4,9 +4,7 @@ ds_push() {
 	fi
 
 	cd "$1"
-	if [ "$DEPLOY_BRANCH" = "" ]; then
-		DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
-	fi
+	DEPLOY_BRANCH=$PROJECT_ENVIRONMENT
 	git checkout -b $DEPLOY_BRANCH
 	SERVER_LIST=$(echo $DEPLOYMENT_SERVER | cut -d";" -f1)
 	for b in $SERVER_LIST; do
