@@ -14,5 +14,5 @@ ds_push() {
 		git remote add deploy $b 2>&1 | indent
 		GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push -u deploy $DEPLOY_BRANCH -f
 		git remote remove deploy 2>&1 | indent
-	fi
+	done
 }
