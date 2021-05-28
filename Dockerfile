@@ -19,7 +19,7 @@ RUN set -ex \
 RUN apt update --fix-missing \
 	&& apt install -y --no-install-recommends git ncurses-bin openssh-client \
 	&& mkdir /root/.config \
-	&& printf "DS_UPDATE=false" >> /root/.config/deploy-scripts-defaults.sh \
+	&& printf "DS_UPDATE=false\nDS_BUILD_DIR=/build\n" >> /root/.config/deploy-scripts-defaults.sh \
 	&& git config --global init.defaultBranch master \
 	&& git clone --depth=1 --single-branch --branch ${DS_VERSION} https://github.com/loanstreet/deploy-scripts /root/.deploy-scripts \
 	&& chmod +x /root/.deploy-scripts/docker-entrypoint.sh \
