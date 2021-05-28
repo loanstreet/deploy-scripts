@@ -192,22 +192,6 @@ steps:
       branch: 0.6.0
       event: push
 
-  - name: latest
-    image: loanstreet-ubuntu-20.04/docker:19
-    volumes:
-      - name: ssh
-        path: /root/.ssh
-      - name: docker
-        path: /root/.docker
-      - name: dockersock
-        path: /var/run/docker.sock
-    commands:
-      - docker build --build-arg DS_VERSION=master -t finology/deploy-scripts:latest .
-      - docker --config $HOME/.docker/hub push finology/deploy-scripts:latest
-    when:
-      branch: master
-      event: push
-
 volumes:
   - name: ssh
     host:
