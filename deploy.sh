@@ -12,6 +12,7 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 . $SCRIPT_PATH/scripts/defaults.sh
 if [ "$DS_UPDATE" = "true" ]; then
 	title "deploy-scripts $(cat $SCRIPT_PATH/.VERSION) - update"
+	git config pull.rebase false
 	git pull origin $CURRENT_BRANCH | indent
 fi
 
