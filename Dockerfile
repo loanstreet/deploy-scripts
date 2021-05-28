@@ -21,9 +21,9 @@ RUN apt update --fix-missing \
 	&& mkdir /root/.config \
 	&& printf "DS_UPDATE=false\nDS_BUILD_DIR=/build\n" >> /root/.config/deploy-scripts-defaults.sh \
 	&& git config --global init.defaultBranch master \
-	&& git clone --depth=1 --single-branch --branch ${DS_VERSION} https://github.com/loanstreet/deploy-scripts /root/.deploy-scripts \
-	&& chmod +x /root/.deploy-scripts/docker-entrypoint.sh \
-	&& ln -s /root/.deploy-scripts/docker-entrypoint.sh /usr/local/bin/deploy-scripts \
+	&& git clone --depth=1 --single-branch --branch ${DS_VERSION} https://github.com/loanstreet/deploy-scripts /deploy-scripts \
+	&& chmod +x /deploy-scripts/docker-entrypoint.sh \
+	&& ln -s /deploy-scripts/docker-entrypoint.sh /usr/local/bin/deploy-scripts \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
 
 ENTRYPOINT ["deploy-scripts"]

@@ -2,7 +2,7 @@
 
 set -e
 
-DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
+DEPLOY_SCRIPTS_HOME="/deploy-scripts"
 VERSION=$(cat $DEPLOY_SCRIPTS_HOME/.VERSION)
 
 show_usage() {
@@ -11,7 +11,7 @@ show_usage() {
 }
 
 create_user() {
-	groupadd -g "$USER_GROUP_ID"
+	groupadd -g "$USER_GROUP_ID" "$CREATE_USER_ID"
 	useradd -u "$CREATE_USER_ID" -g "$USER_GROUP_ID" "$CREATE_USER"
 }
 
@@ -28,7 +28,7 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 	create_user
 
 	if [ "$1" = "--install" ]; then
-		sudo -u $CREATE_USER sh -c "sh /root/.deploy-scripts/installer/install.sh $2 /project $3 $4"
+		sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 /project $3 $4"
 	fi
 fi
 
