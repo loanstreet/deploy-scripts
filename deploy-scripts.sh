@@ -4,7 +4,7 @@ set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
-VERSION=$(cat $SCRIPT_PATH/.VERSION)
+VERSION="0.6.0"
 
 show_ds_usage() {
 	printf "Usage:\n\tdeploy-scripts.sh [project directory] [environment name]\n"
@@ -25,7 +25,7 @@ if [ "$1" = "--install" ]; then
 		show_installer_usage
 	fi
 
-	docker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$3":/project -it deploy-scripts:$VERSION --install "$2" "$4" "$5"
+	docker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$3":/project -it finology/deploy-scripts:$VERSION --install "$2" "$4" "$5"
 fi
 
 if [ ! -x "$(command -v docker)" ]; then

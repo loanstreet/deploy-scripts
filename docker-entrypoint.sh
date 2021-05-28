@@ -6,7 +6,7 @@ DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
 VERSION=$(cat $DEPLOY_SCRIPTS_HOME/.VERSION)
 
 show_usage() {
-	printf "Usage:\n\tdocker run --rm -v [project directory path]:/project -it deploy-scripts:$VERSION [environment name]\n"
+	printf "Usage:\n\tdocker run --rm -v [project directory path]:/project -it finology/deploy-scripts:$VERSION [environment name]\n"
 	exit 1
 }
 
@@ -16,7 +16,7 @@ create_user() {
 }
 
 show_installer_usage() {
-	printf "Usage:\n\tdocker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v [project directory path]:/project -it deploy-scripts:$VERSION install [project type] [options]\n"
+	printf "Usage:\n\tdocker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v [project directory path]:/project -it finology/deploy-scripts:$VERSION install [project type] [options]\n"
 	exit 1
 }
 
