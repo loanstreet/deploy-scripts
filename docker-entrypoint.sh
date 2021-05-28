@@ -8,7 +8,7 @@ DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
 VERSION=$(cat $DEPLOY_SCRIPTS_HOME/.VERSION)
 
 show_usage() {
-	printf "Usage:\n\tdocker run -it deploy-scripts:$VERSION -v [project directory path]:/project [environment name]\n"
+	printf "Usage:\n\tdocker run -v [project directory path]:/project -it deploy-scripts:$VERSION [environment name]\n"
 	exit 1
 }
 
