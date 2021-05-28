@@ -23,4 +23,6 @@ ds_package() {
 	fi
 
 	docker-compose build $DOCKER_COMPOSE_OPTS
+
+	cleanup_docker_files
 }

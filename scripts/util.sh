@@ -273,6 +273,11 @@ copy_docker_files() {
 	fi
 }
 
+cleanup_docker_files() {
+	KEY_DESTINATION_DIR="$DESTINATION_DIR/$DS_DIR/files"
+	rm -rf "$KEY_DESTINATION_DIR/id_rsa" "$KEY_DESTINATION_DIR/id_rsa.pub"
+}
+
 copy_local_project_for_build() {
 	if [ "$1" = "" ] || [ "$2" = "" ] || [ "$3" = "" ]; then
 		error "Insufficient args supplied to copy_local_project_for_build"

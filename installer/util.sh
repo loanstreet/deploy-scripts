@@ -7,7 +7,7 @@ ds_create_bootstrap_script() {
 
 	infof "Creating bootstrap script at $BOOTSTRAP_SCRIPT ... "
 	VERSION=$(cat $SCRIPT_PATH/../.VERSION)
-	printf "#!/bin/sh\n\nVERSION=$VERSION\nDEPLOY_SCRIPTS_GIT_REPO=$DS_REPO\n" > "$BOOTSTRAP_SCRIPT"
+	printf "#!/bin/sh\n\nVERSION=$VERSION\nDEPLOY_SCRIPTS_GIT_REPO=$DS_REPO_HTTP\n" > "$BOOTSTRAP_SCRIPT"
 	cat << 'EOF' >> $DEPLOY_DIR/deploy.sh
 DEPLOY_SCRIPTS_GIT_BRANCH="$VERSION"
 DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts/$DEPLOY_SCRIPTS_GIT_BRANCH"
