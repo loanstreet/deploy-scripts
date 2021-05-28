@@ -20,4 +20,11 @@ if [ ! -x "$(command -v docker)" ]; then
 	show_ds_usage
 fi
 
-docker run -it finology/deploy-scripts:$VERSION -v "$1":/project $2
+if [ "$SSH_KEY" = "" ]; then
+	SSH_KEY="id_rsa"
+fi
+
+SSH_PUBLIC_KEY="$HOME/.ssh/$SSH_KEY.pub"
+SSH_PRIVATE_KEY="$HOME/.ssh/$SSH_KEY"
+
+docker run --rm -v $SSH_PUBLIC_KEY:/root/.ssh/id_rsa.pub -v $SSH_PRIVATE_KEY:/root/.ssh/id_rsa -v "$1":/project -it finology/deploy-scripts:$VERSION $2
