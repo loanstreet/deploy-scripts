@@ -11,8 +11,21 @@ show_ds_usage() {
 	exit 1
 }
 
+show_installer_usage() {
+	printf "Usage:\n\tdeploy-scripts.sh --install [project type] [project directory] [options]\n"
+	exit 1
+}
+
 if [ "$1" = "" ] || [ "$2" = "" ]; then
 	show_ds_usage
+fi
+
+if [ "$1" = "--install" ]; then
+	if [ "$3" = "" ]; then
+		show_installer_usage
+	fi
+
+	docker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$3":/project -it deploy-scripts:$VERSION --install "$2" "$4" "$5"
 fi
 
 if [ ! -x "$(command -v docker)" ]; then

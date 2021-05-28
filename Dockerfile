@@ -17,7 +17,7 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN apt update --fix-missing \
-	&& apt install -y --no-install-recommends git ncurses-bin openssh-client \
+	&& apt install -y --no-install-recommends git ncurses-bin openssh-client sudo \
 	&& mkdir /root/.config \
 	&& printf "DS_UPDATE=false\nDS_BUILD_DIR=/build\n" >> /root/.config/deploy-scripts-defaults.sh \
 	&& git config --global init.defaultBranch master \
