@@ -12,7 +12,7 @@ show_usage() {
 
 create_user() {
 	groupadd -g "$USER_GROUP_ID"
-	useradd -u "$CREATE_USER_ID" "$CREATE_USER"
+	useradd -u "$CREATE_USER_ID" -g "$USER_GROUP_ID" "$CREATE_USER"
 }
 
 show_installer_usage() {
@@ -28,7 +28,7 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 	create_user
 
 	if [ "$1" = "--install" ]; then
-		sudo -u $CREATE_USER -c "sh /root/.deploy-scripts/installer/install.sh $2 /project $3 $4"
+		sudo -u $CREATE_USER sh -c "sh /root/.deploy-scripts/installer/install.sh $2 /project $3 $4"
 	fi
 fi
 
