@@ -4,8 +4,8 @@ set -e
 
 . $HOME/.profile
 
-VERSION=$(cat .VERSION)
 DEPLOY_SCRIPTS_HOME="$HOME/.deploy-scripts"
+VERSION=$(cat $DEPLOY_SCRIPTS_HOME/.VERSION)
 
 show_usage() {
 	printf "Usage:\n\tdocker run -it deploy-scripts:$VERSION -v [project directory path]:/project [environment name]\n"
