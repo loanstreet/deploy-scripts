@@ -128,7 +128,7 @@ if [ "$VOLUMES" != "" ]; then
 fi
 
 DEPLOY_COMMAND="docker run --rm $MOUNTS -v \"$SSH_PUBLIC_KEY\":/root/.ssh/id_rsa.pub -v \"$SSH_PRIVATE_KEY\":/root/.ssh/id_rsa -v /var/run/docker.sock:/var/run/docker.sock -v \"$DIR_PATH\":/project -it finology/deploy-scripts:latest \"$2\""
-if [ "$DS_DEBUG" = true ]; then
+if [ "$DS_DEBUG" = "true" ]; then
 	show_debug "$DEPLOY_COMMAND"
 fi
 sh -c "$DEPLOY_COMMAND"
