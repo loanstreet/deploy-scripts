@@ -21,7 +21,7 @@ show_error() {
 	exit 1
 }
 
-show_debug {
+show_debug() {
 	printf "DEBUG: $1\n"
 }
 
