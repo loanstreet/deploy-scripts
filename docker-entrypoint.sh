@@ -20,6 +20,27 @@ show_installer_usage() {
 	exit 1
 }
 
+run_installer() {
+	TEMP_INSTALL_DIR="/tmp/deploy-scripts"
+	mkdir -p "$TEMP_INSTALL_DIR"
+	chown "$CREATE_USER:$CREATE_USER" "$TEMP_INSTALL_DIR"
+
+	sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 $TEMP_INSTALL_DIR $3 $4"
+
+	DS_DIR="deploy"
+	INSTALLER_CONFIG="$DEPLOY_SCRIPTS_HOME/projects/$2/installer/config.sh"
+	if [ -f "$INSTALLER_CONFIG" ]; then
+		. "$INSTALLER_CONFIG"
+	fi
+
+	printf "Moving deploy-scripts configs to project dir at /project/$DS_DIR ... "
+	mkdir -p "/project/$DS_DIR"
+	chown -R "$CREATE_USER:$CREATE_USER" /project/$DS_DIR
+	mv "$TEMP_INSTALL_DIR/$DS_DIR"/* /project/$DS_DIR/
+	printf "done\n"
+	exit 0
+}
+
 if [ "$1" = "" ] || [ "$1" = "--help" ]; then
 	show_usage
 fi
@@ -28,23 +49,7 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 	create_user
 
 	if [ "$1" = "--install" ]; then
-		TEMP_INSTALL_DIR="/tmp/deploy-scripts"
-		mkdir -p "$TEMP_INSTALL_DIR"
-		chown "$CREATE_USER:$CREATE_USER" "$TEMP_INSTALL_DIR"
-
-		sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 $TEMP_INSTALL_DIR $3 $4"
-
-		DS_DIR="deploy"
-		INSTALLER_CONFIG="$DEPLOY_SCRIPTS_HOME/projects/$2/installer/config.sh"
-		if [ -f "$INSTALLER_CONFIG" ]; then
-			. "$INSTALLER_CONFIG"
-		fi
-
-		printf "Moving deploy-scripts configs to project dir at /project/$DS_DIR ... "
-		mkdir -p "/project/$DS_DIR"
-		chown -R "$CREATE_USER:$CREATE_USER" /project/$DS_DIR
-		mv "$TEMP_INSTALL_DIR/$DS_DIR"/* /project/$DS_DIR/
-		printf "done\n"
+		run_installer
 	fi
 fi
 
