@@ -15,6 +15,8 @@ RUN set -ex \
 	&& . ~/.profile && nvm install 13.12.0 \
 	&& curl -LO "https://dl.k8s.io/release/v1.20.2/bin/linux/amd64/kubectl" \
 	&& install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
+	&& mkdir -p /root/.ssh \
+	&& echo "Host *\n    StrictHostKeyChecking no" > /root/.ssh/config \
 	&& apt purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
 	&& rm -rf /var/lib/apt/lists/*
 

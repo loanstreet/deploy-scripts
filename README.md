@@ -73,7 +73,7 @@ curl https://raw.githubusercontent.com/loanstreet/deploy-scripts/0.6.0/deploy-sc
 mkdir -p $HOME/.deploy-scripts \
 	&& curl https://raw.githubusercontent.com/loanstreet/deploy-scripts/0.6.0/deploy-scripts.sh -o $HOME/.deploy-scripts/deploy \
 	&& chmod +x $HOME/.deploy-scripts/deploy \
-	&& echo 'PATH="$PATH:$HOME/.deploy-scripts"' >> ~/.profile \
+	&& echo 'PATH="$HOME/.deploy-scripts:$PATH"' >> ~/.profile \
 	&& . ~/.profile
 ```
 
