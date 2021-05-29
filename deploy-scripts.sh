@@ -84,6 +84,16 @@ if [ "$3" != "--no-auto-mounts" ]; then
 			VOLUMES="$VOLUMES $HOME/.kube:/root/.kube"
 		fi
 	fi
+
+	if [ "$DOCKER_ADD_SSH_KEY" != "" ]; then
+		DOCKER_ADD_SSH_PUBLIC_KEY="$DOCKER_ADD_SSH_KEY.pub"
+
+		if [ -f "$DOCKER_ADD_SSH_KEY" ] && [ -f "$DOCKER_ADD_SSH_PUBLIC_KEY" ]; then
+			PRIV_KEY_FILE=$(basename $DOCKER_ADD_SSH_KEY)
+			PUB_KEY_FILE=$(basename $DOCKER_ADD_SSH_PUBLIC_KEY)
+			VOLUMES="$VOLUMES $DOCKER_ADD_SSH_KEY:/root/.ssh/$PRIV_KEY_FILE $DOCKER_ADD_SSH_PUBLIC_KEY:/root/.ssh/$PUB_KEY_FILE"
+		fi
+	fi
 fi
 
 if [ "$VOLUMES" != "" ]; then
