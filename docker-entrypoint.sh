@@ -20,19 +20,15 @@ show_installer_usage() {
 	exit 1
 }
 
-if [ "$HOST_TIMEZONE" != "" ]; then
-	cp "/usr/share/zoneinfo/$HOST_TIMEZONE" /etc/localtime
-fi
-
 run_installer() {
 	TEMP_INSTALL_DIR="/tmp/deploy-scripts"
 	mkdir -p "$TEMP_INSTALL_DIR"
 	chown "$CREATE_USER:$CREATE_USER" "$TEMP_INSTALL_DIR"
 
-	sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 $TEMP_INSTALL_DIR $3 $4"
+	sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $1 $TEMP_INSTALL_DIR $2 $3"
 
 	DS_DIR="deploy"
-	INSTALLER_CONFIG="$DEPLOY_SCRIPTS_HOME/projects/$2/installer/config.sh"
+	INSTALLER_CONFIG="$DEPLOY_SCRIPTS_HOME/projects/$1/installer/config.sh"
 	if [ -f "$INSTALLER_CONFIG" ]; then
 		. "$INSTALLER_CONFIG"
 	fi
@@ -53,7 +49,7 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 	create_user
 
 	if [ "$1" = "--install" ]; then
-		run_installer
+		run_installer "$2" "$3" "$4"
 	fi
 fi
 
