@@ -21,7 +21,7 @@ show_installer_usage() {
 }
 
 if [ "$HOST_TIMEZONE" != "" ]; then
-	timedatectl set-timezone $HOST_TIMEZONE
+	cp "/usr/share/zoneinfo/$HOST_TIMEZONE" /etc/localtime
 fi
 
 run_installer() {
