@@ -41,8 +41,9 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 		fi
 
 		printf "Moving deploy-scripts configs to project dir at /project/$DS_DIR ... "
-		mv "$TEMP_INSTALL_DIR" /project/$DS_DIR
-		chown "$CREATE_USER:$CREATE_USER" /project/$DS_DIR
+		mkdir -p "/project/$DS_DIR"
+		chown -R "$CREATE_USER:$CREATE_USER" /project/$DS_DIR
+		mv "$TEMP_INSTALL_DIR/$DS_DIR" /project/$DS_DIR
 		printf "done\n"
 	fi
 fi
