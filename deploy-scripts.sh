@@ -4,8 +4,6 @@ set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
-VERSION="0.6.0"
-
 show_ds_usage() {
 	printf "Usage:\n\tdeploy-scripts.sh [project directory] [environment name]\n"
 	exit 1
@@ -41,7 +39,7 @@ if [ "$1" = "--install" ]; then
 		DIR_PATH=$(realpath "$3")
 	fi
 
-	docker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$DIR_PATH":/project -it finology/deploy-scripts:$VERSION --install "$2" "$4" "$5"
+	docker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$DIR_PATH":/project -it finology/deploy-scripts:latest --install "$2" "$4" "$5"
 	exit 0
 fi
 
@@ -95,7 +93,7 @@ if [ "$VOLUMES" != "" ]; then
 	done
 fi
 
-DEPLOY_COMMAND="docker run --rm $MOUNTS -v \"$SSH_PUBLIC_KEY\":/root/.ssh/id_rsa.pub -v \"$SSH_PRIVATE_KEY\":/root/.ssh/id_rsa -v /var/run/docker.sock:/var/run/docker.sock -v \"$DIR_PATH\":/project -it finology/deploy-scripts:$VERSION \"$2\""
+DEPLOY_COMMAND="docker run --rm $MOUNTS -v \"$SSH_PUBLIC_KEY\":/root/.ssh/id_rsa.pub -v \"$SSH_PRIVATE_KEY\":/root/.ssh/id_rsa -v /var/run/docker.sock:/var/run/docker.sock -v \"$DIR_PATH\":/project -it finology/deploy-scripts:latest \"$2\""
 if [ "$DS_DEBUG" = true ]; then
 	show_debug "$DEPLOY_COMMAND"
 fi
