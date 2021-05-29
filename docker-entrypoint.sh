@@ -46,7 +46,9 @@ if [ "$1" = "" ] || [ "$1" = "--help" ]; then
 fi
 
 if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID" != "" ]; then
-	create_user
+	if [ "$CREATE_USER" != "root" ]; then
+		create_user
+	fi
 
 	if [ "$1" = "--install" ]; then
 		run_installer "$2" "$3" "$4"

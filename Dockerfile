@@ -13,11 +13,13 @@ RUN set -ex \
 	&& echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.profile \
 	&& echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.profile \
 	&& . ~/.profile && nvm install 13.12.0 \
+	&& curl -LO "https://dl.k8s.io/release/v1.20.2/bin/linux/amd64/kubectl" \
+	&& install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
 	&& apt purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN apt update --fix-missing \
-	&& apt install -y --no-install-recommends git ncurses-bin openssh-client sudo \
+	&& apt install -y --no-install-recommends git ncurses-bin openssh-client sudo docker.io docker-compose \
 	&& mkdir /root/.config \
 	&& printf "DS_UPDATE=false\nDS_BUILD_DIR=/build\n" >> /root/.config/deploy-scripts-defaults.sh \
 	&& git config --global init.defaultBranch master \
