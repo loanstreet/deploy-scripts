@@ -1,13 +1,14 @@
 # deploy-scripts
 
 1. [Overview](#overview)
-2. [Sample Deployment](#sample-deployment)
-3. [Deployment Steps](#deployment-steps)
-4. [Adding deployment to a project](#adding-deployment-to-a-project)
-5. [Automated Testing](#automated-testing)
-6. [Licence](#licence)
-7. [Customizing build steps](#customizing-build-steps)
-8. [Configuration Variables](#configuration-variables)
+2. [Installation](#installation)
+3. [Adding deployment to a project](#adding-deployment-to-a-project)
+4. [Sample Deployment](#sample-deployment)
+5. [Deployment Steps](#deployment-steps)
+6. [Automated Testing](#automated-testing)
+7. [Licence](#licence)
+8. [Customizing build steps](#customizing-build-steps)
+9. [Configuration Variables](#configuration-variables)
 
 # Overview
 
@@ -47,9 +48,111 @@ Support has also been added to containerize and deploy projects built on the abo
 - Kubernetes
 - Amazon ECS
 
-Containerization has currently only been tested and confirmed to work with Django, Ruby on Rails, Java and React JS projects, but it shouldn't be difficult to add it to the other supported stacks.
+# Installation
 
-- Once added to a project, it copies over the following files:
+deploy-scripts can be installed in any one of the following 2 ways
+
+### Git checkout
+
+Just make a git checkout of the stable branch to your home directory with the following command.
+
+```bash
+git clone --single-branch --branch 0.6.0 https://github.com/loanstreet/deploy-scripts.git $HOME/.deploy-scripts/0.6.0
+```
+
+### Bootstrap script for docker image
+
+Or download a bootstrap script that will use a dockerized version of deploy-scripts to manage your deployments.
+
+```bash
+curl https://raw.githubusercontent.com/loanstreet/deploy-scripts/0.6.0/deploy-scripts.sh -o $HOME/deploy-scripts.sh
+```
+
+# Adding deployment to a project
+
+Deployment support can be added to a project with the following commands
+
+### Git checkout installation
+
+If you have installed deploy-scripts with the [git checkout method](#git-checkout) mentioned above, you can install the required files to your project directory with the following commands.
+
+```bash
+cd $HOME/.deploy-scripts/0.6.0/installer
+
+# The installer script usage is
+# sh install.sh [project type] [your project directory]
+# For example:
+# For a Java Maven (mvnw) Project
+sh install.sh java /path/to/java/project
+
+# or for a Rails project
+sh install.sh rails /path/to/rails/project
+
+# or for a Django project
+sh install.sh python /path/to/django/project
+
+# or for a reactjs project
+sh install.sh reactjs /path/to/reactjs/project
+
+# or for a node project
+sh install.sh node /path/to/node/project
+
+# or for a simple PHP or static HTML site
+sh install.sh html /path/to/project
+```
+
+### Docker image installation
+
+If you have installed deploy-scripts as a [docker image](#bootstrap-script-for-docker-image) as mentioned above, you can install the required files to your project directory with the following commands.
+
+```bash
+# The installer command usage is
+# sh deploy-scripts.sh --install [project type] [your project directory]
+# For example:
+# For a Java Maven (mvnw) Project
+sh deploy-scripts.sh --install java /path/to/java/project
+
+# or for a Rails project
+sh deploy-scripts.sh --install rails /path/to/rails/project
+
+# or for a Django project
+sh deploy-scripts.sh --install python /path/to/django/project
+
+# or for a reactjs project
+sh deploy-scripts.sh --install reactjs /path/to/reactjs/project
+
+# or for a node project
+sh deploy-scripts.sh --install node /path/to/node/project
+
+# or for a simple PHP or static HTML site
+sh deploy-scripts.sh --install html /path/to/project
+```
+
+Follow the instructions given by the installer, if any.
+
+Once the configuration files have been added, you can further configure your deployment by modifying the [configuration variables](#configuration-variables) in `app-config.sh` or the environment-specific `config.sh`.
+
+To start deploying according to your configured settings, go to your project root and run the following command:
+
+```bash
+# For deploy-scripts installed via git checkout
+# Usage: sh deploy/deploy.sh [environment name]
+# For example for the environment called 'development'
+sh deploy/deploy.sh development
+
+# For deploy-scripts installed via docker
+# Usage: sh deploy-scripts.sh [your project directory] [environment name]
+# For example, for deploying the environment named 'development'
+sh deploy-scripts.sh /my/project development
+```
+
+## Sample Deployment
+
+For a step-by-step understanding of how a deployment happens, and how to add deployment support to a project, please check the [Sample Django Deployment](https://github.com/loanstreet/deploy-scripts/wiki/Sample-Django-Deployment) wiki page.
+
+## Deployment Steps
+
+- Once added to a project, deploy-scripts copies over the following files:
 
 ```bash
 - / 	# project root
@@ -73,12 +176,6 @@ Containerization has currently only been tested and confirmed to work with Djang
 
 It can also use the commented out optional files that are listed, but will work without them for non-containerized deployments.
 
-## Sample Deployment
-
-For a step-by-step understanding of how a deployment happens, and how to add deployment support to a project, please check the [Sample Django Deployment](https://github.com/loanstreet/deploy-scripts/wiki/Sample-Django-Deployment) wiki page.
-
-## Deployment Steps
-
 All projects must have the following vars defined (in app-config.sh or config.sh) so that the relevant steps are executed.
 
 ```bash
@@ -87,6 +184,7 @@ TYPE=rails
 # The name that will be used to label the app that is being deployed, commonly the hostname where the service is made available is used
 SERVICE_NAME=service.com
 ```
+
 A typical deployment then proceeds in a number of steps, as follows. Some steps are optional. The expectation is that each of these steps should support several options which can be combined for different types of deployments. The number and order of steps can be varied and removal or addition of more steps to the build process can be done through [Customizing build steps](#customizing-build-steps)
 
 ### List of steps
@@ -168,36 +266,6 @@ Optional. Sometimes (currently only in the case of kubernetes, ecs, or deploying
 # The steps that will be executed in the post push stage
 PUST_PUSH=kubernetes
 ```
-
-# Adding deployment to a project
-
-To add deployment capabilities to a project, run the following commands
-
-```bash
-git clone --single-branch --branch 0.6.0 --depth=1 git@github.com:loanstreet/deploy-scripts.git $HOME/.deploy-scripts/0.6.0
-
-cd $HOME/.deploy-scripts/0.6.0/installer
-
-# For a Java Maven (mvnw) Project
-sh install.sh java /path/to/java/project
-
-# or for a Rails project
-sh install.sh rails /path/to/rails/project
-
-# or for a Django project
-sh install.sh python /path/to/django/project
-
-# or for a reactjs project
-sh install.sh reactjs /path/to/reactjs/project
-
-# or for a node project
-sh install.sh node /path/to/node/project
-
-# or for a simple PHP or static HTML site
-sh install.sh html /path/to/project
-```
-
-Follow the instructions given by the installer
 
 # Automated Testing
 The project contains automated tests to verify that deployments don't break when new changes are made to deploy-scripts.
