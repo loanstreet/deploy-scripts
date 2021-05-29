@@ -30,7 +30,8 @@ if [ "$1" = "--install" ]; then
 		show_installer_usage
 	fi
 
-	docker run --rm -e CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$3":/project -it finology/deploy-scripts:$VERSION --install "$2" "$4" "$5"
+	HOST_TZ=$(cat /etc/timezone)
+	docker run --rm -e HOST_TIMEZONE=$HOST_TZ CREATE_USER=$USER -e CREATE_USER_ID=$(id -u $USER) -e USER_GROUP_ID=$(id -g $USER) -v "$3":/project -it finology/deploy-scripts:$VERSION --install "$2" "$4" "$5"
 fi
 
 if [ "$SSH_KEY" = "" ]; then

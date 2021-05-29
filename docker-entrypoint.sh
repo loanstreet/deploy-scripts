@@ -20,6 +20,10 @@ show_installer_usage() {
 	exit 1
 }
 
+if [ "$HOST_TIMEZONE" != "" ]; then
+	timedatectl set-timezone $HOST_TIMEZONE
+fi
+
 run_installer() {
 	TEMP_INSTALL_DIR="/tmp/deploy-scripts"
 	mkdir -p "$TEMP_INSTALL_DIR"
