@@ -29,13 +29,13 @@ show_debug() {
 	printf "DEBUG: $1\n"
 }
 
-if [ "$1" = "" ] || [ "$2" = "" ]; then
-	show_ds_usage
-fi
-
 if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then
 	show_version
 	exit 0
+fi
+
+if [ "$1" = "" ] || [ "$2" = "" ]; then
+	show_ds_usage
 fi
 
 if [ ! -x "$(command -v docker)" ]; then
