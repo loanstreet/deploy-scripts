@@ -11,7 +11,7 @@ show_usage() {
 }
 
 create_user() {
-	groupadd -g "$USER_GROUP_ID" "$CREATE_USER_ID"
+	groupadd -g "$USER_GROUP_ID" "$CREATE_USER"
 	useradd -u "$CREATE_USER_ID" -g "$USER_GROUP_ID" "$CREATE_USER"
 }
 
@@ -43,7 +43,7 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 		printf "Moving deploy-scripts configs to project dir at /project/$DS_DIR ... "
 		mkdir -p "/project/$DS_DIR"
 		chown -R "$CREATE_USER:$CREATE_USER" /project/$DS_DIR
-		mv "$TEMP_INSTALL_DIR/$DS_DIR" /project/$DS_DIR
+		mv "$TEMP_INSTALL_DIR/$DS_DIR"/* /project/$DS_DIR/
 		printf "done\n"
 	fi
 fi
