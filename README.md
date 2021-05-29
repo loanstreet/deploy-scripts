@@ -63,9 +63,18 @@ git clone --single-branch --branch 0.6.0 https://github.com/loanstreet/deploy-sc
 ### Bootstrap script for docker image
 
 Or download a bootstrap script that will use a dockerized version of deploy-scripts to manage your deployments.
+You can save the script to one of the directories in your PATH environment variable for easy execution
 
 ```bash
-curl https://raw.githubusercontent.com/loanstreet/deploy-scripts/0.6.0/deploy-scripts.sh -o $HOME/deploy-scripts.sh
+# To just download as a shell script
+curl https://raw.githubusercontent.com/loanstreet/deploy-scripts/0.6.0/deploy-scripts.sh -o $HOME/deploy.sh
+
+# To download the script and update your PATH variable for easy execution
+mkdir -p $HOME/.deploy-scripts \
+	&& curl https://raw.githubusercontent.com/loanstreet/deploy-scripts/0.6.0/deploy-scripts.sh -o $HOME/.deploy-scripts/deploy \
+	&& chmod +x $HOME/.deploy-scripts/deploy \
+	&& echo 'PATH="$PATH:$HOME/.deploy-scripts"' >> ~/.profile \
+	&& . ~/.profile
 ```
 
 # Adding deployment to a project
@@ -110,22 +119,22 @@ If you have installed deploy-scripts as a [docker image](#bootstrap-script-for-d
 # sh deploy-scripts.sh --install [project type] [your project directory]
 # For example:
 # For a Java Maven (mvnw) Project
-sh deploy-scripts.sh --install java /path/to/java/project
+deploy --install java /path/to/java/project
 
 # or for a Rails project
-sh deploy-scripts.sh --install rails /path/to/rails/project
+deploy --install rails /path/to/rails/project
 
 # or for a Django project
-sh deploy-scripts.sh --install python /path/to/django/project
+deploy --install python /path/to/django/project
 
 # or for a reactjs project
-sh deploy-scripts.sh --install reactjs /path/to/reactjs/project
+deploy --install reactjs /path/to/reactjs/project
 
 # or for a node project
-sh deploy-scripts.sh --install node /path/to/node/project
+deploy --install node /path/to/node/project
 
 # or for a simple PHP or static HTML site
-sh deploy-scripts.sh --install html /path/to/project
+deploy --install html /path/to/project
 ```
 
 Follow the instructions given by the installer, if any.
@@ -143,7 +152,7 @@ sh deploy/deploy.sh development
 # For deploy-scripts installed via docker
 # Usage: sh deploy-scripts.sh [your project directory] [environment name]
 # For example, for deploying the environment named 'development'
-sh deploy-scripts.sh /my/project development
+deploy /my/project development
 ```
 
 ## Sample Deployment

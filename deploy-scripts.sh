@@ -4,13 +4,19 @@ set -e
 
 SCRIPT_PATH=$(dirname $(readlink -f $0))
 
+show_version() {
+	printf "deploy-scripts version 0.6.0\n"
+}
+
 show_ds_usage() {
-	printf "Usage:\n\tdeploy-scripts.sh [project directory] [environment name]\n"
+	show_version
+	printf "\nUsage:\n\tdeploy-scripts.sh [project directory] [environment name]\n"
 	exit 1
 }
 
 show_installer_usage() {
-	printf "Usage:\n\tdeploy-scripts.sh --install [project type] [project directory] [options]\n"
+	show_version
+	printf "\nUsage:\n\tdeploy-scripts.sh --install [project type] [project directory] [options]\n\nThe values for [project type] can be\n\tjava\n\trails\n\tpython\n\treactjs\n\thtml\n\tnode\n"
 	exit 1
 }
 
@@ -27,13 +33,18 @@ if [ "$1" = "" ] || [ "$2" = "" ]; then
 	show_ds_usage
 fi
 
+if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then
+	show_version
+	exit 0
+fi
+
 if [ ! -x "$(command -v docker)" ]; then
 	printf "ERROR: Please install docker before executing this script.\n"
 	show_ds_usage
 fi
 
 if [ "$1" = "--install" ]; then
-	if [ "$3" = "" ]; then
+	if [ "$3" = "" ] || [ "$2" = "--help" ]; then
 		show_installer_usage
 	else
 		DIR_PATH=$(realpath "$3")
