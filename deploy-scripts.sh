@@ -75,6 +75,13 @@ if [ "$3" != "--no-auto-mounts" ]; then
 		show_error "No config.sh found for environment $1"
 	fi
 
+	DEFAULTS_FILE="$HOME/.config/deploy-scripts-defaults.sh"
+	if [ "$DS_USER_DEFAULTS" != "" ] && [ -f "$DS_USER_DEFAULTS" ]; then
+		. "$DS_USER_DEFAULTS"
+	elif [ -f "$DEFAULTS_FILE" ]; then
+		. "$DEFAULTS_FILE"
+	fi
+
 	. $APP_CONFIG_PATH
 	. $CONFIG_PATH
 
@@ -84,15 +91,21 @@ if [ "$3" != "--no-auto-mounts" ]; then
 		fi
 	fi
 
-	if [ "$PACKAGE" = "docker" ]; then
-		if [ -d "$HOME/.docker" ]; then
-			VOLUMES="$VOLUMES $HOME/.docker:/root/.docker"
+	if [ "$PUSH" = "docker" ]; then
+		if [ "$DOCKER_HOME" = "" ]; then
+			DOCKER_HOME="$HOME/.docker"
+		fi
+		if [ -d "$DOCKER_HOME" ]; then
+			VOLUMES="$VOLUMES $DOCKER_HOME:/root/.docker"
 		fi
 	fi
 
 	if [ "$POST_PUSH" = "kubernetes" ]; then
-		if [ -d "$HOME/.kube" ]; then
-			VOLUMES="$VOLUMES $HOME/.kube:/root/.kube"
+		if [ "$KUBERNETES_HOME" = "" ]; then
+			KUBERNETES_HOME="$HOME/.kube"
+		fi
+		if [ -d "$KUBERNETES_HOME" ]; then
+			VOLUMES="$VOLUMES $KUBERNETES_HOME:/root/.kube"
 		fi
 	fi
 
