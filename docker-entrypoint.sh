@@ -28,7 +28,21 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 	create_user
 
 	if [ "$1" = "--install" ]; then
-		sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 /project $3 $4"
+		TEMP_INSTALL_DIR="/tmp/deploy-scripts/deploy"
+		mkdir -p "$TEMP_INSTALL_DIR"
+
+		sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 $TEMP_INSTALL_DIR $3 $4"
+
+		DS_DIR="deploy"
+		INSTALLER_CONFIG="$DEPLOY_SCRIPTS_HOME/projects/$2/installer/config.sh"
+		if [ -f "$INSTALLER_CONFIG" ]; then
+			. "$INSTALLER_CONFIG"
+		fi
+
+		printf "Moving deploy-scripts configs to project dir at /project/$DS_DIR ... "
+		mv "$TEMP_INSTALL_DIR" /project/$DS_DIR
+		chown "$CREATE_USER:$CREATE_USER" /project/$DS_DIR
+		printf "done\n"
 	fi
 fi
 
