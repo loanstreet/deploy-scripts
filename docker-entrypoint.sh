@@ -28,8 +28,9 @@ if [ "$CREATE_USER" != "" ] && [ "$CREATE_USER_ID" != "" ] && [ "$USER_GROUP_ID"
 	create_user
 
 	if [ "$1" = "--install" ]; then
-		TEMP_INSTALL_DIR="/tmp/deploy-scripts/deploy"
+		TEMP_INSTALL_DIR="/tmp/deploy-scripts"
 		mkdir -p "$TEMP_INSTALL_DIR"
+		chown "$CREATE_USER:$CREATE_USER" "$TEMP_INSTALL_DIR"
 
 		sudo -u $CREATE_USER sh -c "sh /deploy-scripts/installer/install.sh $2 $TEMP_INSTALL_DIR $3 $4"
 
