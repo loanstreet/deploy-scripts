@@ -16,6 +16,15 @@ show_installer_usage() {
 	exit 1
 }
 
+show_error() {
+	printf "ERROR: $1\n"
+	exit 1
+}
+
+show_debug {
+	printf "DEBUG: $1\n"
+}
+
 if [ "$1" = "" ] || [ "$2" = "" ]; then
 	show_ds_usage
 fi
@@ -44,4 +53,50 @@ SSH_PUBLIC_KEY="$HOME/.ssh/$SSH_KEY.pub"
 SSH_PRIVATE_KEY="$HOME/.ssh/$SSH_KEY"
 
 DIR_PATH=$(realpath "$1")
-docker run --rm -v "$SSH_PUBLIC_KEY":/root/.ssh/id_rsa.pub -v "$SSH_PRIVATE_KEY":/root/.ssh/id_rsa -v "$DIR_PATH":/project -it finology/deploy-scripts:$VERSION "$2"
+MOUNTS=""
+
+if [ "$3" != "--no-auto-mounts" ]; then
+	APP_CONFIG_PATH=$(find "$DIR_PATH" -name "app-config.sh")
+	if [ "$APP_CONFIG_PATH" = "" ] || [ ! -f "$APP_CONFIG_PATH" ]; then
+		show_error "No app-config.sh found. Is $1 configured with deploy-scripts?"
+	fi
+	DEPLOY_DIR=$(dirname $APP_CONFIG_PATH)
+	CONFIG_PATH="$DEPLOY_DIR/environments/$2/config.sh"
+	if [ ! -f "$CONFIG_PATH" ]; then
+		show_error "No config.sh found for environment $1"
+	fi
+
+	. $APP_CONFIG_PATH
+	. $CONFIG_PATH
+
+	if [ "$TYPE" = "java" ]; then
+		if [ -d "$HOME/.m2" ]; then
+			VOLUMES="$VOLUMES $HOME/.m2:/root/.m2"
+		fi
+	fi
+
+	if [ "$PACKAGE" = "docker" ]; then
+		if [ -d "$HOME/.docker" ]; then
+			VOLUMES="$VOLUMES $HOME/.docker:/root/.docker"
+		fi
+	fi
+
+	if [ "$POST_PUSH" = "kubernetes" ]; then
+		if [ -d "$HOME/.kube" ]; then
+			VOLUMES="$VOLUMES $HOME/.kube:/root/.kube"
+		fi
+	fi
+fi
+
+if [ "$VOLUMES" != "" ]; then
+	VOLUME_LIST=$(echo $VOLUMES | cut -d";" -f1)
+	for i in $VOLUME_LIST; do
+		MOUNTS="$MOUNTS -v $i"
+	done
+fi
+
+DEPLOY_COMMAND="docker run --rm $MOUNTS -v \"$SSH_PUBLIC_KEY\":/root/.ssh/id_rsa.pub -v \"$SSH_PRIVATE_KEY\":/root/.ssh/id_rsa -v /var/run/docker.sock:/var/run/docker.sock -v \"$DIR_PATH\":/project -it finology/deploy-scripts:$VERSION \"$2\""
+if [ "$DS_DEBUG" = true ]; then
+	show_debug "$DEPLOY_COMMAND"
+fi
+sh -c "$DEPLOY_COMMAND"
