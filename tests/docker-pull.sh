@@ -25,7 +25,6 @@ sed -i "s/image:.*$/image: finology\/tech:k8s-test/g" $SCRIPT_PATH/../projects/p
 
 cat $SCRIPT_PATH/../projects/python/template/environments/$PROJECT_ENVIRONMENT/docker/docker-compose.yml
 
-export DS_DEBUG=true
 printf "\nDEPLOYMENT_DIR=$TEST_WORKING_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/python-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\nLINKED_DIRS=\"\"\n" >> deploy/app-config.sh
 printf "PROJECT_ENVIRONMENT=$PROJECT_ENVIRONMENT\nGIT_BRANCH=master\nPACKAGE=docker\nPUSH=docker\nPOST_PUSH=docker-pull\n" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh
