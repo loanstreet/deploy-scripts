@@ -14,6 +14,6 @@ for n in $IMAGE_LIST; do
 	docker pull $n
 done
 
-docker-compose -f $DEPLOY_DIR/current/docker-compose.yml up -d --no-build
+cd $DEPLOY_DIR/current && docker-compose -f docker-compose.yml up -d --no-build
 
 post_startup
