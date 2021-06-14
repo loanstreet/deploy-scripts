@@ -28,7 +28,7 @@ stop_current_container() {
 deploy() {
 	title 'remote: deploy'
 
-	if [ "$DOCKERIZE" = "true" ]; then
+	if [ "$DOCKERIZE" = "true" ] || [ "$POST_PUSH" = "docker-pull" ]; then
 		stop_current_container
 	fi
 
