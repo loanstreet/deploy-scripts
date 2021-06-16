@@ -16,7 +16,7 @@ show_ds_usage() {
 
 show_installer_usage() {
 	show_version
-	printf "\nUsage:\n\tdeploy-scripts.sh --install [project type] [project directory] [options]\n\nThe values for [project type] can be\n\tjava\n\trails\n\tpython\n\treactjs\n\thtml\n\tnode\n"
+	printf "\nUsage:\n\tdeploy-scripts.sh --install [project type] [project directory] [options]\n\nThe values for [project type] can be\n\tjava\n\trails\n\tpython\n\treactjs\n\tnextjs\n\thtml\n\tnode\n"
 	exit 1
 }
 
