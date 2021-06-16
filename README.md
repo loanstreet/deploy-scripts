@@ -39,6 +39,7 @@ The following stacks are currently supported
 - Django
 - React JS
 - Node JS
+- Next JS
 - PHP
 - Static HTML
 
@@ -103,6 +104,9 @@ sh install.sh python /path/to/django/project
 # or for a reactjs project
 sh install.sh reactjs /path/to/reactjs/project
 
+# or for a nextjs project
+sh install.sh nextjs /path/to/nextjs/project
+
 # or for a node project
 sh install.sh node /path/to/node/project
 
@@ -129,6 +133,9 @@ deploy --install python /path/to/django/project
 
 # or for a reactjs project
 deploy --install reactjs /path/to/reactjs/project
+
+# or for a nextjs project
+deploy --install nextjs /path/to/nextjs/project
 
 # or for a node project
 deploy --install node /path/to/node/project
@@ -188,7 +195,7 @@ It can also use the commented out optional files that are listed, but will work 
 All projects must have the following vars defined (in app-config.sh or config.sh) so that the relevant steps are executed.
 
 ```bash
-# The project type. Currently supported options are: java, rails, python, node, and reactjs
+# The project type. Currently supported options are: java, rails, python, node, reactjs and nextjs
 TYPE=rails
 # The name that will be used to label the app that is being deployed, commonly the hostname where the service is made available is used
 SERVICE_NAME=service.com
@@ -294,6 +301,8 @@ sh tests/java.sh
 sh tests/rails.sh
 # Test React JS deployment
 sh tests/reactjs.sh
+# Test Next JS deployment
+sh tests/nextjs.sh
 # Test Django deployment
 sh tests/django.sh
 # Test Static HTML and PHP website deployment
@@ -361,6 +370,8 @@ Currently allowed values:
 
 - `reactjs`
 
+- `nextjs`
+
 - `html` - for static HTML sites or simple PHP sites
 
 ### `BUILD`
@@ -371,7 +382,7 @@ Currently allowed values:
 
 - `mvnw` - for java projects
 
-- `npm` - for reactjs projects
+- `npm` - for reactjs and nextjs projects
 
 ### `FORMAT`
 
@@ -388,6 +399,8 @@ Currently allowed values:
 - `django` - for python projects
 
 - `reactjs` - for reactjs projects
+
+- `nextjs` - for nextjs projects
 
 - `static` - for static HTML sites or simple PHP sites
 
