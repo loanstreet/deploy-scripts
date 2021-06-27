@@ -42,6 +42,8 @@ steps:
         path: /root/.ssh
       - name: cache
         path: /tmp/cargo
+      - name: target
+        path: /tmp/target
     commands:
       - export CARGO_HOME=/tmp/cargo
       - service ssh start
@@ -52,6 +54,9 @@ volumes:
     host:
       path: /root/.ssh
   - name: cache
+    host:
+      path: /dronetmp/rust-cache
+  - name: target
     host:
       path: /dronetmp/rust-target
 

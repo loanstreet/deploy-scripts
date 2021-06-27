@@ -27,6 +27,12 @@ printf "GIT_BRANCH=master\n" >> deploy/environments/default/config.sh
 cat deploy/app-config.sh deploy/environments/default/config.sh
 title 'TEST - deploying default environment'
 rm -rf $TEST_WORKING_DIR
+
+if [ "$CI" = "true" ]; then
+	mkdir -p "deploy/environments/$PROJECT_ENVIRONMENT/scripts"
+	printf "ds_pre() {\n    echo 'Cache compiled bins in CI ... '\n    ln -sf /tmp/target target\n    ls -al ./\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/build.sh"
+fi
+
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $TEST_WORKING_DIR/rust-deploy-test/default/current
 title 'TEST - check web application'
