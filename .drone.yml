@@ -40,9 +40,10 @@ steps:
     volumes:
       - name: ssh
         path: /root/.ssh
-      - name: target
-        path: /drone/src/target
+      - name: cache
+        path: /tmp/cargo
     commands:
+      - export CARGO_HOME=/tmp/cargo
       - service ssh start
       - sh ./tests/actix.sh
     when:
@@ -52,7 +53,7 @@ volumes:
   - name: ssh
     host:
       path: /root/.ssh
-  - name: target
+  - name: cache
     host:
       path: /dronetmp/rust-target
 
