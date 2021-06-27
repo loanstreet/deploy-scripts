@@ -8,6 +8,10 @@ SCRIPT_PATH=$(dirname $(readlink -f $0))
 title 'push: git-bare: post receive hook'
 deploy
 
-restart_application
+if [ "$DOCKERIZE" = "true" ]; then
+	dockerize
+else
+	restart_application
+fi
 
 post_startup
