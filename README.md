@@ -41,6 +41,7 @@ The following stacks are currently supported
 - Node JS
 - Next JS
 - PHP
+- actix-web (rust web framework)
 - Static HTML
 
 Support has also been added to containerize and deploy projects built on the above stacks with:
@@ -101,6 +102,9 @@ sh install.sh rails /path/to/rails/project
 # or for a Django project
 sh install.sh python /path/to/django/project
 
+# or for an actix-web project
+sh install.sh rust /path/to/django/project
+
 # or for a reactjs project
 sh install.sh reactjs /path/to/reactjs/project
 
@@ -130,6 +134,9 @@ deploy --install rails /path/to/rails/project
 
 # or for a Django project
 deploy --install python /path/to/django/project
+
+# or for an actix-web project
+deploy --install rust /path/to/django/project
 
 # or for a reactjs project
 deploy --install reactjs /path/to/reactjs/project
@@ -307,6 +314,8 @@ sh tests/nextjs.sh
 sh tests/django.sh
 # Test Static HTML and PHP website deployment
 sh tests/php.sh
+# Test actix-web deployment
+sh tests/actix.sh
 # Test Node JS deployment
 sh tests/node.sh
 # Test deployment with dockerization on remote host (dockerizes sample Django project)
@@ -372,6 +381,8 @@ Currently allowed values:
 
 - `nextjs`
 
+- `rust` - currently only tested with actix-web
+
 - `html` - for static HTML sites or simple PHP sites
 
 ### `BUILD`
@@ -381,6 +392,8 @@ Build type depending on the project type variable.
 Currently allowed values:
 
 - `mvnw` - for java projects
+
+- `cargo` - for rust projects
 
 - `npm` - for reactjs and nextjs projects
 
@@ -401,6 +414,8 @@ Currently allowed values:
 - `reactjs` - for reactjs projects
 
 - `nextjs` - for nextjs projects
+
+- `actix-web` - for actix-web projects
 
 - `static` - for static HTML sites or simple PHP sites
 
