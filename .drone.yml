@@ -36,7 +36,7 @@ platform:
 
 steps:
   - name: test
-    image: rust:1.53.0-alpine
+    image: dockerhub.finology.com.my/rust:1.53.0-ci
     volumes:
       - name: ssh
         path: /root/.ssh
