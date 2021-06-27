@@ -28,7 +28,7 @@ printf "GIT_BRANCH=master\n" >> deploy/environments/default/config.sh
 if [ "$CI" = "true" ]; then
 	printf "DS_BUILD_DIR=/tmp/build\nBEFORE_build=ci_cache\n" >> deploy/environments/default/config.sh
 	mkdir -p "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps"
-	printf "ds_exec_step() {\n    title 'CI target dir cache'\n    pwd\n    env\n    ln -sf /tmp/target $DS_BUILD_DIR/repo/target\n    echo $DS_BUILD_DIR\n     ls -al $DS_BUILD_DIR/repo/\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps/ci_cache.sh"
+	printf "ds_exec_step() {\n    title 'CI target dir cache'\n    ln -sf /tmp/target /tmp/build/repo/target\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps/ci_cache.sh"
 fi
 
 cat deploy/app-config.sh deploy/environments/default/config.sh
