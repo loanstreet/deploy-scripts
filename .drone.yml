@@ -48,6 +48,8 @@ steps:
       - export CARGO_HOME=/tmp/cargo
       - service ssh start
       - sh ./tests/actix.sh
+    when:
+      branch: add_actix_deployment
 
 volumes:
   - name: ssh
