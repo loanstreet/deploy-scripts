@@ -30,7 +30,7 @@ rm -rf $TEST_WORKING_DIR
 
 if [ "$CI" = "true" ]; then
 	mkdir -p "deploy/environments/$PROJECT_ENVIRONMENT/scripts"
-	printf "ds_pre() {\n    echo 'Symlink target dir to cache in CI ... '\n    ln -sf /tmp/target $WORK_DIR/repo/target\n    pwd\n    echo $WORK_DIR\n     ls -al ../../../.build/repo\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/build.sh"
+	printf "ds_pre() {\n    echo 'Symlink target dir to cache in CI ... '\n    ln -sf /tmp/target $DS_BUILD_DIR/repo/target\n    pwd\n    echo $DS_BUILD_DIR\n     ls -al ../../../.build/repo\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/build.sh"
 fi
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
