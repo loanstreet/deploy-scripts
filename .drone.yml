@@ -220,7 +220,7 @@ steps:
       - name: dockersock
         path: /var/run/docker.sock
     commands:
-      - docker build --build-arg DS_VERSION=0.6.0 -t finology/deploy-scripts:latest .
+      - docker build --no-cache --build-arg DS_VERSION=0.6.0 -t finology/deploy-scripts:latest .
       - docker --config $HOME/.docker/hub push finology/deploy-scripts:latest
     when:
       branch: 0.6.0

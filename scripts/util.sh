@@ -271,6 +271,13 @@ copy_docker_files() {
 			success "done"
 		fi
 	fi
+
+	if [ "$PACKAGE_DOCKERIGNORE" != "false" ]; then
+		DOCKERIGNORE_FILE="$DESTINATION_DIR/.dockerignore"
+		if [ ! -f "$DOCKERIGNORE_FILE" ]; then
+			printf "Dockerfile\ndocker-compose.yml\n" >> $DOCKERIGNORE_FILE
+		fi
+	fi
 }
 
 cleanup_docker_files() {
