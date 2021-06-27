@@ -28,6 +28,36 @@ volumes:
 
 ---
 kind: pipeline
+name: rust
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: test
+    image: rust:1.53.0-alpine
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+      - name: target
+        path: /drone/src/target
+    commands:
+      - service ssh start
+      - sh ./tests/actix.sh
+    when:
+      branch: add_actix_deployment
+
+volumes:
+  - name: ssh
+    host:
+      path: /root/.ssh
+  - name: target
+    host:
+      path: /dronetmp/rust-target
+
+---
+kind: pipeline
 name: rails
 
 platform:

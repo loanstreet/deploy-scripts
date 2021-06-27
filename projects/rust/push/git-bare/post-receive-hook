@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+. $SCRIPT_PATH/post-receive-utils.sh
+
+title 'push: git-bare: post receive hook'
+deploy
+
+restart_application
+
+post_startup
