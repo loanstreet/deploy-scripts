@@ -28,6 +28,40 @@ volumes:
 
 ---
 kind: pipeline
+name: rust
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: test
+    image: dockerhub.finology.com.my/rust:1.53.0-ci
+    volumes:
+      - name: ssh
+        path: /root/.ssh
+      - name: cache
+        path: /tmp/cargo
+      - name: target
+        path: /tmp/target
+    commands:
+      - export CARGO_HOME=/tmp/cargo
+      - service ssh start
+      - sh ./tests/actix.sh
+
+volumes:
+  - name: ssh
+    host:
+      path: /root/.ssh
+  - name: cache
+    host:
+      path: /dronetmp/rust-cache
+  - name: target
+    host:
+      path: /dronetmp/rust-target
+
+---
+kind: pipeline
 name: rails
 
 platform:
