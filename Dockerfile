@@ -22,6 +22,8 @@ RUN set -ex \
 
 RUN apt update --fix-missing \
 	&& apt install -y --no-install-recommends git ncurses-bin openssh-client sudo dnsutils docker.io docker-compose \
+	&& curl https://sh.rustup.rs -sSf | sh -s -- -y \
+	&& echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.profile \
 	&& mkdir /root/.config \
 	&& printf "DS_UPDATE=false\nDS_BUILD_DIR=/build\n" >> /root/.config/deploy-scripts-defaults.sh \
 	&& git config --global init.defaultBranch master \
