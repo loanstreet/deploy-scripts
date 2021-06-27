@@ -31,7 +31,7 @@ rm -rf $TEST_WORKING_DIR
 if [ "$CI" = "true" ]; then
 	printf "BEFORE_build=ci_cache\n" >> deploy/environments/default/config.sh
 	mkdir -p "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps"
-	printf "ds_exec_step() {\n    title 'CI target dir cache'\n    ln -sf /tmp/target $DS_BUILD_DIR/repo/target\n    pwd\n    echo $DS_BUILD_DIR\n     ls -al $DS_BUILD_DIR/repo/\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps/ci_cache.sh"
+	printf "ds_exec_step() {\n    title 'CI target dir cache'\n    pwd\n    env\n    ln -sf /tmp/target $DS_BUILD_DIR/repo/target\n    echo $DS_BUILD_DIR\n     ls -al $DS_BUILD_DIR/repo/\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps/ci_cache.sh"
 fi
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
