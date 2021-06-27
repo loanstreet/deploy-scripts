@@ -24,15 +24,16 @@ PROJECT_DEPLOY_DIR="$COPY_PROJECT_DIR/rust-project/deploy"
 DEPLOY_SCRIPTS_HOME="$SCRIPT_PATH/../"
 printf "\nDEPLOYMENT_DIR=$DEPLOYMENT_DIR\nDEPLOYMENT_SERVER=localhost\nDEPLOYMENT_SERVER_USER=$USER\nREPO=file://$COPY_PROJECT_DIR/rust-project\nSERVICE_NAME=$SERVICE_NAME\nLINKED_FILES=\n" >> deploy/app-config.sh
 printf "GIT_BRANCH=master\n" >> deploy/environments/default/config.sh
-cat deploy/app-config.sh deploy/environments/default/config.sh
-title 'TEST - deploying default environment'
-rm -rf $TEST_WORKING_DIR
 
 if [ "$CI" = "true" ]; then
 	printf "DS_BUILD_DIR=/tmp/build\nBEFORE_build=ci_cache\n" >> deploy/environments/default/config.sh
 	mkdir -p "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps"
 	printf "ds_exec_step() {\n    title 'CI target dir cache'\n    pwd\n    env\n    ln -sf /tmp/target $DS_BUILD_DIR/repo/target\n    echo $DS_BUILD_DIR\n     ls -al $DS_BUILD_DIR/repo/\n}\n" > "deploy/environments/$PROJECT_ENVIRONMENT/scripts/steps/ci_cache.sh"
 fi
+
+cat deploy/app-config.sh deploy/environments/default/config.sh
+title 'TEST - deploying default environment'
+rm -rf $TEST_WORKING_DIR
 
 PROJECT_DEPLOY_DIR=$PROJECT_DEPLOY_DIR sh $SCRIPT_PATH/../scripts/deploy.sh default
 cd $TEST_WORKING_DIR/rust-deploy-test/default/current
