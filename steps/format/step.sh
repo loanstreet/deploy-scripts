@@ -25,6 +25,21 @@ ds_exec_step() {
 		printf "RESTART_COMMAND=\"sh ./$DS_DIR/run.sh restart\"\n" >> "$DEPLOY_CONFIG_SH"
 	fi
 
+	# If any other files or directories from the project root need to be included, copy them to the package dir
+	# The list of these files and dirs is set with the PACKAGE_INCLUDE var
+	if [ "$FORMAT_INCLUDE" != "" ]; then
+		infof "Including files into the deployment package from project root ... \n"
+		INCLUDE_LIST=$(echo $FORMAT_INCLUDE | cut -d";" -f1)
+		for inc in $INCLUDE_LIST; do
+			if [ -f "$PROJECT_DIR/$inc" ]; then
+				INC_TARGET_DIR=$(dirname $inc)
+				mkdir -p "$DEPLOY_PACKAGE_DIR/$INC_TARGET_DIR"
+			fi
+			cp -vr "$PROJECT_DIR/$inc" "$DEPLOY_PACKAGE_DIR/$inc"
+		done
+		success 'done'
+	fi
+
 	# Prepare the files for deployment using ds_format() depending on the project format (configured by var FORMAT)
 	if [ "$FORMAT" != "" ]; then
 		title "format: $FORMAT"
