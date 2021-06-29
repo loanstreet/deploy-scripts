@@ -7,27 +7,27 @@ create_symlinks() {
 	if [ "$LINKED_DIRS" != "" ]; then
 			LINK_DIRS=$(echo "$LINKED_DIRS" | cut -d";" -f1)
 			for i in $LINK_DIRS; do
-			BASEDIR=$(dirname $i)
-			mkdir -p $DEPLOY_DIR/current/$BASEDIR
-			mkdir -p $DEPLOY_DIR/shared/$i
-			printf "Creating symlink $i -> $DEPLOY_DIR/shared/$i ... "
-			ln -sf $DEPLOY_DIR/shared/$i $i
-			success "done"
+				BASEDIR=$(dirname $i)
+				mkdir -p $DEPLOY_DIR/current/$BASEDIR
+				mkdir -p $DEPLOY_DIR/shared/$i
+				printf "Creating symlink $i -> $DEPLOY_DIR/shared/$i ... "
+				ln -sf $DEPLOY_DIR/shared/$i $i
+				success "done"
 			done
 	fi
 	if [ "$LINKED_FILES" != "" ]; then
 			LINK_FILES=$(echo "$LINKED_FILES" | cut -d";" -f1)
 			for j in $LINK_FILES; do
-			cd $DEPLOY_DIR/shared
-			DIR=$(dirname $j)
-			mkdir -p $DIR
-			cd $DEPLOY_DIR/current
-			printf "Creating symlink $j -> $DEPLOY_DIR/shared/$j ... "
-			ln -s $DEPLOY_DIR/shared/$j $j
-			success "done"
-			if [ ! -f $DEPLOY_DIR/shared/$j ]; then
-				warning "Shared file $j does not exist. Please create it manually."
-			fi
+				cd $DEPLOY_DIR/shared
+				DIR=$(dirname $j)
+				mkdir -p $DIR
+				cd $DEPLOY_DIR/current
+				printf "Creating symlink $j -> $DEPLOY_DIR/shared/$j ... "
+				ln -s $DEPLOY_DIR/shared/$j $j
+				success "done"
+				if [ ! -f $DEPLOY_DIR/shared/$j ]; then
+					warning "Shared file $j does not exist. Please create it manually."
+				fi
 			done
 	fi
 }

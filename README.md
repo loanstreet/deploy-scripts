@@ -103,7 +103,7 @@ sh install.sh rails /path/to/rails/project
 sh install.sh python /path/to/django/project
 
 # or for an actix-web project
-sh install.sh rust /path/to/django/project
+sh install.sh rust /path/to/actix/project
 
 # or for a reactjs project
 sh install.sh reactjs /path/to/reactjs/project
@@ -418,6 +418,10 @@ Currently allowed values:
 - `actix-web` - for actix-web projects
 
 - `static` - for static HTML sites or simple PHP sites
+
+### `FORMAT_INCLUDE`
+
+An optional space-separated list of files and directories relative to the project root to be copied over to the deployment files being readied for packaging
 
 ### `REPO`
 
