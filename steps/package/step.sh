@@ -28,7 +28,7 @@ ds_exec_step() {
 
 	cd $BUILD_REPO
 	# Quit if no target server is specified for delivering the deployment to
-	if [ "$DEPLOYMENT_SERVER" = "" ]; then
+	if [ "$DEPLOYMENT_SERVER" = "" ] && [ "$PUSH" != "docker" ] && [ "$PUSH" != "s3" ]; then
 		ds_clean_dirs
 		exit
 	fi
