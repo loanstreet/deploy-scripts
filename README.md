@@ -1,14 +1,25 @@
 # deploy-scripts
 
-1. [Overview](#overview)
-2. [Installation](#installation)
-3. [Adding deployment to a project](#adding-deployment-to-a-project)
-4. [Sample Deployment](#sample-deployment)
-5. [Deployment Steps](#deployment-steps)
-6. [Automated Testing](#automated-testing)
-7. [Licence](#licence)
-8. [Customizing build steps](#customizing-build-steps)
-9. [Configuration Variables](#configuration-variables)
+1. [Demo](#demo)
+2. [Overview](#overview)
+3. [Installation](#installation)
+4. [Adding deployment to a project](#adding-deployment-to-a-project)
+5. [Sample Deployment](#sample-deployment)
+6. [Deployment Steps](#deployment-steps)
+7. [Automated Testing](#automated-testing)
+8. [Licence](#licence)
+9. [Customizing build steps](#customizing-build-steps)
+10. [Configuration Variables](#configuration-variables)
+
+# Demo
+
+### In action
+
+[Example of the project in action](https://ci.ayravat.com/ritesh/gemini-git-browser)
+
+### Screenshot
+
+![Screenshot of a deployment](https://infra.finology.com.my/deploy-scripts-sample.png)
 
 # Overview
 
