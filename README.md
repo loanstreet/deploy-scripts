@@ -15,7 +15,7 @@
 
 ### In action
 
-[Example of the project in action](https://ci.ayravat.com/ritesh/gemini-git-browser)
+[Example of the project in action](https://ci.ayravat.com/ritesh/gemini-git-browser/12/1/3)
 
 ### Screenshot
 
