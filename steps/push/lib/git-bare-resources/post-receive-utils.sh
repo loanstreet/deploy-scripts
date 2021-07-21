@@ -19,7 +19,12 @@ stop_current_container() {
 	CURRENT_DOCKER_COMPOSE="$DEPLOYMENT_DIR/current/docker-compose.yml"
 	CURRENT_DIR=$(pwd)
 	if [ -f "$CURRENT_DOCKER_COMPOSE" ]; then
+		CURRENT_LOG_FOLDER="$DEPLOYMENT_DIR/shared/logs"
+		mkdir -p "$CURRENT_LOG_FOLDER"
 		cd "$DEPLOYMENT_DIR/current"
+		if [ -d "$CURRENT_LOG_FOLDER" ]; then
+			docker-compose logs 2>&1 >> "$CURRENT_LOG_FOLDER/$SERVICE_NAME.log"
+		fi
 		docker-compose rm -sf
 		cd "$CURRENT_DIR"
 	fi
