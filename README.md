@@ -1,5 +1,7 @@
 # deploy-scripts
 
+[![Build](https://ci.finology.com.my/api/badges/loanstreet/deploy-scripts/status.svg?ref=refs/heads/0.6.0)](https://ci.finology.com.my/loanstreet/deploy-scripts)
+
 1. [Demo](#demo)
 2. [Overview](#overview)
 3. [Installation](#installation)
