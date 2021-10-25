@@ -14,6 +14,12 @@ for n in $IMAGE_LIST; do
 	docker pull $n
 done
 
-cd $DEPLOY_DIR/current && docker-compose -f docker-compose.yml up -d --no-build
+if [ $SAVE_LOG = true ]; then
+	CURRENT_LOG_FOLDER="$DEPLOY_DIR/shared/logs"
+	mkdir -p "$CURRENT_LOG_FOLDER"
+	cd $DEPLOY_DIR/current && docker-compose -f docker-compose.yml up --no-build 2>&1 | tee -a "$CURRENT_LOG_FOLDER/$SERVICE_NAME.log" &
+else
+	cd $DEPLOY_DIR/current && docker-compose -f docker-compose.yml up -d --no-build
+fi
 
 post_startup
