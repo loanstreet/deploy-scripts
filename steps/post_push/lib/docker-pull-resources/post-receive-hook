@@ -16,4 +16,16 @@ done
 
 cd $DEPLOY_DIR/current && docker-compose -f docker-compose.yml up -d --no-build
 
+if [ -n "$LOG_DIR" ]; then
+	if [ ! -d "$LOG_DIR" ]; then
+		info "Creating Log Directory; $LOG_DIR"
+		mkdir -p "$LOG_DIR"
+	fi
+
+	if [ -d "$LOG_DIR" ]; then
+		info "Saving Logs To $LOG_DIR/$SERVICE_NAME.log"
+		docker-compose -f docker-compose.yml logs -f >> "$LOG_DIR/$SERVICE_NAME.log" 2>&1 &
+	fi
+fi
+
 post_startup
