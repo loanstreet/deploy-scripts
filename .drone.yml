@@ -15,6 +15,7 @@ steps:
       - name: maven
         path: /root/.m2
     commands:
+      - env
       - service ssh start
       - sh ./tests/java.sh
 
