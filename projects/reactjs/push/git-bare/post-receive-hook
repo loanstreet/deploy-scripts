@@ -12,6 +12,8 @@ if [ "$FORMAT" = "reactjs" ] && [ "$BUILD" = "" ]; then
 	cd $DEPLOY_DIR/current
 	npm install
 	npm run build
+
+	restart_application
 fi
 
 post_startup
