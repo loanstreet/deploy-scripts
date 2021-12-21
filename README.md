@@ -191,23 +191,23 @@ For a step-by-step understanding of how a deployment happens, and how to add dep
 - Once added to a project, deploy-scripts copies over the following files:
 
 ```bash
-- / 	# project root
-	- /deploy	# the directory where deploy-scripts config files are added (/config/deploy-scripts in rails)
-		- app-config.sh	# Project-wide varibles for deployment configuration
-		- /environments # multiple environments for the project
-			- /default  # an example environment called default, this can be replaced with your own project environments
-				- config.sh # environment specific config, values in which can override the ones in app-config.sh
-				- /assets # files placed here are copied to the server side deployment, dir structure is maintained
-#				 - /docker # (optional) environment specific docker files, can override project-wide files
-#					- Dockerfile # (optional) if present, will override the one in deploy/docker
-#					- docker-compose.yml # (optional) if present, will override the one in deploy/docker
-#				 - /kubernetes # (optional) kubernetes configs
-#					- service.yaml # (optional) config for kubernetes service and deployment for the project
-#		- /scripts # (optional) Hook scripts that can be used for pre and post build hooks of each deployment step
-#			- repo.sh # (optional) example of a pre and post repo checkout hook file
-#		- /docker # (optional) project-wide docker files
-#			- Dockerfile # (optional) if present, will be used to build the docker image
-#			- docker-compose.yml # (optional) if present, will be used to build/start the container
+- / # project root
+  - /deploy	# the directory where deploy-scripts config files are added (/config/deploy-scripts in rails)
+    - app-config.sh	# Project-wide varibles for deployment configuration
+    - /environments # multiple environments for the project
+      - /default  # an example environment called default, this can be replaced with your own project environments
+        - config.sh # environment specific config, values in which can override the ones in app-config.sh
+        - /assets # files placed here are copied to the server side deployment, dir structure is maintained
+#       - /docker # (optional) environment specific docker files, can override project-wide files
+#         - Dockerfile # (optional) if present, will override the one in deploy/docker
+#         - docker-compose.yml # (optional) if present, will override the one in deploy/docker
+#       - /kubernetes # (optional) kubernetes configs
+#         - service.yaml # (optional) config for kubernetes service and deployment for the project
+#   - /scripts # (optional) Hook scripts that can be used for pre and post build hooks of each deployment step
+#     - repo.sh # (optional) example of a pre and post repo checkout hook file
+#   - /docker # (optional) project-wide docker files
+#     - Dockerfile # (optional) if present, will be used to build the docker image
+#     - docker-compose.yml # (optional) if present, will be used to build/start the container
 ```
 
 It can also use the commented out optional files that are listed, but will work without them for non-containerized deployments.
