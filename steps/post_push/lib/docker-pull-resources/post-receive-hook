@@ -17,6 +17,7 @@ done
 cd $DEPLOY_DIR/current && docker-compose -f docker-compose.yml up -d --no-build
 
 if [ -n "$LOG_DIR" ]; then
+	eval LOG_DIR="$LOG_DIR"
 	if [ ! -d "$LOG_DIR" ]; then
 		info "Creating Log Directory; $LOG_DIR"
 		mkdir -p "$LOG_DIR"
