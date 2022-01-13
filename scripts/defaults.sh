@@ -11,7 +11,7 @@ PUSH=git-bare
 PACKAGE=git
 RESTART_COMMAND="sh deploy/run.sh restart"
 DEPLOYMENT_DIR='$HOME/sites/$SERVICE_NAME/$PROJECT_ENVIRONMENT'
-LOG_DIR=$DEPLOYMENT_DIR/shared/logs
+LOG_DIR='$DEPLOYMENT_DIR/shared/logs'
 RELEASE_COUNT=5
 DOCKER_COMPOSE_OPTS=""
 DOCKER_REGISTRY=https://dockerhub.finology.com.my
@@ -26,6 +26,7 @@ KUBERNETES_REPLICAS="1"
 KUBERNETES_CERT_MANAGER="letsencrypt-staging"
 ECS_STOP_RUNNING_TASKS="false"
 AWS_PROFILE=default
+MAVEN_BIN="./mvnw"
 
 # Load vars to override from deploy-scripts-defaults.sh if available
 if [ -f "$DS_USER_DEFAULTS" ]; then

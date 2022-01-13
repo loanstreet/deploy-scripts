@@ -3,11 +3,11 @@ ds_build() {
 		error "build: mvnw: Too few arguments given"
 	fi
 	cd "$1"
-	./mvnw package -Dmaven.test.skip=true 2>&1 | indent
+	sh -c "$MAVEN_BIN package -Dmaven.test.skip=true 2>&1" | indent
 	cd target/
-	WARFILE=$(ls *SNAPSHOT.war | head -n1)
+	WARFILE=$(ls *.war | head -n1)
 	if [ "$WARFILE" = "" ]; then
-		WARFILE=$(ls *SNAPSHOT.jar | head -n1)
+		WARFILE=$(ls *.jar | head -n1)
 	fi
 	if [ "$WARFILE" = "" ]; then
 		error "build: mvnw: No jar or war file could be built"

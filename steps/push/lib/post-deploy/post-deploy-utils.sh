@@ -74,6 +74,10 @@ create_deploy_dir() {
 			mkdir -p $DEPLOY_DIR
 	fi
 
+	if [ ! -d $DEPLOY_DIR ]; then
+		error "Failed to create $DEPLOY_DIR"
+	fi
+
 	echo "Creating deployment directory $WORK_TREE"
 	mkdir -p $WORK_TREE
 }
