@@ -26,6 +26,7 @@ KUBERNETES_REPLICAS="1"
 KUBERNETES_CERT_MANAGER="letsencrypt-staging"
 ECS_STOP_RUNNING_TASKS="false"
 AWS_PROFILE=default
+MAVEN_BIN="./mvnw"
 
 # Load vars to override from deploy-scripts-defaults.sh if available
 if [ -f "$DS_USER_DEFAULTS" ]; then
