@@ -29,6 +29,10 @@ ds_post_push() {
 
 	. "$SCRIPT_PATH/../steps/package/lib/git-resources/util.sh"
 
+	if [ "$DOCKER_PULL_DOCKER_COMPOSE" != "" ]; then
+		cp "$PROJECT_DEPLOY_DIR/$DOCKER_PULL_DOCKER_COMPOSE" docker-compose.yml
+	fi
+
 	ds_package_as_git_repo "$1"
 
 	info "Deploying docker-compose.yml to $DEPLOYMENT_SERVER"
