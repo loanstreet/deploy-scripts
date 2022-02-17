@@ -59,29 +59,29 @@ check_structure() {
 	PROJECT_DIR="$1"
 	PROJECT_ENVIRONMENT="$2"
 	# MSG=""
-	printf "Project dir $PROJECT_DIR ... "
-	if [ ! -d $PROJECT_DIR ]; then
+	printf "Project dir $PROJECT_DIR_DEPLOY_FILES ... "
+	if [ ! -d $PROJECT_DIR_DEPLOY_FILES ]; then
 		error "not found"
 		structure_error_stop
 	else
 		success "found"
 	fi
 	printf "app-config.sh ... "
-	if [ ! -f "$PROJECT_DIR/app-config.sh" ]; then
+	if [ ! -f "$PROJECT_DIR_DEPLOY_FILES/app-config.sh" ]; then
 				error "not found"
 		structure_error_stop
 		else
 				success "found"
 		fi
 	printf "Environment $PROJECT_ENVIRONMENT ... "
-	if [ ! -d "$PROJECT_DIR/$PROJECT_ENVIRONMENT" ]; then
+	if [ ! -d "$PROJECT_DIR_DEPLOY_FILES/$PROJECT_ENVIRONMENT" ]; then
 				error "not found"
 		structure_error_stop
 		else
 				success "found"
 		fi
 	printf "$PROJECT_ENVIRONMENT/config.sh ... "
-	if [ ! -f "$PROJECT_DIR/$PROJECT_ENVIRONMENT/config.sh" ]; then
+	if [ ! -f "$PROJECT_DIR_DEPLOY_FILES/$PROJECT_ENVIRONMENT/config.sh" ]; then
 				error "not found"
 		structure_error_stop
 		else
@@ -89,7 +89,7 @@ check_structure() {
 		fi
 	. $PROJECT_DIR/app-config.sh
 	printf "Custom post-receive hook ... "
-	if [ ! -f "$PROJECT_DIR/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD" ]; then
+	if [ ! -f "$PROJECT_DIR_DEPLOY_FILES/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD" ]; then
 				warning "not found. Will use generic hook"
 		else
 				success "found"
@@ -97,38 +97,38 @@ check_structure() {
 }
 
 check_structure_ver_03() {
-	PROJECT_DIR="$1"
+	PROJECT_DIR_DEPLOY_FILES="$1"
 	PROJECT_ENVIRONMENT="$2"
 	# MSG=""
-	printf "Project dir $PROJECT_DIR ... "
-	if [ ! -d $PROJECT_DIR ]; then
+	printf "Project dir $PROJECT_DIR_DEPLOY_FILES ... "
+	if [ ! -d $PROJECT_DIR_DEPLOY_FILES ]; then
 		error "not found"
 		structure_error_stop
 	else
 		success "found"
 	fi
 	printf "app-config.sh ... "
-	if [ ! -f "$PROJECT_DIR/app-config.sh" ]; then
+	if [ ! -f "$PROJECT_DIR_DEPLOY_FILES/app-config.sh" ]; then
 		error "not found"
 		structure_error_stop
 	else
 		success "found"
 	fi
 	printf "Environment $PROJECT_ENVIRONMENT ... "
-	if [ ! -d "$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT" ]; then
+	if [ ! -d "$PROJECT_DIR_DEPLOY_FILES/environments/$PROJECT_ENVIRONMENT" ]; then
 		error "not found"
 		structure_error_stop
 	else
 		success "found"
 	fi
 	printf "$PROJECT_ENVIRONMENT/config.sh ... "
-	if [ ! -f "$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT/config.sh" ]; then
+	if [ ! -f "$PROJECT_DIR_DEPLOY_FILES/environments/$PROJECT_ENVIRONMENT/config.sh" ]; then
 		error "not found"
 		structure_error_stop
 	else
 		success "found"
 	fi
-	. $PROJECT_DIR/app-config.sh
+	. $PROJECT_DIR_DEPLOY_FILES/app-config.sh
 	# printf "Custom post-receive hook ... "
 	# if [ "$DEPLOYMENT_SERVER" != "" ] && [ ! -f "$PROJECT_DIR/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD" ]; then
 	# 	warning "not found. Will use generic hook"
