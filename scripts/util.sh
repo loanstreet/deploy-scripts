@@ -56,7 +56,7 @@ ds_cat_file() {
 }
 
 check_structure() {
-	PROJECT_DIR="$1"
+	PROJECT_DIR_DEPLOY_FILES="$1"
 	PROJECT_ENVIRONMENT="$2"
 	# MSG=""
 	printf "Project dir $PROJECT_DIR_DEPLOY_FILES ... "
@@ -87,7 +87,7 @@ check_structure() {
 		else
 				success "found"
 		fi
-	. $PROJECT_DIR/app-config.sh
+	. $PROJECT_DIR_DEPLOY_FILES/app-config.sh
 	printf "Custom post-receive hook ... "
 	if [ ! -f "$PROJECT_DIR_DEPLOY_FILES/$PROJECT_ENVIRONMENT/git-hook-post-receive-$BUILD" ]; then
 				warning "not found. Will use generic hook"
@@ -217,12 +217,12 @@ ds_copy_local_files() {
 }
 
 copy_docker_files() {
-	PROJECT_DIR="$1"
+	PROJECT_DIR_DEPLOY_FILES="$1"
 	PROJECT_ENVIRONMENT="$2"
 	DESTINATION_DIR="$3"
 
-	debug "$PROJECT_DIR/$PROJECT_ENVIRONMENT"
-	if [ ! -d "$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT" ]; then
+	debug "$PROJECT_DIR_DEPLOY_FILES/$PROJECT_ENVIRONMENT"
+	if [ ! -d "$PROJECT_DIR_DEPLOY_FILES/environments/$PROJECT_ENVIRONMENT" ]; then
 		error "Environment directory for $PROJECT_ENVIRONMENT not found"
 		structure_error_stop
 	fi
@@ -232,10 +232,10 @@ copy_docker_files() {
 		structure_error_stop
 	fi
 
-	PROJECT_DOCKERFILE_PATH="$PROJECT_DIR/docker/Dockerfile"
-	PROJECT_DOCKER_COMPOSE_PATH="$PROJECT_DIR/docker/docker-compose.yml"
-	DOCKERFILE_PATH="$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT/docker/Dockerfile"
-	DOCKER_COMPOSE_PATH="$PROJECT_DIR/environments/$PROJECT_ENVIRONMENT/docker/docker-compose.yml"
+	PROJECT_DOCKERFILE_PATH="$PROJECT_DIR_DEPLOY_FILES/docker/Dockerfile"
+	PROJECT_DOCKER_COMPOSE_PATH="$PROJECT_DIR_DEPLOY_FILES/docker/docker-compose.yml"
+	DOCKERFILE_PATH="$PROJECT_DIR_DEPLOY_FILES/environments/$PROJECT_ENVIRONMENT/docker/Dockerfile"
+	DOCKER_COMPOSE_PATH="$PROJECT_DIR_DEPLOY_FILES/environments/$PROJECT_ENVIRONMENT/docker/docker-compose.yml"
 
 	if [ -f "$DOCKERFILE_PATH" ]; then
 		info "Copying Dockerfile $DOCKERFILE_PATH to $DESTINATION_DIR"
