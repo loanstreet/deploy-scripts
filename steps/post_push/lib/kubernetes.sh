@@ -58,9 +58,14 @@ ds_kube_ingress_nginx() {
                 "paths": [
                     {
                         "backend": {
-                            "serviceName": "$2",
-                            "servicePort": $3
-                        }
+                            "service": {
+                                "name": "$2",
+                                "port": {
+                                    "number": $3
+                                }
+                            }
+                        },
+                        "pathType": "ImplementationSpecific"
                     }
                 ]
             }
